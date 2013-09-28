@@ -5,15 +5,19 @@
 
 (def world (atom {:user nil}))
 
-(defr Root {:render (fn [C {:keys [user]} S]
-                      [:div (str "Username is" user)
-                       [:button {:on-click #(swap! atom assoc :user "tralala")} "fuck"]])})
+(defr Root
+  {:render (fn [C props S]
+             (let [P (aget props "props")]
+               (.log js/console P)
+               [:div (str "Username is " (:user P))
+                [:br]
+                [:button {:on-click #(swap! world assoc :user "tralala")} "change"]]))})
 
 (defn ^:export main
   []
   (aset js/window "ws" ws)
   (let [root-el (.-body js/document)
-        root (React/renderComponent (Root @world) root-el)]
+        root (React/renderComponent (Root (js-obj "props" @world)) root-el)]
     (add-watch world :world-watcher
                (fn [key ref old new]
-                 (.setProps root new)))))
+                 (.setProps root (js-obj "props" new))))))
