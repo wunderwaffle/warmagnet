@@ -6,7 +6,7 @@
   (swap! world world-transition message))
 
 (defn send-message-srv [msg]
-  (.send ws (clj->cljson msg)))
+  (.send ws (.stringify js/JSON (clj->js msg))))
 
 (defn setup-auth
   [logged-in-user login logout]

@@ -10,7 +10,7 @@
 
 (defn login [token]
 	(let [response (hk/post "https://verifier.login.persona.org/verify"
-                            {:assertion token :audience "http://localhost:8081"})]
+                            {:assertion token :audience "http://localhost:3000"})]
 		(json/decode (:body response) true)))
 
 ;(defn login [token] {:status "okay" :email "alexander@solovyov.net"})

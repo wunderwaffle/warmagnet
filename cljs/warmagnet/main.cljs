@@ -16,7 +16,7 @@
     :game (update-in world [(:game-id msg)] game-transition msg)))
 
 (aset ws "onmessage"
-      #(send-message (js->clj (.parse JSON (.-data %))
+      #(send-message (js->clj (.parse js/JSON (.-data %))
                               :keywordize-keys true)))
 
 (defr Root
