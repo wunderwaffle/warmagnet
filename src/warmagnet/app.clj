@@ -44,7 +44,7 @@
         (let [user (db/get-or-create-user (:email user-data))]
           (swap! state assoc :user user)
           (add-user state)
-          (send-answer state :type "login" :status "success" :user user))
+          (send-answer state :type "login" :status "success" :data user))
         (send-answer state :type "login" :status "invalid-token")))
     (send-answer state :type "login" :status "invalid-request")))
 

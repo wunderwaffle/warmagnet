@@ -8,8 +8,9 @@
             [warmagnet.components :as components]))
 
 (aset ws "onmessage"
-      #(send-message (js->clj (.parse js/JSON (.-data %))
-                              :keywordize-keys true)))
+      (fn [e]
+        (send-message (js->clj (.parse js/JSON (.-data e))
+                               :keywordize-keys true))))
 
 (defr Root
   {:render (fn [C props S]
