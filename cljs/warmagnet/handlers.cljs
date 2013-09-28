@@ -9,6 +9,9 @@
 (defn persona-sign-in []
   (.request navigator/id))
 
+(defn persona-sign-out []
+  (.logout navigator/id))
+
 (defn login [token]
   (send-message-srv {:type "login" :token token}))
 

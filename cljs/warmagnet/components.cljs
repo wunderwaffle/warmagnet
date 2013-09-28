@@ -7,7 +7,7 @@
 (defr SigninButton
   {:render (fn [C P S]
   (let [user (:user P)
-        handler (if user handlers/logout handlers/persona-sign-in)
+        handler (if user handlers/persona-sign-out handlers/persona-sign-in)
         text (if user "Sign Out" "Sign In")]
   [:button
    {:type "button"
