@@ -1,13 +1,19 @@
 (ns warmagnet.main
   (:require-macros [pump.def-macros :refer [defr]])
-  (:require [pump.core]))
+  (:require [pump.core]
+            [warmagnet.api :refer [ws]]))
 
-(def ws-url "ws://localhost:8081/ws")
-(def ws (js/WebSocket. ws-url))
+(def world (atom {:user nil}))
 
-(defr Root {:render (fn [C P S]
-                      [:div "text"])})
+(defr Root {:render (fn [C {:keys [user]} S]
+                      [:div (str "Username is" user)
+                       [:button {:on-click #(swap! atom assoc :user "tralala")} "fuck"]])})
 
 (defn ^:export main
   []
-  (React/renderComponent (Root nil) (.-body js/document)))
+  (aset js/window "ws" ws)
+  (let [root-el (.-body js/document)
+        root (React/renderComponent (Root @world) root-el)]
+    (add-watch world :world-watcher
+               (fn [key ref old new]
+                 (.setProps root new)))))

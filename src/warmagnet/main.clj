@@ -23,7 +23,8 @@
 (def app
   (-> app-routes
       (handler/site {:session {:store (cookie-store {:key "TOP SECRET"})}})
-      (permacookie "ring-session")))
+      (permacookie "ring-session")
+      (wrap-logging)))
 
 (defn -main
   [& args]

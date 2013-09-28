@@ -2,6 +2,7 @@
   :description "war pigs deliver all their madness"
   :url "http://warmagnet.clojurecup.com"
   :dependencies [[org.clojure/clojure "1.5.1"]
+                 [org.clojure/core.async "0.1.222.0-83d0c2-alpha"]
                  [compojure "1.1.5"]
                  [ring/ring-core "1.2.0"]
                  [org.clojure/tools.reader "0.7.6"]
