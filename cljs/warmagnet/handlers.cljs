@@ -7,13 +7,6 @@
 (defn persona-sign-in []
   (.request navigator/id))
 
-(defn setup-auth []
-  (.watch navigator/id
-          (clj->js
-           {:loggedInUser nil
-            :onlogin login
-            :onlogout logout})))
-
 (defn login [a b c]
   (.log js/console "login" a b c))
 

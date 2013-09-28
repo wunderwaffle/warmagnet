@@ -2,10 +2,11 @@
   (:require-macros [pump.def-macros :refer [defr]])
   (:require [tailrecursion.cljson :refer [clj->cljson cljson->clj]]
             [pump.core]
-            [warmagnet.components :as components]
             [warmagnet.crossover.data :refer [game-transition]]
-            [warmagnet.handlers :refer [setup-auth]]
-            [warmagnet.api :refer [ws]]))
+            [warmagnet.api :refer [ws]]
+            [warmagnet.handlers :as handlers]
+            [warmagnet.utils :refer [send-message setup-auth]]
+            [warmagnet.components :as components]))
 
 (def world (atom {:user nil
                   :games {}}))
@@ -14,12 +15,6 @@
   (condp = type
     :login (assoc world :user (:user msg))
     :game (update-in world [(:game-id msg)] game-transition msg)))
-
-(defn send-message [message]
-  (swap! world world-transition message))
-
-(defn send-message-srv [msg]
-  (.send ws (clj->cljson msg)))
 
 (aset ws "onmessage" #(send-message (cljson->clj (.-data %))))
 
@@ -36,7 +31,7 @@
 (defn ^:export main
   []
   (aset js/window "ws" ws)
-  (setup-auth)
+  (setup-auth nil handlers/login handlers/logout)
   (let [root-el (.-body js/document)
         root (React/renderComponent (Root (js-obj "props" @world)) root-el)]
     (add-watch world :world-watcher
