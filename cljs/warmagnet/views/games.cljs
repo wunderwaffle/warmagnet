@@ -32,3 +32,11 @@
                 [:option {:value "unlimited"} "Unlimited"]]]
 
               [:button.btn.btn-success {:type "submit"} "Create"]])})
+
+(defr List
+  {:render (fn [C P S]
+             (if (empty? P)
+               [:div "NO GAMES"]
+               [:ul
+                (for [[id game] P]
+                  [:li (str "Game " id " " (pr-str (second game)))])]))})

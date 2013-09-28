@@ -23,6 +23,7 @@
                  (condp = (:route P)
                    "/" [:div (str "Username is " (:user P))]
                    "/profile" [components/Profile (:user P)]
+                   "/games" [games/List (:games P)]
                    "/games/new" [games/NewGame]
                    [:div (str "UNKNOWN ROUTE: " (:route P))])]]))})
 

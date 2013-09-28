@@ -21,6 +21,7 @@
       [:a.navbar-brand {:href "/"} "WarMagnet"]]
      [:div.navbar-collapse.collapse
       [:ul.nav.navbar-nav
+       [:li [:a {:href "#/games"} "Games"]]
        [:li [:a {:href "#/games/new"} "New Game"]]
        [:li [:a {:href "#/leaderboard"} "Leaderboard"]]]
       [:form.navbar-form.navbar-right
