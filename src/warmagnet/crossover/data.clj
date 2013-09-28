@@ -1,5 +1,6 @@
 (ns warmagnet.crossover.data)
 
-(defn world-transition [world {:keys [type value] :as message}]
+(defn game-transition [world {:keys [type] :as msg}]
   (condp = type
+    ; this is not relevant, game transitions should be here
     :user (assoc world :user value)))
