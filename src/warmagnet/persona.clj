@@ -9,6 +9,8 @@
 	(hk/post url {:form-params params} #(go (>! result %))))
 
 (defn login [token]
-	(let [response (hk/post "https://verifier.login.persona.org/verify" {:assertion token :audience "http://localhost:8081"})]
+	(let [response (hk/post "https://verifier.login.persona.org/verify"
+                            {:assertion token :audience "http://localhost:8081"})]
 		(json/decode (:body response) true)))
-;(defn login [token] {:status "okay" :email "serge.koval@gmail.com"})
+
+;(defn login [token] {:status "okay" :email "alexander@solovyov.net"})
