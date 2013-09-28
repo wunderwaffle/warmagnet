@@ -62,6 +62,10 @@
         game-state (games/create-game game-data)]
     (send-answer state :type "game-state" :data (serialize-game-state game-state))))
 
+(defn msg-join-game [state msg]
+  (let [game-state (games/get-game (:game-id msg))]
+    (send-answer state :type "game-state" :data (serialize-game-state game-state))))
+
 (defn msg-ping [state msg]
   (send-answer state :type "pong"))
 
@@ -77,6 +81,7 @@
     "ping" (msg-ping state msg)
     "update-user" (msg-update-user state msg)
     "start-game" (msg-start-game state msg)
+    "join-game" (msg-join-game state msg)
     (msg-unknown state)))
 
 (defn handle-anonymous-msg [state msg]

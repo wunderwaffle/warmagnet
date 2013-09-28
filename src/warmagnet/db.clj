@@ -1,6 +1,5 @@
 (ns warmagnet.db
   (:require [clojure.string :as s]
-            [clojure.tools.reader.edn :as edn]
             [korma.db :refer [defdb postgres]]
             [korma.core :as sql]))
 
@@ -64,7 +63,7 @@
               (sql/where (= :id id)))
   first))
 
-(defn get-game-logs [id]
+(defn get-game-log [id]
   (sql/select gamelogs
               (sql/where (= :game_id id))
               (sql/order :id :ASC)))
