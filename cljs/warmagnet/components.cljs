@@ -32,14 +32,18 @@
   {:render (fn [C user S]
              [:div.col-md-4.col-md-offset-4
               [:h1 "Preferences"]
-              [:form.well {:role "form" :on-submit handlers/save-prefs}
+              [:form.well {:role "form" :on-submit #(do (.log js/console "FUCK") (handlers/save-prefs % C))}
+
 
                (for [input ["login" "name"]]
                  [:div.form-group
                   [:label {:for input} (.toUpperCase input)]
-                  [:input.form-control {:id input :value ((keyword input) user)}]])
-
-               [:button.btn.btn-primary {:type "button"} "Save"]
+                  [:input.form-control {:ref input :value ((keyword input) user)}]])
+               [:div.form-group
+                [:select.form-control {:ref "select"}
+                 [:option {:value "Yeah"} "Yes"]
+                 [:option {:value "Noah"} "No"]]]
+               [:button.btn.btn-primary {:type "submit"} "Save"]
                ]])})
 
 (defn tags [tagname values]
