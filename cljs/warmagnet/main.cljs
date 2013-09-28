@@ -16,7 +16,7 @@
              (let [P (aget props "props")]
                (.log js/console P)
                [:div
-               [components/Navbar (:user P)]
+               [components/Navbar P]
                 [:div {:style {:margin-top "50px"}}  (str "Username is " (:user P))
                 [:br]
                 [:button {:on-click #(send-message {:type :user :value "hahaha"})} "change"]]]))})

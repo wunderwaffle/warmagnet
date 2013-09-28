@@ -6,11 +6,14 @@
 
 (defr SigninButton
   {:render (fn [C P S]
+  (let [user (:user P)
+        handler (if user handlers/logout handlers/persona-sign-in)
+        text (if user "Sign Out" "Sign In")]
   [:button
    {:type "button"
-    :on-click handlers/persona-sign-in
+    :on-click handler
     :class "btn btn-success"}
-   "Sign In"])})
+   text ]))})
 
 (defr Navbar
   {:render (fn [C P S]
@@ -23,7 +26,7 @@
        [:li [:a {:href "/games/new"} "New Game"]]
        [:li [:a {:href "/leaderboard"} "Leaderboard"]]]
       [:form {:class "navbar-form navbar-right"}
-       [SigninButton]
+       [SigninButton {:user (:user P)}]
        ]]]] )})
 
 (defr NewGame
