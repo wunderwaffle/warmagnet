@@ -32,7 +32,7 @@
                      "profile" [components/Profile user]
                      "games" [games/List games]
                      "games/new" [games/NewGame]
-                     "/map" [gamemap/GameMap (:map P)]
+                     "map" [gamemap/GameMap (:map P)]
                      [:div (str "UNKNOWN ROUTE: " route)]))]]))})
 
 (defn current-route
