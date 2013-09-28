@@ -1,19 +1,11 @@
 (ns warmagnet.main
   (:require-macros [pump.def-macros :refer [defr]])
   (:require [pump.core]
-            [warmagnet.crossover.data :refer [game-transition]]
             [warmagnet.api :refer [ws]]
             [warmagnet.handlers :as handlers]
             [warmagnet.utils :refer [send-message setup-auth]]
+            [warmagnet.world :refer [world]]
             [warmagnet.components :as components]))
-
-(def world (atom {:user nil
-                  :games {}}))
-
-(defn world-transition [world {:keys [type] :as msg}]
-  (condp = type
-    :login (assoc world :user (:user msg))
-    :game (update-in world [(:game-id msg)] game-transition msg)))
 
 (aset ws "onmessage"
       #(send-message (js->clj (.parse js/JSON (.-data %))
