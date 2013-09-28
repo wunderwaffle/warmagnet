@@ -12,19 +12,24 @@
    :name :email))
 
 ;; api
-(defn new-user
-  [data]
-  (sql/insert users (sql/values data)))
+(defn new-user [email]
+  {:id (sql/insert users (sql/values {:email email}))
+   :name nil
+   :email email})
 
-(defn get-user
-  [email]
+(defn get-user [email]
   (->
    (sql/select users
                (sql/where (= :email email)))
    first))
 
-(defn user-exists
-  [email]
+(defn update-user [id profile]
+  (if-not (empty? profile)
+    (sql/update users
+            (sql/set-fields profile)
+            (sql/where (= :id id)))))
+
+(defn user-exists [email]
   (->
    (sql/select users
                (sql/aggregate (count :*) :count)
@@ -32,3 +37,10 @@
    first
    :count
    pos?))
+
+(defn get-or-create-user [email]
+  (let [user (get-user email)]
+    (if (nil? user)
+      (new-user email)
+      user)))
+
