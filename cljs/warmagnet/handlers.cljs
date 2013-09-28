@@ -13,6 +13,9 @@
 (defn persona-sign-out []
   (.logout navigator/id))
 
+(defn save-prefs [e]
+    (.preventDefault e))
+
 (defn login [token]
   (send-message-srv {:type "login" :token token}))
 

@@ -15,17 +15,32 @@
 
 (defr Navbar
   {:render (fn [C P S]
-   [:div.navbar.navbar-inverse.navbar-fixed-top
-    [:div.container
-     [:div.navbar-header
-      [:a.navbar-brand {:href "/"} "WarMagnet"]]
-     [:div.navbar-collapse.collapse
-      [:ul.nav.navbar-nav
-       [:li [:a {:href "#/games"} "Games"]]
-       [:li [:a {:href "#/games/new"} "New Game"]]
-       [:li [:a {:href "#/leaderboard"} "Leaderboard"]]]
-      [:form.navbar-form.navbar-right
-       [SigninButton {:user (:user P)}]]]]])})
+             [:div.navbar.navbar-inverse.navbar-fixed-top
+              [:div.container
+               [:div.navbar-header
+                [:a.navbar-brand {:href "#"} "WarMagnet"]]
+               [:div.navbar-collapse.collapse
+                [:ul.nav.navbar-nav
+                 [:li [:a {:href "#games"} "Games"]]
+                 [:li [:a {:href "#games/new"} "New Game"]]
+                 [:li [:a {:href "#leaderboard"} "Leaderboard"]]
+                 [:li [:a {:href "#preferences"} "Preferences"]]
+                 [:form.navbar-form.navbar-right
+                  [SigninButton {:user (:user P)}]]]]]])})
+
+(defr Preferences
+  {:render (fn [C user S]
+             [:div.col-md-4.col-md-offset-4
+              [:h1 "Preferences"]
+              [:form.well {:role "form" :on-submit handlers/save-prefs}
+
+               (for [input ["login" "name"]]
+                 [:div.form-group
+                  [:label {:for input} (.toUpperCase input)]
+                  [:input.form-control {:id input :value ((keyword input) user)}]])
+
+               [:button.btn.btn-primary {:type "button"} "Save"]
+               ]])})
 
 (defn tags [tagname values]
   (map (fn [v] [tagname v]) values))

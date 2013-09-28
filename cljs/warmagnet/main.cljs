@@ -18,13 +18,14 @@
              (let [P (aget props "props")]
                [:div
                 [components/Navbar P]
-                [:div.container {:style {:margin-top "50px"}}
+                [:div.container {:style {:margin-top "70px"}}
                  (.log js/console (:route P))
                  (condp = (:route P)
-                   "/" [:div (str "Username is " (:user P))]
-                   "/profile" [components/Profile (:user P)]
-                   "/games" [games/List (:games P)]
-                   "/games/new" [games/NewGame]
+                   "" [:div (str "Username is " (:user P))]
+                   "preferences" [components/Preferences (:user P)]
+                   "profile" [components/Profile (:user P)]
+                   "games" [games/List (:games P)]
+                   "games/new" [games/NewGame]
                    [:div (str "UNKNOWN ROUTE: " (:route P))])]]))})
 
 (defn current-route
