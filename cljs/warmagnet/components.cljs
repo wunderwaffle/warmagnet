@@ -4,6 +4,28 @@
    [pump.core :refer [react]]
    [warmagnet.handlers :as handlers]))
 
+(defr SigninButton
+  {:render (fn [C P S]
+  [:button
+   {:type "button"
+    :on-click handlers/persona-sign-in
+    :class "btn btn-success"}
+   "Sign In"])})
+
+(defr Navbar
+  {:render (fn [C P S]
+   [:div.navbar.navbar-inverse.navbar-fixed-top
+    [:div {:class "container"}
+     [:div {:class "navbar-header"}
+      [:a {:class "navbar-brand" :href "/"} "WarMagnet"]]
+     [:div {:class "navbar-collapse collapse"}
+      [:ul {:class "nav navbar-nav"}
+       [:li [:a {:href "/games/new"} "New Game"]]
+       [:li [:a {:href "/leaderboard"} "Leaderboard"]]]
+      [:form {:class "navbar-form navbar-right"}
+       [SigninButton]
+       ]]]] )})
+
 (defr NewGame
   {:render (fn [C P S]
              [:form {:role "form" :on-submit handlers/new-game}
@@ -31,3 +53,12 @@
                                                    (p :completed) (p :won)
                                                    (p :user-rating)])])
                            players)]])})
+
+(defr GameItem
+  {:render (fn [C {:keys [game-map participants round-time reinforcements]} S]
+             [:div
+              [:img {:src game-map}]
+              [:p "Players"]
+              [:ul [tags :li (map :name participants)]]
+              [:p round-time]
+              [:p reinforcements]])})
