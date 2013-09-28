@@ -1,4 +1,5 @@
 (defproject warmagnet "0.1.0-SNAPSHOT"
+  :clojurescript? true
   :description "war pigs deliver all their madness"
   :url "http://warmagnet.clojurecup.com"
   :dependencies [[org.clojure/clojure "1.5.1"]
@@ -21,8 +22,13 @@
   :ring {:handler warmagnet.main/app}
   :main warmagnet.main
   :aot [warmagnet.main]
-  :cljsbuild {:builds [{:id "main"
-                        :source-paths ["cljs"]
-                        :compiler {:output-to "resources/static/warmagnet.js"
-                                   :externs ["resources/externs/react.js"]
-                                   :optimizations :whitespace}}]})
+  :cljsbuild
+  {:crossovers [warmagnet.crossover]
+   :crossover-path "crossover-cljs"
+   :crossover-jar true
+   :builds [{:id "main"
+             :source-paths ["cljs"]
+             :compiler {:output-to "resources/static/warmagnet.js"
+                        :externs ["resources/externs/react.js"]
+                        :optimizations :whitespace}
+             :jar true}]})
