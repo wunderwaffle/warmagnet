@@ -4,7 +4,7 @@
             [org.httpkit.server             :as hk]
             [ring.middleware.reload         :as reload]
             [ring.middleware.session.cookie :refer [cookie-store]]
-            [ring.util.response             :refer [file-response]]
+            [ring.util.response             :refer [resource-response]]
             [compojure.core                 :refer [defroutes GET POST]]
             [compojure.handler              :as handler]
             [compojure.route                :as route]
@@ -15,7 +15,7 @@
             [warmagnet.app         :refer [ws-handler]]))
 
 (defroutes app-routes
-  (GET "/" [] (file-response "resources/index.html"))
+  (GET "/" [] (resource-response "index.html"))
   (GET "/ws" [] ws-handler)
   ;; (GET "/games" [] (file-response "resources/games.html"))
   ;; (GET "/games/new" [] (file-response "resources/new_game.html"))
