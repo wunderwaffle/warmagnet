@@ -1,6 +1,6 @@
 (ns warmagnet.app
   (:require [org.httpkit.server :as hk]
-            [tailrecursion.cljson :refer [clj->cljson cljson->clj]]
+            [cheshire.core :as json]
             [taoensso.timbre :refer [debug info warn error fatal]]
 
             [warmagnet.persona :as persona]
@@ -31,7 +31,7 @@
 
 ; Helpers
 (defn send-answer [state & more]
-  (let [data (clj->cljson (apply hash-map more))]
+  (let [data (json/encode (apply hash-map more))]
     (log-message "<<<" state data)
     (hk/send! (:conn @state) data)))
 
@@ -74,7 +74,7 @@
     (msg-unknown state)))
 
 (defn handle-msg [state raw-msg]
-  (let [msg (cljson->clj raw-msg true)]
+  (let [msg (json/decode raw-msg true)]
     (log-message ">>>" state raw-msg)
     (if (have-user state)
       (handle-user-msg state msg)

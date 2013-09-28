@@ -1,7 +1,6 @@
 (ns warmagnet.main
   (:require-macros [pump.def-macros :refer [defr]])
-  (:require [tailrecursion.cljson :refer [clj->cljson cljson->clj]]
-            [pump.core]
+  (:require [pump.core]
             [warmagnet.crossover.data :refer [game-transition]]
             [warmagnet.api :refer [ws]]
             [warmagnet.handlers :as handlers]
@@ -16,7 +15,9 @@
     :login (assoc world :user (:user msg))
     :game (update-in world [(:game-id msg)] game-transition msg)))
 
-(aset ws "onmessage" #(send-message (cljson->clj (.-data %))))
+(aset ws "onmessage"
+      #(send-message (js->clj (.parse JSON (.-data %))
+                              :keywordize-keys true)))
 
 (defr Root
   {:render (fn [C props S]

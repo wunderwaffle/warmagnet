@@ -7,6 +7,8 @@
             [compojure.core      :refer [defroutes GET POST]]
             [compojure.handler   :as handler]
             [compojure.route     :as route]
+            [taoensso.timbre :refer [info]]
+
             [warmagnet.permacookie :refer [permacookie]]
             [warmagnet.utils     :refer [wrap-logging]]
             [warmagnet.app       :refer [ws-handler]]))
@@ -30,4 +32,5 @@
 
 (defn -main
   [& args]
+  (info "Starting to listen on :3000...")
   (hk/run-server app {:port 3000}))

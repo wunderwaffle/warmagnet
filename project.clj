@@ -13,7 +13,6 @@
                  [com.cemerick/friend "0.1.5"]
                  [clj-time "0.6.0"]
                  [cheshire "5.2.0"]
-                 [tailrecursion/cljson "1.0.2"]
                  [com.taoensso/timbre "2.6.1"]
                  [http-kit "2.1.10"]
                  [pump "0.1.0"]
