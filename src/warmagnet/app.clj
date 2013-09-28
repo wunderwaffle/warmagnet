@@ -24,9 +24,15 @@
   (swap! all-users dissoc (get-user-id state))
   (println "del" all-users))
 
+(defn log-message [prefix state text]
+  (if (have-user state)
+    (debug (format "%s [%s] %s" prefix (get-in @state [:user :email]) text))
+    (debug (format "%s %s" prefix text))))
+
 ; Helpers
 (defn send-answer [state & more]
   (let [data (json/encode (apply hash-map more))]
+    (log-message "<<<" state data)
     (hk/send! (:conn @state) data)))
 
 ; Message Handlers
@@ -69,6 +75,7 @@
 
 (defn handle-msg [state raw-msg]
   (let [msg (json/decode raw-msg true)]
+    (log-message ">>>" state raw-msg)
     (if (have-user state)
       (handle-user-msg state msg)
       (handle-anonymous-msg state msg))))

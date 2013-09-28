@@ -6,6 +6,5 @@
 (defn wrap-logging [handler]
   (fn [req]
     (let [resp (handler req)]
-      (debug (str (if (:websocket? req) "WS req: " "req: ")
-                  (:uri req) " " (:status resp)))
+      (debug (str (if (:websocket? req) "WS req: " "req: ") (:uri req) " " (:status resp)))
       resp)))
