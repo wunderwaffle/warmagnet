@@ -33,9 +33,9 @@
               [:h1 "Preferences"]
               [:form.well {:role "form" :on-submit handlers/save-prefs}
 
-               (for [input ["email" "name"]]
+               (for [input ["login" "name"]]
                  [:div.form-group
-                  [:label {:for input} input]
+                  [:label {:for input} (.toUpperCase input)]
                   [:input.form-control {:id input :value ((keyword input) user)}]])
 
                [:button.btn.btn-primary {:type "button"} "Save"]
