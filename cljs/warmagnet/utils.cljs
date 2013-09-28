@@ -1,4 +1,6 @@
-(ns warmagnet.utils)
+(ns warmagnet.utils
+  (:require
+   [warmagnet.api :refer [ws]]))
 
 (defn send-message [message]
   (swap! world world-transition message))

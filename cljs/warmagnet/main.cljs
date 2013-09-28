@@ -32,7 +32,7 @@
 (defn ^:export main
   []
   (aset js/window "ws" ws)
-  (setup-auth nil handlers/login handlers/logout)
+  (setup-auth (:user @world) handlers/login handlers/logout)
   (let [root-el (.-body js/document)
         root (React/renderComponent (Root (js-obj "props" @world)) root-el)]
     (add-watch world :world-watcher

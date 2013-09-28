@@ -1,6 +1,6 @@
 (ns warmagnet.handlers
   (:require
-   [warmagnet.utils :refer [send-message]]))
+   [warmagnet.utils :refer [send-message-srv]]))
 
 (defn new-game [e]
   (do
@@ -10,7 +10,7 @@
   (.request navigator/id))
 
 (defn login [token]
-  #(send-message {:type "login" :token token}))
+  (send-message-srv {:type "login" :token token}))
 
 (defn logout [a b c]
   (.log js/console "logout"))
