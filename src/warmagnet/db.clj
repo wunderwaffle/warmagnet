@@ -13,9 +13,7 @@
 
 ;; api
 (defn new-user [email]
-  {:id (sql/insert users (sql/values {:email email}))
-   :name nil
-   :email email})
+  (sql/insert users (sql/values {:email email})))
 
 (defn get-user [email]
   (->
