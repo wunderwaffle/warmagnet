@@ -1,0 +1,203 @@
+{
+    "regions": [{
+        "name": "Europe",
+        "bonus": 5,
+        "districts": ["Iceland", "Scandinavia", "Great Britain", "Western Europe",
+                      "South Europe", "Germany", "Ukraine"]
+    }, {
+        "name": "Africa",
+        "bonus": 3,
+        "districts": ["Egypt", "Congo", "Horn", "Maghrib", "Madagascar",
+                      "South Africa"]
+    }, {
+        "name": "North America",
+        "bonus": 5,
+        "districts": ["Alaska", "Nunawut", "Greenland", "Alberta", "Ontario",
+                      "Quebec", "Western States", "Eastern States", "Central America"]
+    }, {
+        "name": "South America",
+        "bonus": 2,
+        "districts": ["Argentina", "Brazil", "Colombia", "Peru"]
+    }, {
+        "name": "Asia",
+        "bonus": 7,
+        "districts": ["Middle East", ".*stan", "Ural", "Siberia", "Yakutia",
+                      "Baikal", "Kamchatka", "Japan", "Mongolia", "China",
+                      "Indochina", "India"]
+    }, {
+        "name": "Oceania",
+        "bonus": 2,
+        "districts": ["Indonesia", "New Guinea", "Eastern Australia",
+                      "Western Australia"]
+    }],
+
+    "districts": [{
+        "name": "Iceland",
+        "coordinates": [677, 246],
+        "borders": ["Great Britain", "Scandinavia", "Greenland"]
+    }, {
+        "name": "Scandinavia",
+        "coordinates": [758, 251],
+        "borders": ["Iceland", "Germany", "Ukraine"]
+    }, {
+        "name": "Great Britain",
+        "coordinates": [692, 354],
+        "borders": ["Iceland", "Germany", "Western Europe"]
+    }, {
+        "name": "Western Europe",
+        "coordinates": [673, 468],
+        "borders": ["Germany", "Great Britain", "Southern Europe", "Maghrib"]
+    }, {
+        "name": "Southern Europe",
+        "coordinates": [812, 439],
+        "borders": ["Germany", "Western Europe", "Maghrib", "Egypt", "Middle East", "Ukraine"]
+    }, {
+        "name": "Germany",
+        "coordinates": [763, 364],
+        "borders": ["Scandinavia", "Ukraine", "Western Europe", "Great Britain", "Southern Europe"]
+    }, {
+        "name": "Ukraine",
+        "coordinates": [892, 338],
+        "borders": ["Germany", "Southern Europe", "Middle East", ".*stan", "Ural", "Scandinavia"]
+    }, {
+        "name": "Egypt",
+        "coordinates": [809, 517],
+        "borders": ["Southern Europe", "Middle East", "Maghrib", "Horn"]
+    }, {
+        "name": "Congo",
+        "coordinates": [794, 780],
+        "borders": ["Horn", "South Africa", "Maghrib"]
+    }, {
+        "name": "Horn",
+        "coordinates": [872, 706],
+        "borders": ["Middle East", "Egypt", "Madagascar", "South Africa", "Congo"]
+    }, {
+        "name": "Maghrib",
+        "coordinates": [692, 641],
+        "borders": ["Western Europe", "Southern Europe", "Egypt", "Congo", "Brazil"]
+    }, {
+        "name": "Madagascar",
+        "coordinates": [921, 900],
+        "borders": ["Horn", "South Africa"]
+    }, {
+        "name": "South Africa",
+        "coordinates": [787, 920],
+        "borders": ["Horn", "Madagascar", "Congo"]
+    }, {
+        "name": "Argentina",
+        "coordinates": [394, 875],
+        "borders": ["Brazil", "Peru"]
+    }, {
+        "name": "Peru",
+        "coordinates": [383, 765],
+        "borders": ["Brazil", "Argentina", "Colombia"]
+    }, {
+        "name": "Brazil",
+        "coordinates": [477, 724],
+        "borders": ["Maghrib", "Argentina", "Peru", "Colombia"]
+    }, {
+        "name": "Colombia",
+        "coordinates": [352, 622],
+        "borders": ["Brazil", "Peru", "Central America"]
+    }, {
+        "name": "Alaska",
+        "coordinates": [111, 208],
+        "borders": ["Kamchatka", "Alberta", "Nunawut"]
+    }, {
+        "name": "Nunawut",
+        "coordinates": [262, 214],
+        "borders": ["Alberta", "Alaska", "Greenland", "Ontario"]
+    }, {
+        "name": "Greenland",
+        "coordinates": [619, 142],
+        "borders": ["Iceland", "Nunawut", "Ontario", "Quebec"]
+    }, {
+        "name": "Alberta",
+        "coordinates": [267, 288],
+        "borders": ["Western States", "Alaska", "Nunawut", "Ontario"]
+    }, {
+        "name": "Ontario",
+        "coordinates": [376, 313],
+        "borders": ["Western States", "Eastern States", "Alberta", "Nunawut", "Greenland", "Quebec"]
+    }, {
+        "name": "Quebec",
+        "coordinates": [496, 306],
+        "borders": ["Eastern States", "Ontario", "Greenland"]
+    }, {
+        "name": "Western States",
+        "coordinates": [270, 391],
+        "borders": ["Central America", "Eastern States", "Alberta", "Ontario"]
+    }, {
+        "name": "Eastern States",
+        "coordinates": [383, 413],
+        "borders": ["Central America", "Western States", "Ontario", "Quebec"]
+    }, {
+        "name": "Central America",
+        "coordinates": [290, 490],
+        "borders": ["Colombia", "Western States", "Eastern States"]
+    }, {
+        "name": "Indonesia",
+        "coordinates": [1265, 720],
+        "borders": ["Indochina", "New Guinea", "Western Australia"]
+    }, {
+        "name": "New Guinea",
+        "coordinates": [1425, 744],
+        "borders": ["Indonesia", "Western Australia", "Eastern Australia"]
+    }, {
+        "name": "Western Australia",
+        "coordinates": [1250, 890],
+        "borders": ["Indonesia", "New Guinea", "Eastern Australia"]
+    }, {
+        "name": "Eastern Australia",
+        "coordinates": [1400, 900],
+        "borders": ["New Guinea", "Western Australia"]
+    }, {
+        "name": "Middle East",
+        "coordinates": [920, 510],
+        "borders": ["Southern Europe", "Ukraine", "India", "Egypt", "Horn"]
+    }, {
+        "name": ".*stan",
+        "coordinates": [1030, 400],
+        "borders": ["Ukraine", "Ural", "China", "India", "Middle Eastern"]
+    }, {
+        "name": "Ural",
+        "coordinates": [1070, 290],
+        "borders": ["Ukraine", "Siberia", ".*stan", "China"]
+    }, {
+        "name": "Siberia",
+        "coordinates": [1170, 235],
+        "borders": ["Ural", "Yakutia", "Baikal", "Mongolia", "China"]
+    }, {
+        "name": "Yakutia",
+        "coordinates": [1320, 200],
+        "borders": ["Siberia", "Kamchatka", "Baikal"]
+    }, {
+        "name": "Baikal",
+        "coordinates": [1260, 300],
+        "borders": ["Siberia", "Yakutia", "Kamchatka", "Mongolia"]
+    }, {
+        "name": "Kamchatka",
+        "coordinates": [1480, 210],
+        "borders": ["Yakutia", "Baikal", "Japan", "Alaska"]
+    }, {
+        "name": "Japan",
+        "coordinates": [1412, 430],
+        "borders": ["Mongolia", "Kamchatka"]
+    }, {
+        "name": "Mongolia",
+        "coordinates": [1300, 380],
+        "borders": ["Siberia", "Baikal", "Japan", "China"]
+    }, {
+        "name": "China",
+        "coordinates": [1200, 480],
+        "borders": ["Ural", "Siberia", "Mongolia", "Indochina", "India", ".*stan"]
+    }, {
+        "name": "Indochina",
+        "coordinates": [1215, 600],
+        "borders": ["China", "Indonesia"]
+    }, {
+        "name": "India",
+        "coordinates": [1100, 580],
+        "borders": ["China", "Middle East", ".*stan"]
+    }]
+}
