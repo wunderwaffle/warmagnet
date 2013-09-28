@@ -9,4 +9,5 @@
   (condp = (if (string? type) (keyword type) type)
     :login (assoc world :user data)
     :route (assoc world :route data)
+    :error (js/alert "Server error")
     :game (update-in world [(:game-id msg)] game-transition data)))

@@ -6,28 +6,25 @@
 
 (defr SigninButton
   {:render (fn [C P S]
-  (let [user (:user P)
-        handler (if user handlers/persona-sign-out handlers/persona-sign-in)
-        text (if user "Sign Out" "Sign In")]
-  [:button
-   {:type "button"
-    :on-click handler
-    :class "btn btn-success"}
-   text ]))})
+             (let [user (:user P)
+                   handler (if user handlers/persona-sign-out handlers/persona-sign-in)
+                   text (if user "Sign Out" "Sign In")]
+               [:button.btn.btn-success
+                {:type "button" :on-click handler}
+                text]))})
 
 (defr Navbar
   {:render (fn [C P S]
    [:div.navbar.navbar-inverse.navbar-fixed-top
-    [:div {:class "container"}
-     [:div {:class "navbar-header"}
-      [:a {:class "navbar-brand" :href "/"} "WarMagnet"]]
-     [:div {:class "navbar-collapse collapse"}
-      [:ul {:class "nav navbar-nav"}
+    [:div.container
+     [:div.navbar-header
+      [:a.navbar-brand {:href "/"} "WarMagnet"]]
+     [:div.navbar-collapse.collapse
+      [:ul.nav.navbar-nav
        [:li [:a {:href "/games/new"} "New Game"]]
        [:li [:a {:href "/leaderboard"} "Leaderboard"]]]
-      [:form {:class "navbar-form navbar-right"}
-       [SigninButton {:user (:user P)}]
-       ]]]] )})
+      [:form.navbar-form.navbar-right
+       [SigninButton {:user (:user P)}]]]]])})
 
 (defr NewGame
   {:render (fn [C P S]
