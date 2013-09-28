@@ -17,11 +17,11 @@
              (let [P (aget props "props")]
                [:div
                 [components/Navbar P]
-                [:div {:style {:margin-top "50px"}}
+                [:div {:style {:margin-top "70px"}}
                  (.log js/console (:route P))
                  (condp = (:route P)
-                   "/" [:div (str "Username is " (:user P))]
-                   "/profile" [components/Profile (:user P)]
+                   "" [:div (str "Username is " (:user P))]
+                   "preferences" [components/Preferences (:user P)]
                    [:div (str "UNKNOWN ROUTE: " (:route P))])]]))})
 
 (defn current-route
