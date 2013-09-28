@@ -7,6 +7,7 @@
             [warmagnet.world :refer [world]]
             [warmagnet.components :as components]
             [warmagnet.views.games :as games]
+            [warmagnet.views.gamemap :as gamemap]
             [warmagnet.views.index :as index]))
 
 (aset ws "onmessage"
@@ -31,6 +32,7 @@
                      "profile" [components/Profile user]
                      "games" [games/List games]
                      "games/new" [games/NewGame]
+                     "/map" [gamemap/GameMap (:map P)]
                      [:div (str "UNKNOWN ROUTE: " route)]))]]))})
 
 (defn current-route

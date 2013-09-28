@@ -1,4 +1,8 @@
 {
+    "name": "Classic Risk",
+    "map-src": "map-classic.jpg",
+    "dimensions": [1600, 1082],
+
     "regions": [{
         "name": "Europe",
         "bonus": 5,
@@ -61,7 +65,7 @@
         "borders": ["Germany", "Southern Europe", "Middle East", ".*stan", "Ural", "Scandinavia"]
     }, {
         "name": "Egypt",
-        "coordinates": [809, 517],
+        "coordinates": [809, 577],
         "borders": ["Southern Europe", "Middle East", "Maghrib", "Horn"]
     }, {
         "name": "Congo",

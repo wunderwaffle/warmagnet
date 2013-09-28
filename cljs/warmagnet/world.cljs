@@ -14,4 +14,5 @@
     :game-state (assoc-in world [:games (:id data)]
                           [(:log data)
                            (:options data)])
-    :game (update-in world [(:id data)] game-transition data)))
+    :game (update-in world [(:id data)] game-transition data)
+    :map-received (assoc world :map data)))

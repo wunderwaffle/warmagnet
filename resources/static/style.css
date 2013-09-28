@@ -1,0 +1,9 @@
+.game-map {
+    position: relative;
+}
+
+.map-district {
+    position: absolute;
+    margin-left: -3px;
+    margin-top: -12px;
+}
