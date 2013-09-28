@@ -1,4 +1,6 @@
-(ns warmagnet.handlers)
+(ns warmagnet.handlers
+  (:require
+   [warmagnet.utils :refer [send-message]]))
 
 (defn new-game [e]
   (do
@@ -7,8 +9,8 @@
 (defn persona-sign-in []
   (.request navigator/id))
 
-(defn login [a b c]
-  (.log js/console "login" a b c))
+(defn login [token]
+  #(send-message {:type "login" :token token}))
 
 (defn logout [a b c]
   (.log js/console "logout"))
