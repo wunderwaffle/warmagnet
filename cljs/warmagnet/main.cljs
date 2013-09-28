@@ -6,7 +6,8 @@
             [warmagnet.utils :refer [send-message setup-auth]]
             [warmagnet.world :refer [world]]
             [warmagnet.components :as components]
-            [warmagnet.views.games :as games]))
+            [warmagnet.views.games :as games]
+            [warmagnet.views.index :as index]))
 
 (aset ws "onmessage"
       (fn [e]
@@ -15,18 +16,22 @@
 
 (defr Root
   {:render (fn [C props S]
-             (let [P (aget props "props")]
+             (let [{:keys [user games route] :as P} (aget props "props")]
                [:div
                 [components/Navbar P]
                 [:div.container {:style {:margin-top "70px"}}
                  (.log js/console (:route P))
-                 (condp = (:route P)
-                   "" [:div (str "Username is " (:user P))]
-                   "preferences" [components/Preferences (:user P)]
-                   "profile" [components/Profile (:user P)]
-                   "games" [games/List (:games P)]
-                   "games/new" [games/NewGame]
-                   [:div (str "UNKNOWN ROUTE: " (:route P))])]]))})
+
+                 (if-not user
+                   [index/Index]
+
+                   (condp = (:route P)
+                     "" [games/List games]
+                     "preferences" [components/Preferences user]
+                     "profile" [components/Profile user]
+                     "games" [games/List games]
+                     "games/new" [games/NewGame]
+                     [:div (str "UNKNOWN ROUTE: " route)]))]]))})
 
 (defn current-route
   []
