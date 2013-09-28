@@ -1,5 +1,5 @@
 run:
-	lein ring server
+	lein run
 
 js:
 	lein cljsbuild auto

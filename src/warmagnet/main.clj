@@ -1,6 +1,7 @@
 (ns warmagnet.main
   (:gen-class)
   (:require [org.httpkit.server  :as hk]
+            [ring.middleware.reload :as reload]
             [ring.middleware.session.cookie :refer [cookie-store]]
             [ring.util.response :refer [file-response]]
             [compojure.core      :refer [defroutes GET POST]]
@@ -21,8 +22,9 @@
   (route/not-found "404 Nothing to see here, move along"))
 
 (def app
-  (-> app-routes
+  (-> #'app-routes
       (handler/site {:session {:store (cookie-store {:key "TOP SECRET"})}})
+      (reload/wrap-reload)
       (permacookie "ring-session")
       (wrap-logging)))
 
