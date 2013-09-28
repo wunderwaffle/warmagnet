@@ -5,6 +5,7 @@
 
             [warmagnet.persona :as persona]
             [warmagnet.db :as db]
+            [warmagnet.games :as games]
             ))
 
 ; User management
@@ -35,6 +36,10 @@
     (log-message "<<<" state data)
     (hk/send! (:conn @state) data)))
 
+(defn serialize-game-state [game-state]
+  ;; TODO: Filter some options
+  game-state)
+
 ; Message Handlers
 (defn msg-user [state msg]
   ; TODO: Token decoding to get user id
@@ -52,8 +57,13 @@
   (let [profile (select-keys msg [:name])]
     (db/update-user (get-user-id state) profile)))
 
+(defn msg-start-game [state msg]
+  (let [game-data (:data msg)
+        game-state (games/create-game game-data)]
+    (send-answer state :type "game-state" :data (serialize-game-state game-state))))
+
 (defn msg-ping [state msg]
-  (send-answer state :type "pong" :text (:text msg)))
+  (send-answer state :type "pong"))
 
 (defn msg-unknown [state]
   (send-answer state :type "error" :status "invalid-msg"))
@@ -66,6 +76,7 @@
   (case (:type msg)
     "ping" (msg-ping state msg)
     "update-user" (msg-update-user state msg)
+    "start-game" (msg-start-game state msg)
     (msg-unknown state)))
 
 (defn handle-anonymous-msg [state msg]

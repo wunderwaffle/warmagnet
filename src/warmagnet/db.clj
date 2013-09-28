@@ -11,7 +11,15 @@
   (sql/entity-fields
    :name :email))
 
-;; api
+(sql/defentity games
+  (sql/entity-fields
+   :data))
+
+(sql/defentity gamelogs
+  (sql/entity-fields
+   :game_id :type :data))
+
+;; users
 (defn new-user [email]
   (sql/insert users (sql/values {:email email})))
 
@@ -41,4 +49,23 @@
     (if (nil? user)
       (new-user email)
       user)))
+
+;; games
+(defn new-game [data]
+  (sql/insert games (sql/values {:data data})))
+
+(defn add-game-log [game-id data]
+  (let [type (:type data)]
+    (sql/insert gamelogs (sql/values {:game_id game-id :type data :data data}))))
+
+(defn get-game [id]
+(->
+  (sql/select games
+              (sql/where (= :id id)))
+  first))
+
+(defn get-game-logs [id]
+  (sql/select gamelogs
+              (sql/where (= :game_id id))
+              (sql/order :id :ASC)))
 
