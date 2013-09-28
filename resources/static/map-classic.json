@@ -158,11 +158,11 @@
     }, {
         "name": "Middle East",
         "coordinates": [920, 510],
-        "borders": ["Southern Europe", "Ukraine", "India", "Egypt", "Horn"]
+        "borders": ["Southern Europe", "Ukraine", "India", "Egypt", "Horn", ".*stan"]
     }, {
         "name": ".*stan",
         "coordinates": [1030, 400],
-        "borders": ["Ukraine", "Ural", "China", "India", "Middle Eastern"]
+        "borders": ["Ukraine", "Ural", "China", "India", "Middle East"]
     }, {
         "name": "Ural",
         "coordinates": [1070, 290],
