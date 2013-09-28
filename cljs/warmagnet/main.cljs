@@ -14,19 +14,30 @@
 (defr Root
   {:render (fn [C props S]
              (let [P (aget props "props")]
-               (.log js/console P)
                [:div
-               [components/Navbar P]
-                [:div {:style {:margin-top "50px"}}  (str "Username is " (:user P))
-                [:br]
-                [:button {:on-click #(send-message {:type :user :value "hahaha"})} "change"]]]))})
+                [components/Navbar P]
+                [:div {:style {:margin-top "50px"}}
+                 (.log js/console (:route P))
+                 (condp = (:route P)
+                   "/" [:div (str "Username is " (:user P))]
+                   "/profile" [components/Profile (:user P)]
+                   [:div (str "UNKNOWN ROUTE: " (:route P))])]]))})
+
+(defn current-route
+  []
+  (.slice (.. js/window -location -hash) 1))
 
 (defn ^:export main
   []
   (aset js/window "ws" ws)
   (setup-auth (:user @world) handlers/login handlers/logout)
+  (send-message {:type :route :data (current-route)})
+
   (let [root-el (.-body js/document)
         root (React/renderComponent (Root (js-obj "props" @world)) root-el)]
+    (.addEventListener js/window "hashchange"
+                       (fn [e]
+                         (send-message {:type :route :data (current-route)})))
     (add-watch world :world-watcher
                (fn [key ref old new]
                  (.setProps root (js-obj "props" new))))))

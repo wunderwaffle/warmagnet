@@ -65,3 +65,7 @@
               [:ul [tags :li (map :name participants)]]
               [:p round-time]
               [:p reinforcements]])})
+
+(defr Profile
+  {:render (fn [C P S]
+             [:div "Profile!"])})
