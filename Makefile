@@ -1,5 +1,5 @@
 run:
-	lein run
+	lein run -d
 
 js:
 	lein cljsbuild auto

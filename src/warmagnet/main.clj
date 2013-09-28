@@ -1,17 +1,18 @@
 (ns warmagnet.main
   (:gen-class)
-  (:require [org.httpkit.server  :as hk]
-            [ring.middleware.reload :as reload]
+  (:require [clojure.tools.cli              :refer [cli]]
+            [org.httpkit.server             :as hk]
+            [ring.middleware.reload         :as reload]
             [ring.middleware.session.cookie :refer [cookie-store]]
-            [ring.util.response :refer [file-response]]
-            [compojure.core      :refer [defroutes GET POST]]
-            [compojure.handler   :as handler]
-            [compojure.route     :as route]
-            [taoensso.timbre :refer [info]]
+            [ring.util.response             :refer [file-response]]
+            [compojure.core                 :refer [defroutes GET POST]]
+            [compojure.handler              :as handler]
+            [compojure.route                :as route]
+            [taoensso.timbre                :refer [info]]
 
             [warmagnet.permacookie :refer [permacookie]]
-            [warmagnet.utils     :refer [wrap-logging]]
-            [warmagnet.app       :refer [ws-handler]]))
+            [warmagnet.utils       :refer [wrap-logging]]
+            [warmagnet.app         :refer [ws-handler]]))
 
 (defroutes app-routes
   (GET "/" [] (file-response "resources/index.html"))
@@ -26,11 +27,18 @@
 (def app
   (-> #'app-routes
       (handler/site {:session {:store (cookie-store {:key "TOP SECRET"})}})
-      (reload/wrap-reload)
       (permacookie "ring-session")
       (wrap-logging)))
 
 (defn -main
   [& args]
-  (info "Starting to listen on :3000...")
-  (hk/run-server app {:port 3000}))
+  (let [[opts args help]
+        (cli args
+             ["-p" "--port" "Listen on this port" :default 3000 :parse-fn #(Integer. %)]
+             ["-i" "--ip" "IP to listen" :default "127.0.0.1"]
+             ["-d" "--dev" "Development mode (auto-reload)" :flag true])
+        app (if (:dev opts) (reload/wrap-reload app) app)]
+
+    (info (if (:dev opts) "Development mode" "Production mode"))
+    (info "Starting to listen on " (:port opts))
+    (hk/run-server app (select-keys opts [:port :ip]))))
