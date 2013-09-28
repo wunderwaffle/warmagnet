@@ -7,7 +7,11 @@
 
 (defn world-transition [world {:keys [type data] :as msg}]
   (condp = (if (string? type) (keyword type) type)
+    :error (do (js/alert "Server error")
+               world)
     :login (assoc world :user data)
     :route (assoc world :route data)
-    :error (js/alert "Server error")
-    :game (update-in world [(:game-id msg)] game-transition data)))
+    :game-state (assoc-in world [:games (:id data)]
+                          [(:log data)
+                           (:options data)])
+    :game (update-in world [(:id data)] game-transition data)))

@@ -21,26 +21,10 @@
       [:a.navbar-brand {:href "/"} "WarMagnet"]]
      [:div.navbar-collapse.collapse
       [:ul.nav.navbar-nav
-       [:li [:a {:href "/games/new"} "New Game"]]
-       [:li [:a {:href "/leaderboard"} "Leaderboard"]]]
+       [:li [:a {:href "#/games/new"} "New Game"]]
+       [:li [:a {:href "#/leaderboard"} "Leaderboard"]]]
       [:form.navbar-form.navbar-right
        [SigninButton {:user (:user P)}]]]]])})
-
-(defr NewGame
-  {:render (fn [C P S]
-             [:form {:role "form" :on-submit handlers/new-game}
-              [:div.form-group
-               [:label {:for "round_time"} "Round time"]
-               [:select#round_time.form-control
-                [:option {:value "short"} "5 mins"]
-                [:option {:value "long"} "24 hours"]]]
-              [:div.form-group
-               [:label {:for "reinforcement"} "Reinforcements"]
-               [:select#reinforcement.form-control
-                [:option {:value "adjacent"} "Adjacent"]
-                [:option {:value "chained"} "Chained"]
-                [:option {:value "unlimited"} "Unlimited"]]]
-              [:button.btn.btn-success {:type "submit"} "Create"]])})
 
 (defn tags [tagname values]
   (map (fn [v] [tagname v]) values))

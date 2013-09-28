@@ -2,9 +2,10 @@
   (:require
    [warmagnet.utils :refer [send-message-srv]]))
 
-(defn new-game [e]
-  (do
-    (.preventDefault e)))
+(defn new-game [e state]
+  (.preventDefault e)
+  (send-message-srv {:type :start-game
+                     :data state}))
 
 (defn persona-sign-in []
   (.request navigator/id))
