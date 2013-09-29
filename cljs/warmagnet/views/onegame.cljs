@@ -13,7 +13,10 @@
    [GameMap map]
 
    [:p.lead "Stats"]
-   [:div.stats.well
+   [:div [:b "Round duration: "] (:duration (:options game))]
+   [:div [:b "Reinforcement: "] (:reinforcement (:options game))]
+
+   [:div.stats.well.clearfix
     [:table.table
      [:thead
       [:tr
