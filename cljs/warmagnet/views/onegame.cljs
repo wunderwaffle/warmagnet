@@ -11,6 +11,16 @@
   [C {:keys [map game]} S]
   [:div
    [GameMap map]
+   [:div.stats.well
+    [:p.lead "Stats"]
+    [:table.table
+     [:thead
+      [:tr
+       [:th
+        [:th "Name"] [:th "Regions"] [:th "Troops"] [:th "Bonus"]]]]
+     [:tbody
+      (for [player (vals (:players game))]
+        [:tr [:td ] [:td player] [:td 22] [:td 11] [:td 33]])]]]
    [:div.log.well
     [:p.lead "Game Log"]
     [:ul
