@@ -33,8 +33,8 @@
        "" [games/GameList games]
        "preferences" [prefs/Preferences user]
        "profile" [components/Profile user]
-       "games" [games/GameList allgames]
-       "mygames" [games/GameList games]
+       "browse" [games/GameList allgames]
+       "games" [games/GameList games]
        "games/new" [games/NewGame]
        "map" [gamemap/GameMap (assoc map :container-width container-width)]
        [:div (str "UNKNOWN ROUTE: " route)]))])
