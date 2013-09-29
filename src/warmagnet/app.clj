@@ -86,6 +86,7 @@
 
 ;; Message Handlers
 (defn goc-user-by-token [token]
+  (println (db/get-user-by-token token))
   (if-let [user (db/get-user-by-token token)]
     user
     (let [user-data (persona/login token)]
@@ -96,7 +97,8 @@
   ; TODO: Token decoding to get user id
   (if-let [token (:token msg)]
     (if-let [user (goc-user-by-token token)]
-      (do (add-user state)
+      (do (swap! state assoc :user user)
+          (add-user state)
           (send-message state :type "login" :status "success" :data user)
           (send-joined-games state))
       (send-message state :type "login" :status "invalid-token"))
