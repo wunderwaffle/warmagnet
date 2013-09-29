@@ -15,7 +15,7 @@
 	{:id (:id game)
 	 :options (:data game)
 	 :log []
-	 :players {}
+	 :players []
          :map map
 	 :watchers #{}}))
 
