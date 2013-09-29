@@ -16,7 +16,7 @@
 
   [C P {:keys [email name] :as S}]
 
-  [:div.col-md-4.col-md-offset-4
+  [:div.col-md-6.col-md-offset-2
    [:h1 "Preferences"]
    [:form.well
     {:role "form" :on-submit #(handlers/save-prefs % S)}

@@ -53,13 +53,15 @@
 
 (defr GameItem
   [C {:keys [gamelog game]} S]
-  (log (pr-str game))
+  (log (pr-str gamelog))
   [:div.well
 ;;   [:img {:src game-map}]
 ;;   [:p "Players"]
 ;;   [:ul (tags :li (map :name players))]
-   [:p [:b "Round duration: "] (:duration game)]
-   [:p [:b "Reinforcement: "] (:reinforcement game)]])
+   [:div.stats.col-md-offset-6
+    [:p [:b "Number of players: "] (:size game)]
+    [:p [:b "Round duration: "] (:duration game)]
+    [:p [:b "Reinforcement: "] (:reinforcement game)]]])
 
 (defr GameList
   [C {:keys [games]} S]
