@@ -15,17 +15,17 @@
     [:small "Soulfly - Blood Fire War Hate"]]])
 
 (defr Index
-  {:render (fn [C P S]
-             [:div.jumbotron
-              [:div.container
-               [:div.pull-right
-                [:iframe {:width 560 :height 315
-                          :src "//www.youtube.com/embed/BHOSjT8gQXY?rel=0&start=236"
-                          :frameborder 0
-                          :allowfullscreen true}]]
-               [:h1 "War Magnet"]
-               intro
-               [:p "Join exciting world of rivalry and domination today!"]
-               [:button.btn.btn-success.btn-lg
-                {:type "button" :on-click handlers/persona-sign-in}
-                "Sign In"]]])})
+  [C P S]
+  [:div.jumbotron
+   [:div.container
+    [:div.pull-right
+     [:iframe {:width 560 :height 315
+               :src "//www.youtube.com/embed/BHOSjT8gQXY?rel=0&start=236"
+               :frameborder 0
+               :allowfullscreen true}]]
+    [:h1 "War Magnet"]
+    intro
+    [:p "Join exciting world of rivalry and domination today!"]
+    [:button.btn.btn-success.btn-lg
+     {:type "button" :on-click handlers/persona-sign-in}
+     "Sign In"]]])

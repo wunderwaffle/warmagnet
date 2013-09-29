@@ -30,7 +30,7 @@
                      "" [games/List games]
                      "preferences" [components/Preferences user]
                      "profile" [components/Profile user]
-                     "games" [games/List games]
+                     "games" [games/GamList games]
                      "games/new" [games/NewGame]
                      "map" [gamemap/GameMap (:map P)]
                      [:div (str "UNKNOWN ROUTE: " route)]))]]))})

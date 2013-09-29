@@ -33,7 +33,7 @@
 
               [:button.btn.btn-success {:type "submit"} "Create"]])})
 
-(defr List
+(defr GameList
   {:render (fn [C P S]
              (if (empty? P)
                [:div "NO GAMES"]
