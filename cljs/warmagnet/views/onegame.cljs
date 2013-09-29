@@ -11,15 +11,15 @@
   ((keyword (str (:id player))) (:player-state game)))
 
 (defn log->text [game {:keys [type user-id] :as log}]
-  (let [user-name (get-player game user-id)]
+  (let [{:keys [name]} (get-player game user-id)]
     (case (keyword type)
-      :join (str "User " (:user-name log) " joined the game")
+      :join (str "User " name " joined the game")
       :start "Game started"
       :set-district nil
-      :turn (str "Turn of " user-name)
-      :supply (str user-name " received " (:amount log)
+      :turn (str "Turn of " name)
+      :supply (str name " received " (:amount log)
                    " troops because of " (:reason log))
-      (str "Event: " (:type log) " by " user-name))))
+      (str "Event: " (:type log) " by " name))))
 
 (defn user-stats [districts user-id]
   (let [stats {:regions 0 :troops 0}]
