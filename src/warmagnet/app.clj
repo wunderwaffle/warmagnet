@@ -81,9 +81,6 @@
     (doseq [game games]
       (watch-game state (games/get-game (:game_id game))))))
 
-(defn user-in-game [state game-id]
-  (contains? (:games @state) game-id))
-
 ;; Message Handlers
 (defn goc-user-by-token [token]
   (if-let [user (db/get-user-by-token token)]
@@ -129,13 +126,9 @@
   (let [data (db/get-game-list)]
     (send-message state :type "game-list" :data data)))
 
-(defn msg-game [state msg]
-  (if-let [game-id (:game-id msg)]
-    (if (user-in-game state game-id)
-      (if-let [data (games/process-game-log-item (:data msg) (get-user-id state))]
-        (add-game-log state game-id data)
-        (send-message state :type "error" :status "invalid-game-log"))
-      (send-message state :type "error" :status "invalid-game-request"))
+(defn msg-game [state {:keys [game-id data] :as msg}]
+  (if-let [data (games/process-game-log-item game-id data (get-user-id state))]
+    (add-game-log state game-id data)
     (send-message state :type "error" :status "invalid-game-request")))
 
 (defn msg-ping [state msg]

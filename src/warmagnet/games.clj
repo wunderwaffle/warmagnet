@@ -70,5 +70,11 @@
 	(db/is-user-in-game id user-id))
 
 ;; game state
-(defn process-game-log-item [data user-id]
-  (assoc data :user-id user-id))
+(defn player-in-state [game-state user-id]
+	(contains? (:players game-state) user-id))
+
+(defn process-game-log-item [id data user-id]
+	(if-let [game-state (get-game id)]
+		(let [new-data (assoc data :user-id user-id)]
+			(if (and (player-in-state game-state user-id) (crossover/check-transition game-state data))
+	  			new-data))))
