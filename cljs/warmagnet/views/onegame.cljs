@@ -34,7 +34,6 @@
   [C {:keys [game] :as P} S]
   [:div
   (let [current-player-id (:turn-by game)]
-    (log current-player-id)
     [:p.lead "Turn by: "
      (:name (get-player game current-player-id))
      " | Phase: " (:phase (get-stats game current-player-id))])
