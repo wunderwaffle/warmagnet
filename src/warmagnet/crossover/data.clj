@@ -1,7 +1,9 @@
 (ns warmagnet.crossover.data)
 
 (defn check-transition [game-state msg]
-	true)
+	(case (keyword (:type msg))
+		:attack true
+		false))
 
 (defn set-district [game {:keys [user-id district amount] :as msg}]
 	(update-in game [:districts district] assoc :user-id user-id :amount amount))

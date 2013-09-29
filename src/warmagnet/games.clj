@@ -20,6 +20,7 @@
 	 :players []
      :map map
      :districts {}
+     :player-state {}
 	 :watchers #{}}))
 
 (defn replay-game-log [game-state game-log]
@@ -130,8 +131,12 @@
 		  	(add-log-item game-state {:type "set-district" :user-id user-id :district district :amount 3}))]
 		  	(reduce distributor game-state joined)))
 
+(defn initialize-game [game-state]
+	(-> (initial-distribute-districts game-state)
+		(add-log-item {:type "turn" :user-id (:id (first (:players game-state)))})))
+
 (defn execute-log-item [game-state data]
 	(case (keyword (:type data))
 		:join (maybe-start-game game-state)
-		:start (initial-distribute-districts game-state)
+		:start (initialize-game game-state)
 		game-state))
