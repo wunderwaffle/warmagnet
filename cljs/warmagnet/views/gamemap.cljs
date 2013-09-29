@@ -4,6 +4,8 @@
   (:require [pump.core :refer [assoc-state assoc-in-state e-value]]
             [warmagnet.utils :refer [send-message]]))
 
+(def COLORS ["#f00" "#006400" "#00f" "#cc0" "#f0f" "#0cc"])
+
 (defn xhr [url callback]
   (let [xhr (js/XMLHttpRequest.)]
     (.open xhr "GET" url true)
@@ -32,6 +34,14 @@
               :transform str-scale
               :width width
               :height height})))
+
+(defn player-index [game user-id]
+  (first (keep-indexed (fn [i x] (if (= (:id x) user-id) i))
+                       (:players game))))
+
+(defn player-color [game user-id]
+  (COLORS
+   (player-index game user-id)))
 
 (defr MapDistrict
   [C {:keys [district click selected assoc-hovered]} S]
