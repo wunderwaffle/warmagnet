@@ -98,6 +98,13 @@
     [:div "SPIN SPIN SPIN"]
 
     [:div.col-md-12
+
+     [:div
+      [:button.btn.btn-default.pull-right
+       {:on-click #(send-message-srv {:type :game-list})}
+       "Refresh"]
+      [:p.lead "This game list is not refreshed automatically. Use a button."]]
+
      (for [{:keys [id data players player-list]} games]
        [GameItem {:key id
                   :id id
