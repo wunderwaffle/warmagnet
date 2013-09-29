@@ -8741,13 +8741,13 @@ var ReactMultiChild = {
      */
     updateChildren: function(nextChildren, transaction) {
       updateDepth++;
-      try {
+      // try {
         this._updateChildren(nextChildren, transaction);
-      } catch (error) {
-        updateDepth--;
-        updateDepth || clearQueue();
-        throw error;
-      }
+      // } catch (error) {
+      //   updateDepth--;
+      //   updateDepth || clearQueue();
+      //   throw error;
+      // }
       updateDepth--;
       updateDepth || processQueue();
     },

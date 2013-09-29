@@ -3,6 +3,7 @@
   (:require [clojure.string :refer [capitalize]]
             [pump.core :refer [assoc-state e-value]]
 
+            [warmagnet.components :refer [tags]]
             [warmagnet.utils :refer [send-message cx]]
             [warmagnet.handlers :as handlers]))
 
@@ -54,7 +55,7 @@
              [:div
               [:img {:src game-map}]
               [:p "Players"]
-              [:ul [tags :li (map :name participants)]]
+              [:ul (tags :li (map :name participants))]
               [:p round-time]
               [:p reinforcements]])})
 
