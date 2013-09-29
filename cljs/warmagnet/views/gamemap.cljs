@@ -1,7 +1,7 @@
 (ns warmagnet.views.gamemap
   (:require-macros [pump.def-macros :refer [defr]]
                    [warmagnet.macros :refer [cx]])
-  (:require [pump.core :refer [assoc-state]]
+  (:require [pump.core :refer [assoc-in-state]]
             [warmagnet.utils :refer [send-message]]))
 
 (defn xhr [url callback]
@@ -50,7 +50,7 @@
   [C
    {:keys [name map-src regions districts dimensions container-width]}
    {:keys [hovered]}]
-  (let [assoc-hovered #(assoc-state C :hovered %)]
+  (let [assoc-hovered #(assoc-in-state C :hovered %)]
     (if-not name
       [:div "No map"]
       [:div.game-map

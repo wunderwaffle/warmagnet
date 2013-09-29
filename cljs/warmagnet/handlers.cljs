@@ -41,12 +41,12 @@
   (let [token (.getItem (.-localStorage js/window) "token")]
     (if token (js->clj token) nil)))
 
+(defn do-login [token]
+  (send-message-srv {:type :login :token token}))
+
 (defn login [token]
   (save-token token)
   (do-login token))
-
-(defn do-login [token]
-  (send-message-srv {:type :login :token token}))
 
 (defn logout []
   (log "logout"))
