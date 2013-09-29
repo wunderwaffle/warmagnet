@@ -7,6 +7,9 @@
 (defn get-player [game user-id]
   (first (filter #(= (:id %) user-id) (:players game))))
 
+(defn get-stats [game player]
+  ((keyword (str (:id player))) (:player-state game)))
+
 (defn log->text [game {:keys [type user-id] :as log}]
   (let [user-name (get-player game user-id)]
     (case (keyword type)
@@ -29,6 +32,7 @@
 
 (defr Game
   [C {:keys [game] :as P} S]
+  (log game)
   [:div
    [GameMap P]
 
@@ -43,9 +47,10 @@
        [:th
         [:th "Name"] [:th "Regions"] [:th "Troops"] [:th "Bonus"]]]]
      [:tbody
-      (for [player (:players game)]
-        (do (log (user-stats (:districts game) (:id player)))
-        [:tr [:td ] [:td (:name player)] [:td 22] [:td 11] [:td 33]]))]]]
+      (for [player (:players game)
+            :let [stats (get-stats game player)]]
+        (if (:player-state game)
+        [:tr [:td ] [:td (:name player)] [:td 22] [:td 11] [:td (:supply stats)]]))]]]
 
    [:p.lead "Game Log"]
    [:div.log.well

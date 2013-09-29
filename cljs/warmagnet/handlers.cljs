@@ -1,6 +1,6 @@
 (ns warmagnet.handlers
   (:require
-   [warmagnet.utils :refer [log send-message send-message-srv]]))
+   [warmagnet.utils :refer [log redir send-message send-message-srv]]))
 
 (defn new-game [e state]
   (.preventDefault e)
@@ -52,4 +52,5 @@
   (log "logout"))
 
 (defn join-game [id]
-  (send-message-srv {:type :join-game :game-id id}))
+  (send-message-srv {:type :join-game :game-id id})
+  (redir (str "games/" id)))
