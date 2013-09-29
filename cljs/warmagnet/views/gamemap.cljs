@@ -33,10 +33,12 @@
 (defr MapDistrict
   [C {:keys [district hovered assoc-hovered]} S]
   (let [[dname {:keys [borders coordinates]}] district
-        [hname {:keys [hborders]}] hovered
         [x y] coordinates
+        str-name (name dname)
+
+        [hname hmap] hovered
         this-hovered (= dname hname)
-        attacker-hovered (some #{(name dname)} hborders)
+        attacker-hovered (some #{str-name} (:borders hmap))
         irregular (or this-hovered attacker-hovered)]
     [:div
      {:class (cx :map-district true
