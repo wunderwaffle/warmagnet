@@ -26,7 +26,7 @@
                :allowFullScreen true}]]
     [:h1 "War Magnet"]
     intro
-    [:p "Join exciting world of rivalry and domination today!"]
+    [:p "Join exciting world of rivalry and world domination today!"]
     [:button.btn.btn-success.btn-lg
      {:type "button" :on-click handlers/persona-sign-in}
      "Sign In"]]])
