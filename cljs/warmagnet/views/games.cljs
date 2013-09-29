@@ -95,10 +95,10 @@
                          (send-message-srv {:type :game-list}))
   [C {:keys [games user]} S]
   (if (empty? games)
-    [:div "SPIN SPIN SPIN"]
+    [:div [:p.lead "No Games. "
+           [:a {:href "#games/new"} "Go and create one!"]]]
 
     [:div.col-md-12
-
      [:div
       [:button.btn.btn-default.pull-right
        {:on-click #(send-message-srv {:type :game-list})}
