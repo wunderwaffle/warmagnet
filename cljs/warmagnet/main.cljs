@@ -61,6 +61,9 @@
           (log (str "<- " (.-data e)))
           (send-message (js->clj (.parse js/JSON (.-data e))
                                  :keywordize-keys true))))
+  (aset js/window "pr" pr-str)
+  (aset js/window "cjj" clj->js)
+  (aset js/window "deref" deref)
 
   (setup-auth (:user @world) handlers/login handlers/logout)
   (if (:user @world)
