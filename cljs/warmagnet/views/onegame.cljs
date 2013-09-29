@@ -51,7 +51,7 @@
       [:table.table
        [:thead
         [:tr
-         [:th "Color"
+         [:th
           [:th "Name"] [:th "Regions"] [:th "Troops"] [:th "Bonus"]]]]
        [:tbody
         (for [player (:players game)
