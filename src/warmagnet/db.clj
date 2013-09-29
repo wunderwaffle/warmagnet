@@ -102,6 +102,15 @@
               (sql/set-fields {:players (sql-inc :players 1)})
               (sql/where (= :id game-id))))
 
+(defn is-user-in-game [game-id user-id]
+  (->
+    (sql/select user_games
+               (sql/aggregate (count :*) :count)
+               (sql/where {:game_id game-id :user_id user-id}))
+    first
+    :count
+    pos?))
+
 (defn get-user-games [user-id]
   (sql/select user_games
               (sql/where (= :user_id user-id))))

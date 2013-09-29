@@ -59,7 +59,8 @@
 	(swap! all-games update-in [id :watchers] conj user-id))
 
 (defn remove-watcher [id user-id]
-	(swap! all-games update-in [id :watchers] disj-set user-id))
+	(if-let [game (@all-games id)]
+		(swap! all-games update-in [id :watchers] disj-set user-id)))
 
 (defn get-watchers [id]
 	(get-in @all-games [id :watchers]))
@@ -67,6 +68,9 @@
 ;; players
 (defn add-player [id user-id]
     (db/add-user-to-game id user-id))
+
+(defn is-player-in-game [id user-id]
+	(db/is-user-in-game id user-id))
 
 ;; game state
 (defn process-game-log-item [data user-id]

@@ -114,8 +114,13 @@
     (join-game state game-state)))
 
 (defn msg-join-game [state msg]
-  (let [game-state (games/get-game (:game-id msg))]
-    (join-game state game-state)))
+  (let [game-id (:game-id msg)
+        game-state (games/get-game game-id)]
+    (if-not (nil? game-state)
+      (if-not (games/is-player-in-game game-id (get-user-id state))
+        (join-game state game-state)
+        (send-message state :type :join-error :status "already-joined"))
+      (send-message state :type :join-error :status "invalid-game"))))
 
 (defn msg-watch-game [state msg]
   (let [game-state (games/get-game (:game-id msg))]
