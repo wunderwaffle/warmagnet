@@ -52,3 +52,7 @@
 
 (defn get-watchers [id]
 	(get-in @all-games [id :watchers]))
+
+;; game state
+(defn process-game-log-item [data user-id]
+  (assoc data :user-id user-id))

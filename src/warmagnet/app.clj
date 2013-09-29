@@ -84,9 +84,6 @@
 (defn user-in-game [state game-id]
   (contains? (:games @state) game-id))
 
-(defn process-game-log-item [state data]
-  (assoc data :user-id (get-user-id state)))
-
 ;; Message Handlers
 (defn msg-user [state msg]
   ; TODO: Token decoding to get user id
@@ -121,8 +118,9 @@
 (defn msg-game [state msg]
   (if-let [game-id (:game-id msg)]
     (if (user-in-game state game-id)
-      (let [data (process-game-log-item state (:data msg))]
-        (add-game-log state game-id data))
+      (if-let [data (games/process-game-log-item (:data msg) (get-user-id state))]
+        (add-game-log state game-id data)
+        (send-message state :type "error" :status "invalid-game-log"))
       (send-message state :type "error" :status "invalid-game-request"))
     (send-message state :type "error" :status "invalid-game-request")))
 
