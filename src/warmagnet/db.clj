@@ -88,7 +88,7 @@
 
 (defn get-game-list []
   (sql/select games
-              (sql/fields :id :name)))
+              (sql/fields :id :name :size :players)))
 
 (defn get-game-log [id]
   (sql/select gamelogs
