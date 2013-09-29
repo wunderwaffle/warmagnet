@@ -4,11 +4,18 @@
    [warmagnet.utils :refer [log]]
    [warmagnet.views.gamemap :refer [GameMap]]))
 
+(def COLORS ["#f00" "#006400" "#00f" "#cc0" "#f0f" "#0cc"])
+
+(defn player-index [game user-id]
+  (first (keep-indexed (fn [i x] (if (= (:id x) user-id) i))
+                       (:players game))))
+
+(defn player-color [game user-id]
+  (COLORS
+   (player-index game user-id)))
+
 (defn get-player [game user-id]
-  (reduce (fn [_ {:keys [id name]}]
-            (if (= id user-id)
-              (reduced name)))
-          nil (:players game)))
+  (first (filter #(= (:id %) user-id) (:players game))))
 
 (defn log->text [game {:keys [type user-id] :as log}]
   (let [user-name (get-player game user-id)]
