@@ -90,33 +90,36 @@
                        :children [:button.btn.btn-default
                                   {:on-click #(redir (str "games/" id))} "Open"]}])]]))
 
+(defn refresh-all-games []
+  (send-message-srv {:type :game-list}))
+
 (defr AllGameList
-  :component-did-mount (fn [C P S]
-                         (send-message-srv {:type :game-list}))
+  :component-did-mount refresh-all-games
   [C {:keys [games user]} S]
-  (if (empty? games)
-    [:div
-     [:i.icon-spinner.icon-spin.icon-4x]
-     [:p.lead "No Games. "
-      [:a {:href "#games/new"} "Go and create one!"]]]
 
+  [:div
+   [:div
+    [:button.btn.btn-default.pull-right
+     {:on-click refresh-all-games}
+     [:i.icon-refresh]
+     " Refresh"]
+    [:p.lead "This game list is not refreshed automatically. Use a button."]]
 
-    [:div.col-md-12
+   (if (empty? games)
      [:div
-      [:button.btn.btn-default.pull-right
-       {:on-click #(send-message-srv {:type :game-list})}
-       "Refresh"]
-      [:p.lead "This game list is not refreshed automatically. Use a button."]]
+      [:p.lead "No Games. "
+       [:a {:href "#games/new"} "Go and create one!"]]]
 
-     (for [{:keys [id data players player-list]} games]
-       [GameItem {:key id
-                  :id id
-                  :game data
-                  :players players
-                  :player-list (map (juxt :id :name) player-list)
-                  :children (if (and (< players (:size data))
-                                     (not (some #{(:id user)} (map :id player-list))))
-                              [:button.btn.btn-default
-                               {:on-click #(handlers/join-game id)} "Join"])}])]))
-
-
+     [:div.col-md-12
+      (for [{:keys [id data players player-list]} games]
+        [GameItem {:key id
+                   :id id
+                   :game data
+                   :players players
+                   :player-list (map (juxt :id :name) player-list)
+                   :children (if (and (< players (:size data))
+                                      (not (some #{(:id user)} (map :id player-list))))
+                               [:button.btn.btn-default
+                                {:on-click #(do (handlers/join-game id)
+                                                (js/setTimeout refresh-all-games 10))}
+                                "Join"])}])])])
