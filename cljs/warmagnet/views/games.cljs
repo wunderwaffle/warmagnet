@@ -52,7 +52,8 @@
    [:button.btn.btn-success.btn-lg {:type "submit"} "Create"]])
 
 (defr GameItem
-  [C {:keys [id gamelog game]} S]
+  [C {:keys [id gamelog game players children]} S]
+  (log (pr-str game))
   [:div.well {:on-click #(redir (str "games/" id))}
    [:h2.pull-right id]
    [:div.smallmap.col-md-4
@@ -61,9 +62,10 @@
 ;; [:p "Players"]
 ;;  [:ul (tags :li (map :name players))]
    [:div.stats.col-md-offset-6
-    [:p [:b "Number of players: "] (:size game)]
+    [:p [:b "Number of players: "] (if players (+ players " of ")) (:size game)]
     [:p [:b "Round duration: "] (:duration game)]
-    [:p [:b "Reinforcement: "] (:reinforcement game)]]])
+    [:p [:b "Reinforcement: "] (:reinforcement game)]]
+    children])
 
 (defr GameList
   [C {:keys [games]} S]
@@ -71,8 +73,9 @@
     [:div [:p.lead "No Games. "
            [:a {:href "#games/new"}
             "Go and create one!"]]]
-    [:div.col-md-offset-2.col-md-6 (for [[id [log game]] games]
-            [GameItem {:id id :gamelog log :game game}])]))
+    [:div.col-md-offset-2.col-md-6
+     [:div (for [[id [log game]] games]
+            [GameItem {:key id :id id :gamelog log :game game}])]]))
 
 (defr AllGameList
   :component-will-mount (fn [C P S]
@@ -82,9 +85,10 @@
   (if (empty? games)
     [:div "SPIN SPIN SPIN"]
     [:div.col-md-offset-2.col-md-6
-     (for [{:keys [players size id]} games]
-       [:div.well
-        [:h2 id]
-        [:p (str "Players: " players " of " size)]
+
+     (for [{:keys [id data players]} games]
+        [GameItem {:key id :id id :game data :players players}
         (if (< players size)
           [:button.btn.btn-default {:on-click #(handlers/join-game id)} "Join"])])]))
+
+
