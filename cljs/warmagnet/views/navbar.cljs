@@ -24,6 +24,7 @@
         [:ul.nav.navbar-nav
 
          [:li [:a {:href "#games"} "Games"]]
+         [:li [:a {:href "#mygames"} "My Games"]]
          [:li [:a {:href "#games/new"} "New Game"]]
          [:li [:a {:href "#leaderboard"} "Leaderboard"]]
          [:li [:a {:href "#preferences"} "Preferences"]]])
