@@ -95,37 +95,34 @@
       [:button.btn.btn-danger "Blitz"]]]]))
 
 (defr Reinforce
-  :component-will-mount
-  (fn [C P S] (assoc-in-state C :transfer 0))
+  :component-will-mount (fn [C P S] (assoc-in-state C :transfer 0))
 
   [C
    {:keys [dst-from troops-from dst-to troops-to reinforce]}
    {:keys [transfer]}]
   (let [[fname {:keys [coordinates]}] dst-from
         [tname tmap] dst-to
-        [x y] (xy-for-popover coordinates)
-        ]
+        [x y] (xy-for-popover coordinates)]
     [:div.popover {:style (clj->js {:display "block" :left x :top y})}
-    [:div.popover-content
-     [:table {:style (clj->js {:width "100%" :text-align "center"})}
-      [:thead [:tr [:th (name fname)] [:th (name tname)]]]
-      #_[:tbody [:tr [:td attacking] [:td defending]]]]
-     [:div.input-group
+     [:div.popover-content
+      [:table {:style (clj->js {:width "100%" :text-align "center"})}
+       [:thead [:tr [:th (name fname)] [:th (name tname)]]]]
+      [:div.input-group
        [:span.input-group-addon (+ troops-from transfer)]
        [:input.form-control
         {:on-change #(assoc-in-state C :transfer (js/parseInt (e-value %)))
          :type "range" :value transfer :min (- 1 troops-from) :max (- troops-to 1)}]
        [:span.input-group-addon (- troops-to transfer)]]
-     [:button.btn.btn-block {:on-click reinforce} "Reinforce"]]]))
+      [:button.btn.btn-block.btn-success {:on-click reinforce} "Reinforce"]]]))
 
 (defn attack? [[aname {:keys [borders]}] [dname dmap]]
   (let [str-name (name dname)]
       (some #{str-name} borders)))
 
 (defr GameMap
-  :component-will-mount (fn [C] (if-not (:name (. C -props))
-                                  (xhr-load-map)))
-  :get-initial-state #(identity {:state :deploy})
+  :component-will-mount (fn [C P] (if-not (:name P) (xhr-load-map)))
+  :get-initial-state (fn [] {:state :reinforce})
+
   [C
    {:keys [name map-src regions districts dimensions container-width]}
    {:keys [hovered deploying attacker defender state]}]

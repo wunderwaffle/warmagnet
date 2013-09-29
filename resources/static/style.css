@@ -27,3 +27,8 @@
 .btn-panel {
   width: 100%;
 }
+
+.log ul {
+  height: 100px;
+  overflow: auto;
+}

@@ -1,6 +1,8 @@
 (ns warmagnet.views.onegame
   (:require-macros [pump.def-macros :refer [defr]])
-  (:require [warmagnet.views.gamemap :refer [GameMap]]))
+  (:require
+   [warmagnet.utils :refer [log]]
+   [warmagnet.views.gamemap :refer [GameMap]]))
 
 (defn get-player [game user-id]
   (reduce (fn [_ {:keys [id name]}]
@@ -16,6 +18,15 @@
       :set-district nil
       :turn (str "Turn of " user-name)
       (str "Event: " (:type log) " by " user-name))))
+
+(defn user-stats [districts user-id]
+  (let [stats {:regions 0 :troops 0}]
+    (log (vals districts))
+    (for [district (vals districts)]
+      (if (= (:user-id district) user-id)
+        (do (assoc stats :regions (inc (:regions stats)))
+            (assoc stats :troops (+ (:troops stats) (:amount district))))))
+    stats))
 
 (defr Game
   [C {:keys [map game]} S]
@@ -34,7 +45,8 @@
         [:th "Name"] [:th "Regions"] [:th "Troops"] [:th "Bonus"]]]]
      [:tbody
       (for [player (:players game)]
-        [:tr [:td ] [:td (:name player)] [:td 22] [:td 11] [:td 33]])]]]
+        (do (log (user-stats (:districts game) (:id player)))
+        [:tr [:td ] [:td (:name player)] [:td 22] [:td 11] [:td 33]]))]]]
 
    [:p.lead "Game Log"]
    [:div.log.well
@@ -43,5 +55,5 @@
      (for [gamelog (:log game)
            :let [text (log->text game gamelog)]]
        (if text
-         [:li.text-success text]))]]
+         [:li.text-success [:small text]]))]]
    #_ [:p (pr-str game)]])
