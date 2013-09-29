@@ -21,3 +21,6 @@
            {:loggedInUser nil
             :onlogin login
             :onlogout logout})))
+
+(defn redir [route]
+  (aset js/location "hash" route))

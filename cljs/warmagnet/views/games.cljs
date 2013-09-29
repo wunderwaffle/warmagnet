@@ -5,7 +5,7 @@
             [pump.core :refer [assoc-in-state e-value]]
 
             [warmagnet.components :refer [tags]]
-            [warmagnet.utils :refer [log send-message send-message-srv]]
+            [warmagnet.utils :refer [log redir send-message send-message-srv]]
             [warmagnet.handlers :as handlers]))
 
 (defn button [name value current on-click]
@@ -25,7 +25,7 @@
 
   [:form
    {:role "form" :on-submit #(do (handlers/new-game % S)
-                                 (aset js/location "hash" "games"))}
+                                 (redir "games"))}
 
    [:div.form-group
     [:label.control-label "Participants"]
@@ -53,8 +53,8 @@
 
 (defr GameItem
   [C {:keys [id gamelog game]} S]
-  [:div.well
-   [:h2 id]
+  [:div.well {:on-click #(redir (str "games/" id))}
+   [:h2.pull-right id]
    [:div.smallmap.col-md-4
 ;;   [:img {:src game-map}]
     [:img {:src "/static/map-classic.jpg" :width 180 :height 100 }]]
