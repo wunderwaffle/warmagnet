@@ -14,6 +14,6 @@
    [:div.log.well
     [:p.lead "Game Log"]
     [:ul
-   (for [gamelog (first game)]
+   (for [gamelog (:log game)]
      [:li.text-success (log->text gamelog)])]]
    [:p (pr-str game)]])
