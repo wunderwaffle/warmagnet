@@ -55,7 +55,7 @@
   [C {:keys [id gamelog game players player-list children]} S]
   #_ (log (pr-str game))
 
-  [:div.game-item.well
+  [:div.game-item.well.clearfix
    [:h2.pull-right id]
 
    [:div.smallmap.col-md-3
