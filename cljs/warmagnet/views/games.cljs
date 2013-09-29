@@ -1,17 +1,18 @@
 (ns warmagnet.views.games
-  (:require-macros [pump.def-macros :refer [defr]])
+  (:require-macros [pump.def-macros :refer [defr]]
+                   [warmagnet.macros :refer [cx]])
   (:require [clojure.string :refer [capitalize]]
             [pump.core :refer [assoc-state e-value]]
 
             [warmagnet.components :refer [tags]]
-            [warmagnet.utils :refer [send-message cx]]
+            [warmagnet.utils :refer [send-message]]
             [warmagnet.handlers :as handlers]))
 
 (defn button [name value current on-click]
   (let [primary (= value current)]
-    [:button {:class (cx {:btn true
-                          :btn-default (not primary)
-                          :btn-primary primary})
+    [:button {:class (cx :btn true
+                         :btn-default (not primary)
+                         :btn-primary primary)
               :on-click #(do (.preventDefault %) (on-click value))}
      name])
   )

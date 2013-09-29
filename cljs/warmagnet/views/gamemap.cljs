@@ -1,7 +1,8 @@
 (ns warmagnet.views.gamemap
-  (:require-macros [pump.def-macros :refer [defr]])
+  (:require-macros [pump.def-macros :refer [defr]]
+                   [warmagnet.macros :refer [cx]])
   (:require [pump.core :refer [assoc-state]]
-            [warmagnet.utils :refer [cx send-message]]))
+            [warmagnet.utils :refer [send-message]]))
 
 (defn xhr [url callback]
   (let [xhr (js/XMLHttpRequest.)]
@@ -27,11 +28,11 @@
         attacker-hovered (some #{name} (:borders hovered))
         regular (every? nil? [this-hovered attacker-hovered])]
     [:div
-     {:class (cx {:map-district true
-                  :label true
-                  :label-success regular
-                  :label-info this-hovered
-                  :label-danger attacker-hovered})
+     {:class (cx :map-district true
+                 :label true
+                 :label-success regular
+                 :label-info this-hovered
+                 :label-danger attacker-hovered)
       :style (clj->js {:left (first coordinates)
                        :top (second coordinates)})
       :on-mouse-enter (fn [C] (assoc-hovered {:name name :borders borders}))

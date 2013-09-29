@@ -20,6 +20,3 @@
            {:loggedInUser nil
             :onlogin login
             :onlogout logout})))
-
-(defn cx [class-map]
-  (string/join " " (map #(name (first %)) (filter second class-map))))
