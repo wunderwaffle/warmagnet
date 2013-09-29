@@ -23,7 +23,7 @@
   [C P
    {:keys [size duration reinforcement] :as S}]
 
-  [:form
+  [:form.col-md-6.col-md-offset-2
    {:role "form" :on-submit #(do (handlers/new-game % S)
                                  (redir "games"))}
 
