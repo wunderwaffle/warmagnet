@@ -19,13 +19,3 @@
 .btn-panel {
   width: 100%;
 }
-
-.game-item {
-    cursor: pointer;
-    -webkit-transition: all 0.1s;
-    transition: all 0.1s;
-}
-
-.game-item:hover {
-    opacity: 0.9;
-}

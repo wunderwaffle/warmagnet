@@ -53,8 +53,9 @@
 
 (defr GameItem
   [C {:keys [id gamelog game players children]} S]
-  (log (pr-str game))
-  [:div.game-item.well {:on-click #(redir (str "games/" id))}
+  #_ (log (pr-str game))
+
+  [:div.game-item.well
    [:h2.pull-right id]
    [:div.smallmap.col-md-4
 ;;   [:img {:src game-map}]
@@ -65,30 +66,35 @@
     [:p [:b "Number of players: "] (if players (+ players " of ")) (:size game)]
     [:p [:b "Round duration: "] (:duration game)]
     [:p [:b "Reinforcement: "] (:reinforcement game)]]
-    children])
+   [:div.col-md-offset-6
+    children]])
 
 (defr GameList
   [C {:keys [games]} S]
   (if (empty? games)
     [:div [:p.lead "No Games. "
-           [:a {:href "#games/new"}
-            "Go and create one!"]]]
+           [:a {:href "#games/new"} "Go and create one!"]]]
     [:div.col-md-offset-2.col-md-6
      [:div (for [[id [log game]] games]
-            [GameItem {:key id :id id :gamelog log :game game}])]]))
+            [GameItem {:key id :id id :gamelog log :game game
+                       :children [:button.btn.btn-default
+                                  {:on-click #(redir (str "games/" id))} "Open"]}])]]))
 
 (defr AllGameList
-  :component-will-mount (fn [C P S]
-                          (if (empty? P)
-                            (send-message-srv {:type :game-list})))
+  :component-did-mount (fn [C P S]
+                         (send-message-srv {:type :game-list}))
   [C {:keys [games]} S]
   (if (empty? games)
     [:div "SPIN SPIN SPIN"]
-    [:div.col-md-offset-2.col-md-6
 
+    [:div.col-md-offset-2.col-md-6
      (for [{:keys [id data players]} games]
-        [GameItem {:key id :id id :game data :players players}
-        (if (< players size)
-          [:button.btn.btn-default {:on-click #(handlers/join-game id)} "Join"])])]))
+       [GameItem {:key id
+                  :id id
+                  :game data
+                  :players players
+                  :children (if (< players (:size data))
+                              [:button.btn.btn-default
+                               {:on-click #(handlers/join-game id)} "Join"])}])]))
 
 
