@@ -86,7 +86,7 @@
                        :id id
                        :gamelog log
                        :game options
-                       :player-list players
+                       :player-list (map (juxt :id :name) players)
                        :children [:button.btn.btn-default
                                   {:on-click #(redir (str "games/" id))} "Open"]}])]]))
 

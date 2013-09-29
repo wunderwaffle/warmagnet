@@ -23,8 +23,8 @@
        [:th
         [:th "Name"] [:th "Regions"] [:th "Troops"] [:th "Bonus"]]]]
      [:tbody
-      (for [player (vals (:players game))]
-        [:tr [:td ] [:td player] [:td 22] [:td 11] [:td 33]])]]]
+      (for [player (:players game)]
+        [:tr [:td ] [:td (:name player)] [:td 22] [:td 11] [:td 33]])]]]
 
    [:p.lead "Game Log"]
    [:div.log.well
