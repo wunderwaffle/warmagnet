@@ -62,13 +62,13 @@
    [:p [:b "Reinforcement: "] (:reinforcement game)]])
 
 (defr GameList
-  [C P S]
-  (if (empty? P)
+  [C {:keys [games]} S]
+  (if (empty? games)
     [:div [:p.lead "No Games. "
            [:a {:href "#games/new"}
             "Go and create one!"]]]
-    [:div.col-md-offset-2.col-md-6 (for [[id game] P]
-            [GameItem {:gamelog (first (first game)) :game (first (rest game))}])]))
+    [:div.col-md-offset-2.col-md-6 (for [[id [log game]] games]
+            [GameItem {:gamelog log :game  game}])]))
 
 (defr AllGameList
   :component-will-mount (fn [C P S]
@@ -78,3 +78,4 @@
   (if (empty? games)
     [:div "SPIN SPIN SPIN"]
     [:div (pr-str games)]))
+
