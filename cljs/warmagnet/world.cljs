@@ -22,7 +22,7 @@
   (condp = (if (string? type) (keyword type) type)
     :error (do (js/alert "Server error")
                world)
-    :login (do (assoc world :user data) (set-user data))
+    :login (do (set-user data) (assoc world :user data))
     :logout (do (dissoc world :user) (remove-user))
     :route (assoc world :route data)
     :game-state (assoc-in world [:games (:id data)]
