@@ -3,7 +3,7 @@
   (:require [warmagnet.handlers :as handlers]))
 
 (def intro
-  [:blockquote 
+  [:blockquote
    [:p
     "War pigs deliver all their madness"
     [:br]
