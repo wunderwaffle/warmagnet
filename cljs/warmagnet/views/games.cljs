@@ -14,8 +14,7 @@
                          :btn-default (not primary)
                          :btn-primary primary)
               :on-click #(do (.preventDefault %) (on-click value))}
-     name])
-  )
+     name]))
 
 (defr NewGame
   :get-initial-state #(identity {:size 2
@@ -25,7 +24,8 @@
    {:keys [size duration reinforcement] :as S}]
 
   [:form
-   {:role "form" :on-submit #(handlers/new-game % S)}
+   {:role "form" :on-submit #(do (handlers/new-game % S)
+                                 (aset js/location "hash" "games"))}
 
    [:div.form-group
     [:label.control-label "Participants"]
@@ -77,5 +77,11 @@
   [C {:keys [games]} S]
   (if (empty? games)
     [:div "SPIN SPIN SPIN"]
-    [:div (pr-str games)]))
+    [:div.col-md-offset-2.col-md-6
+     (for [{:keys [players size id]} games]
+       [:div.well
+        [:h2 id]
+        [:p (str "Players: " players " of " size)]
+        (if (< players size)
+          [:button.btn.btn-default {:on-click #(handlers/join-game id)} "Join"])])]))
 
