@@ -22,7 +22,7 @@
                          (send-message {:type :container-width
                                         :data (.-clientWidth node)}))
 
-  [C {:keys [user games route map container-width]} S]
+  [C {:keys [user allgames games route map container-width]} S]
   [:div.container {:style {:margin-top "70px"}}
    (log route)
 
@@ -33,7 +33,8 @@
        "" [games/GameList games]
        "preferences" [prefs/Preferences user]
        "profile" [components/Profile user]
-       "games" [games/GameList games]
+       "games" [games/GameList allgames]
+       "mygames" [games/GameList games]
        "games/new" [games/NewGame]
        "map" [gamemap/GameMap (assoc map :container-width container-width)]
        [:div (str "UNKNOWN ROUTE: " route)]))])
