@@ -52,9 +52,10 @@
    [:button.btn.btn-success.btn-lg {:type "submit"} "Create"]])
 
 (defr GameItem
-  [C {:keys [gamelog game]} S]
+  [C {:keys [id gamelog game]} S]
   (log (pr-str game))
   [:div.well
+   [:h2 id]
    [:div.smallmap.col-md-4
 ;;   [:img {:src game-map}]
     [:img {:src "/static/map-classic.jpg" :width 180 :height 100 }]]
@@ -72,7 +73,7 @@
            [:a {:href "#games/new"}
             "Go and create one!"]]]
     [:div.col-md-offset-2.col-md-6 (for [[id [log game]] games]
-            [GameItem {:gamelog log :game  game}])]))
+            [GameItem {:id id :gamelog log :game game}])]))
 
 (defr AllGameList
   :component-will-mount (fn [C P S]
