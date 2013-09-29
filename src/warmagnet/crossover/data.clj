@@ -6,13 +6,16 @@
 
 ;; check
 (defn check-deploy [game {:keys [user-id district amount]}]
-	(let [turn-by (:turn-by game)
-		  player-state (get-in game [:player-state user-id])
-		  phase (:phase player-state)
-		  supply (:supply player-state 0)
-		  district-owner (get-in game [:districts district :user-id])
-		  delta (- supply amount)]
-		  (and (= turn-by user-id) (= phase PHASE-DEPLOY) (= district-owner user-id) (>= delta 0))))
+  (let [turn-by (:turn-by game)
+        player-state (get-in game [:player-state user-id])
+        phase (:phase player-state)
+        supply (:supply player-state 0)
+        district-owner (get-in game [:districts district :user-id])
+        delta (- supply amount)]
+    (and (= turn-by user-id)
+         (= phase PHASE-DEPLOY)
+         (= district-owner user-id)
+         (>= delta 0))))
 
 (defn check-attack [game {:keys [user-id attack-from attack-to amount]}]
 	(let [turn-by (:turn-by game)
@@ -60,13 +63,13 @@
 		  (and (= turn-by user-id) (= phase PHASE-REINFORCE))))
 
 (defn check-transition [game msg]
-	(case (keyword (:type msg))
-		:deploy (check-deploy game msg)
-		:attack (check-attack game msg)
-		:attack-end (check-attack-end game msg)
-		:reinforce (check-reinforce game msg)
-		:reinforce-end (check-reinforce-end game msg)
-		false))
+  (case (keyword (:type msg))
+    :deploy (check-deploy game msg)
+    :attack (check-attack game msg)
+    :attack-end (check-attack-end game msg)
+    :reinforce (check-reinforce game msg)
+    :reinforce-end (check-reinforce-end game msg)
+    false))
 
 ;; set
 (defn set-district [game {:keys [user-id district amount] :as msg}]

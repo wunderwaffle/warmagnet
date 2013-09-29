@@ -2,7 +2,7 @@
   (:require-macros [pump.def-macros :refer [defr]])
   (:require
    [warmagnet.utils :refer [log]]
-   [warmagnet.views.gamemap :refer [GameMap]]))
+   [warmagnet.views.gamemap :refer [player-color GameMap]]))
 
 (defn get-player [game user-id]
   (first (filter #(= (:id %) user-id) (:players game))))
@@ -51,12 +51,15 @@
       [:table.table
        [:thead
         [:tr
-         [:th
+         [:th "Color"
           [:th "Name"] [:th "Regions"] [:th "Troops"] [:th "Bonus"]]]]
        [:tbody
         (for [player (:players game)
-              :let [stats (get-stats game (:id player))]]
-          [:tr [:td ] [:td (:name player)] [:td 22] [:td 11] [:td (:supply stats)]])]]]
+              :let [id (:id player)
+                    stats (get-stats game id)]]
+          [:tr [:td
+                {:style {:background-color (player-color game id)}}]
+           [:td (:name player)] [:td 22] [:td 11] [:td (:supply stats)]])]]]
 
      [:p.lead "Game Log"]
      [:div.log.well
