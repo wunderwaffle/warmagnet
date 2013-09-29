@@ -12,7 +12,6 @@
 (def all-users (atom {}))
 
 (defn find-user [id]
-  (println "yyy" @all-users (@all-users id))
   (@all-users id))
 
 (defn get-user-id [state]
@@ -28,7 +27,7 @@
   (swap! all-users dissoc (get-user-id state)))
 
 (defn init-state [state]
-    {:conn state :user nil :games []})
+    {:conn state :user nil :games #{}})
 
 ;; helpers
 (defn log-message [prefix state text]
@@ -45,7 +44,6 @@
   (send-raw state (apply hash-map more)))
 
 (defn game-broadcast [game-id msg]
-  (println "bcast > " (games/get-watchers game-id))
   (doseq [id (games/get-watchers game-id)]
     (send-raw (find-user id) msg)))
 
@@ -55,7 +53,7 @@
 
 ;; games
 (defn make-log-message [game-id data]
-  {:type "game" :data data})
+  {:type "game" :game-id game-id :data data})
 
 (defn add-game-log [state game-id log]
   (games/add-log game-id log)
@@ -82,6 +80,9 @@
   (let [games (db/get-user-games (get-user-id state))]
     (doseq [game games]
       (watch-game state (games/get-game (:game_id game))))))
+
+(defn user-in-game [state game-id]
+  (contains? (:games @state) game-id))
 
 (defn process-game-log-item [state data]
   (assoc data :user-id (get-user-id state)))
@@ -118,8 +119,12 @@
     (watch-game state game-state)))
 
 (defn msg-game [state msg]
-  (let [data (process-game-log-item state (:data msg))]
-    (add-game-log state (:game-id msg) data)))
+  (if-let [game-id (:game-id msg)]
+    (if (user-in-game state game-id)
+      (let [data (process-game-log-item state (:data msg))]
+        (add-game-log state game-id data))
+      (send-message state :type "error" :status "invalid-game-request"))
+    (send-message state :type "error" :status "invalid-game-request")))
 
 (defn msg-ping [state msg]
   (send-message state :type "pong"))

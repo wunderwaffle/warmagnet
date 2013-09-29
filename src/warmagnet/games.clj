@@ -11,7 +11,7 @@
 (defn process-game-state [game game-log]
 	{:id (:id game)
 	 :options (json/decode (:data game) true)
-	 :log (map #(json/decode (:data %) true) game-log)
+	 :log (mapv #(json/decode (:data %) true) game-log)
 	 :watchers #{}})
 
 (defn get-game-state [game]
@@ -22,7 +22,6 @@
 	{:type "join" :user-id (:id user) :user-name (:name user)})
 
 (defn add-log [id data]
-	(println "add >" id data)
 	(db/add-game-log id (:type data) (json/encode data))
 	(swap! all-games update-in [id :log] conj data))
 
@@ -46,8 +45,7 @@
 
 ;; watchers
 (defn add-watcher [id user-id]
-	(swap! all-games update-in [id :watchers] conj user-id)
-	(println "games >" @all-games))
+	(swap! all-games update-in [id :watchers] conj user-id))
 
 (defn remove-watcher [id user-id]
 	(swap! all-games update-in [id :watchers] disj user-id))
