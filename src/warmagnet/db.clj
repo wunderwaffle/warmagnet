@@ -1,18 +1,25 @@
 (ns warmagnet.db
   (:require [clojure.string :as s]
             [korma.db :refer [defdb postgres]]
-            [korma.core :as sql]))
+            [korma.core :as sql]
+            [korma.sql.engine :refer [infix]]))
 
+;; functions
+(defn sql-inc [k v]
+  (infix k "+" v))
+
+;; db
 (def dbspec (postgres {:db "warmagnet"}))
 (defdb db dbspec)
 
+;; tables
 (sql/defentity users
   (sql/entity-fields
    :name :email :token))
 
 (sql/defentity games
   (sql/entity-fields
-   :data))
+   :data :size :players))
 
 (sql/defentity gamelogs
   (sql/entity-fields
@@ -66,8 +73,8 @@
         user))))
 
 ;; games
-(defn new-game [data]
-  (sql/insert games (sql/values {:data data})))
+(defn new-game [data size]
+  (sql/insert games (sql/values {:data data :size size :players 0})))
 
 (defn add-game-log [game-id type data]
   (sql/insert gamelogs
@@ -90,7 +97,10 @@
 
 (defn add-user-to-game [game-id user-id]
   (sql/insert user_games
-              (sql/values {:user_id user-id :game_id game-id})))
+              (sql/values {:user_id user-id :game_id game-id}))
+  (sql/update games
+              (sql/set-fields {:players (sql-inc :players 1)})
+              (sql/where (= :id game-id))))
 
 (defn get-user-games [user-id]
   (sql/select user_games

@@ -73,7 +73,7 @@
   (let [user (:user @state)
         game-id (:id game-state)]
     (watch-game state game-state)
-    (db/add-user-to-game game-id (:id user))
+    (games/add-player game-id (:id user))
     (add-game-log state game-id (games/make-join-log-item user))))
 
 (defn send-joined-games [state]

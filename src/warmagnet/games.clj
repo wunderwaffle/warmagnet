@@ -29,8 +29,10 @@
 
 ;; public api
 (defn create-game [data]
-	(let [game (db/new-game (json/encode data))]
-		(create-game-state game)))
+	(let [game (db/new-game (json/encode data) (:size data))
+		  game-state (create-game-state game)]
+			(swap! all-games assoc (:id game) game-state)
+			game-state))
 
 (defn load-game [id]
 	(let [game (db/get-game id)]
@@ -61,6 +63,10 @@
 
 (defn get-watchers [id]
 	(get-in @all-games [id :watchers]))
+
+;; players
+(defn add-player [id user-id]
+    (db/add-user-to-game id user-id))
 
 ;; game state
 (defn process-game-log-item [data user-id]

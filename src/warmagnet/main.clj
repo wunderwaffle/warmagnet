@@ -42,3 +42,6 @@
     (info (if (:dev opts) "Development mode" "Production mode"))
     (info "Starting to listen on " (:port opts))
     (hk/run-server app (select-keys opts [:port :ip]))))
+
+(defn run [& opts]
+  (apply -main "-d"))
