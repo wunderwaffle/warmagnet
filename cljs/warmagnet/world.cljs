@@ -33,9 +33,7 @@
     :logout (do (remove-user) (dissoc world :user))
     :update-user (do (update-user data) (update-in world [:user] merge data))
     :route (assoc world :route data)
-    :game-state (assoc-in world [:games (:id data)]
-                          [(:log data)
-                           (:options data)])
+    :game-state (assoc-in world [:games (:id data)] data)
     :game (update-in world [(:id data)] game-transition data)
     :container-width (assoc world :container-width data)
     :map-received (assoc world :map data)

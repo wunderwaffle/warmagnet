@@ -68,9 +68,10 @@
 
    [:div.col-md-4
     [:p [:b "Players"]]
+    (log player-list)
     [:ul
-     (for [player player-list]
-       [:li (:name player)])]]
+     (for [[id name] player-list]
+       [:li name])]]
 
    [:div.col-md-offset-10
     children]])
@@ -81,8 +82,12 @@
     [:div [:p.lead "No Games. "
            [:a {:href "#games/new"} "Go and create one!"]]]
     [:div.col-md-12
-     [:div (for [[id [log game]] games]
-            [GameItem {:key id :id id :gamelog log :game game
+     [:div (for [[id {:keys [players log options]}] games]
+            [GameItem {:key id
+                       :id id
+                       :gamelog log
+                       :game options
+                       :player-list players
                        :children [:button.btn.btn-default
                                   {:on-click #(redir (str "games/" id))} "Open"]}])]]))
 
@@ -99,7 +104,7 @@
                   :id id
                   :game data
                   :players players
-                  :player-list player-list
+                  :player-list (map (juxt :id :name) player-list)
                   :children (if (< players (:size data))
                               [:button.btn.btn-default
                                {:on-click #(handlers/join-game id)} "Join"])}])]))
