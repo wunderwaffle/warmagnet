@@ -52,14 +52,14 @@
    [:button.btn.btn-success.btn-lg {:type "submit"} "Create"]])
 
 (defr GameItem
-  [C {:keys [game-map players duration reinforcement]} S]
-  (log [game-map players duration reinforcement])
-  [:div
-   [:img {:src game-map}]
-   [:p "Players"]
-   [:ul (tags :li (map :name players))]
-   [:p duration]
-   [:p reinforcement]])
+  [C {:keys [gamelog game]} S]
+  (log (pr-str game))
+  [:div.well
+;;   [:img {:src game-map}]
+;;   [:p "Players"]
+;;   [:ul (tags :li (map :name players))]
+   [:p [:b "Round duration: "] (:duration game)]
+   [:p [:b "Reinforcement: "] (:reinforcement game)]])
 
 (defr GameList
   [C P S]
@@ -67,8 +67,8 @@
     [:div [:p.lead "No Games. "
            [:a {:href "#games/new"}
             "Go and create one!"]]]
-    [:div (for [[id game] P]
-            [GameItem game])]))
+    [:div.col-md-offset-2.col-md-6 (for [[id game] P]
+            [GameItem {:gamelog (first (first game)) :game (first (rest game))}])]))
 
 (defr AllGameList
   :component-will-mount (fn [C P S]
