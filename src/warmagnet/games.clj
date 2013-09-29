@@ -30,7 +30,7 @@
 ;; public api
 (defn create-game [data]
 	(let [game (db/new-game (json/encode data))]
-		(create-game-state game [])))
+		(create-game-state game)))
 
 (defn load-game [id]
 	(let [game (db/get-game id)]
@@ -51,11 +51,13 @@
 		(swap! all-games assoc id (crossover/game-transition game-state data))))
 
 ;; watchers
+(defn disj-set [x y] (or (disj x y) #{}))
+
 (defn add-watcher [id user-id]
 	(swap! all-games update-in [id :watchers] conj user-id))
 
 (defn remove-watcher [id user-id]
-	(swap! all-games update-in [id :watchers] disj user-id))
+	(swap! all-games update-in [id :watchers] disj-set user-id))
 
 (defn get-watchers [id]
 	(get-in @all-games [id :watchers]))

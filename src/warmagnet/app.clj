@@ -102,9 +102,8 @@
   (let [profile (select-keys msg [:name])]
     (db/update-user (get-user-id state) profile)))
 
-(defn msg-start-game [state msg]
-  (let [game-data (:data msg)
-        game-state (games/create-game game-data)]
+(defn msg-start-game [state {:keys [data] :as msg}]
+  (let [game-state (games/create-game data)]
     (join-game state game-state)))
 
 (defn msg-join-game [state msg]
