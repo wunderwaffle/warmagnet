@@ -65,14 +65,14 @@
   (fn [C {:keys [available-troops]} S]
     (assoc-in-state C :to-deploy (/ available-troops 2)))
   
-  [C {:keys [available-troops district deploy]} {:keys [to-deploy]}]
+  [C {:keys [available-troops district deploy!]} {:keys [to-deploy]}]
   (let [[dname {:keys [coordinates]}] district
         [x y] (xy-for-popover coordinates)]
     [:div.popover {:style (clj->js {:display "block" :left x :top y})}
      [:div.popover-content
       [:div.input-group
        [:span.input-group-btn
-        [:button.btn.btn-success {:on-click #(deploy to-deploy)} "Deploy"]]
+        [:button.btn.btn-success {:on-click #(deploy! to-deploy)} "Deploy"]]
        [:input.form-control
         {:on-change #(if-let [v (js/parseInt (e-value %))]
                        (if (<= 1 v available-troops)
@@ -86,7 +86,7 @@
        [:span.input-group-addon available-troops]]]]))
 
 (defr Attack
-  [C {:keys [attacker attacking defender defending attack]} S]
+  [C {:keys [attacker attacking defender defending attack!]} S]
   (let [[aname {:keys [coordinates]}] attacker
         [dname dmap] defender
         [x y] (xy-for-popover coordinates)]
@@ -96,14 +96,14 @@
       [:thead [:tr [:th (name aname)] [:th (name dname)]]]
       [:tbody [:tr [:td attacking] [:td defending]]]]
      [:div.btn-group
-      [:button.btn.btn-warning {:on-click attack} "Attack"]
+      [:button.btn.btn-warning {:on-click attack!} "Attack"]
       [:button.btn.btn-danger "Blitz"]]]]))
 
 (defr Reinforce
   :component-will-mount (fn [C P S] (assoc-in-state C :transfer 0))
 
   [C
-   {:keys [dst-from troops-from dst-to troops-to reinforce]}
+   {:keys [dst-from troops-from dst-to troops-to reinforce!]}
    {:keys [transfer]}]
   (let [[fname {:keys [coordinates]}] dst-from
         [tname tmap] dst-to
@@ -118,7 +118,7 @@
         {:on-change #(assoc-in-state C :transfer (js/parseInt (e-value %)))
          :type "range" :value transfer :min (- 1 troops-from) :max (- troops-to 1)}]
        [:span.input-group-addon (- troops-to transfer)]]
-      [:button.btn.btn-block.btn-success {:on-click reinforce} "Reinforce"]]]))
+      [:button.btn.btn-block.btn-success {:on-click reinforce!} "Reinforce"]]]))
 
 (defn attack? [[aname {:keys [borders]}] [dname dmap]]
   (let [str-name (name dname)]
@@ -138,11 +138,12 @@
 
   [C
    {:keys [game-map game user container-width]}
-   {:keys [hovered deploying attacker defender state]}]
+   {:keys [hovered deploying attacker defender]}]
   (let [{:keys [name map-src regions districts dimensions]} game-map
         {:keys [player-state players turn-by]} game
         game-districts (:districts game)
         is-my-turn (= turn-by (:id user))
+        phase (keyword (:phase (user-state game user)))
    
         clear-popovers #(assoc-state C {:attacker nil :deploying nil :defender nil})
         assoc-hovered #(assoc-in-state C :hovered %)
@@ -157,12 +158,12 @@
                         (nil? attacker) (assoc-in-state C :attacker %)
                         (reinforce? attacker %) (assoc-in-state C :defender %))
 
-        deploy #(assoc-state C {:deploying nil :state :attack})
-        attack #(assoc-state C {:attacker nil :defender nil :state :reinforce})
-        reinforce #(assoc-state C {:attacker nil :defender nil :state :deploy})
+        deploy! #(assoc-state C {:deploying nil :state :attack})
+        attack! #(assoc-state C {:attacker nil :defender nil :state :reinforce})
+        reinforce! #(assoc-state C {:attacker nil :defender nil :state :deploy})
 
         district-action (if is-my-turn
-                          (case state
+                          (case phase
                             :deploy dst-deploy
                             :attack dst-attack
                             :reinforce dst-reinforce))
@@ -173,7 +174,7 @@
                          attacker :checked
                          defender :target
                          (cond
-                          (and (= state :reinforce)
+                          (and (= phase :reinforce)
                                attacker (reinforce? attacker %)) :target
                           (and attacker (attack? attacker %)) :target))]
 
@@ -193,13 +194,13 @@
                              :click district-action}]))
             districts)
        (if deploying
-         [Deploy {:available-troops (:supply (get-state game user))
-                  :district deploying :deploy deploy}])
-       (if (and (= state :attack) attacker defender)
+         [Deploy {:available-troops (:supply (user-state game user))
+                  :district deploying :deploy! deploy!}])
+       (if (and (= phase :attack) attacker defender)
          [Attack {:attacker attacker :attacking (troops-on attacker game-districts)
                   :defender defender :defending (troops-on defender game-districts)
-                  :attack attack}])
-       (if (and (= state :reinforce) attacker defender)
+                  :attack! attack!}])
+       (if (and (= phase :reinforce) attacker defender)
          [Reinforce {:dst-from attacker :troops-from (troops-on attacker game-districts)
                      :dst-to defender :troops-to (troops-on defender game-districts)
-                     :reinforce reinforce}])])))
+                     :reinforce! reinforce!}])])))
