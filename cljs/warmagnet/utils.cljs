@@ -14,6 +14,9 @@
     (log (str "-> " out))
     (.send js/ws out)))
 
+(defn send-log [game-id data]
+  (send-message-srv {:type :game :game-id game-id :data data}))
+
 (defn setup-auth
   [logged-in-user login logout]
   (.watch navigator/id

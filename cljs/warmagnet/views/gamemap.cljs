@@ -2,7 +2,7 @@
   (:require-macros [pump.def-macros :refer [defr]]
                    [warmagnet.macros :refer [cx]])
   (:require [pump.core :refer [assoc-state assoc-in-state e-value]]
-            [warmagnet.utils :refer [send-message]]))
+            [warmagnet.utils :refer [send-message send-log]]))
 
 (def COLORS ["#f00" "#006400" "#00f" "#cc0" "#f0f" "#0cc"])
 
@@ -72,7 +72,7 @@
      [:div.popover-content
       [:div.input-group
        [:span.input-group-btn
-        [:button.btn.btn-success {:on-click #(deploy! to-deploy)} "Deploy"]]
+        [:button.btn.btn-success {:on-click #(deploy! district to-deploy)} "Deploy"]]
        [:input.form-control
         {:on-change #(if-let [v (js/parseInt (e-value %))]
                        (if (<= 1 v available-troops)
@@ -144,6 +144,8 @@
   (let [{:keys [name map-src regions districts dimensions]} game-map
         {:keys [player-state players turn-by]} game
         game-districts (:districts game)
+        game-id (:id game)
+
         is-my-turn (= turn-by (:id user))
         phase (keyword (:phase (user-state game user)))
    
@@ -160,7 +162,7 @@
                         (nil? attacker) (assoc-in-state C :attacker %)
                         (reinforce? attacker %) (assoc-in-state C :defender %))
 
-        deploy! #(assoc-state C {:deploying nil :state :attack})
+        deploy! #(send-log game-id {:type :deploy :district (first %1) :amount %2})
         attack! #(assoc-state C {:attacker nil :defender nil :state :reinforce})
         reinforce! #(assoc-state C {:attacker nil :defender nil :state :deploy})
 
