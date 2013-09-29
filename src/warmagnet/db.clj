@@ -1,5 +1,6 @@
 (ns warmagnet.db
   (:require [clojure.string :as s]
+            [cheshire.core :as json]
             [korma.db :refer [defdb postgres]]
             [korma.core :as sql]
             [korma.sql.engine :refer [infix]]))
@@ -73,27 +74,31 @@
         user))))
 
 ;; games
-(defn new-game [data size]
-  (sql/insert games (sql/values {:data data :size size :players 0})))
+(defn new-game [data]
+  (let [game (sql/insert games (sql/values {:data (json/encode data) :size (:size data) :players 0}))]
+    (assoc game :data data)))
 
-(defn add-game-log [game-id type data]
+(defn add-game-log [game-id data]
   (sql/insert gamelogs
-              (sql/values {:game_id game-id :type type :data data})))
+              (sql/values {:game_id game-id :type (:type data) :data (json/encode data)})))
 
 (defn get-game [id]
-(->
-  (sql/select games
-              (sql/where (= :id id)))
-  first))
+  (let [game (first (sql/select games
+                    (sql/where (= :id id))))]
+    (if-not (nil? game)
+      (update-in game [:data] json/decode))))
 
 (defn get-game-list []
-  (sql/select games
-              (sql/fields :id :name :size :players)))
+  (let [games (sql/select games
+                          (sql/fields :id :name :players :data))]
+    (mapv #(update-in % [:data] json/decode) games)))
 
 (defn get-game-log [id]
-  (sql/select gamelogs
-              (sql/where (= :game_id id))
-              (sql/order :id :ASC)))
+  (let [gamelogs (sql/select gamelogs
+                             (sql/fields :data)
+                             (sql/where (= :game_id id))
+                             (sql/order :id :ASC))]
+    (mapv #(json/decode (:data %) true) gamelogs)))
 
 (defn add-user-to-game [game-id user-id]
   (sql/insert user_games

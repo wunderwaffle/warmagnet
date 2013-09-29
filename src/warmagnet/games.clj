@@ -1,7 +1,5 @@
 (ns warmagnet.games
   (:require
-            [cheshire.core :as json]
-
   			[warmagnet.db :as db]
   			[warmagnet.crossover.data :as crossover]
             ))
@@ -11,7 +9,7 @@
 ;; internal api
 (defn create-game-state [game]
 	{:id (:id game)
-	 :options (json/decode (:data game) true)
+	 :options (:data game)
 	 :log []
 	 :players {}
 	 :watchers #{}})
@@ -20,8 +18,7 @@
 	(reduce #(crossover/game-transition %1 %2) game-state game-log))
 
 (defn get-game-state [game]
-	(let [game-log (->> (db/get-game-log (:id game))
-						(mapv #(json/decode (:data %) true)))]
+	(let [game-log (db/get-game-log (:id game))]
 		(replay-game-log (create-game-state game) game-log)))
 
 (defn make-join-log-item [user]
@@ -29,7 +26,7 @@
 
 ;; public api
 (defn create-game [data]
-	(let [game (db/new-game (json/encode data) (:size data))
+	(let [game (db/new-game data)
 		  game-state (create-game-state game)]
 			(swap! all-games assoc (:id game) game-state)
 			game-state))
@@ -49,7 +46,7 @@
 
 (defn add-log [id data]
 	(when-let [game-state (get-game id)]
-		(db/add-game-log id (:type data) (json/encode data))
+		(db/add-game-log id data)
 		(swap! all-games assoc id (crossover/game-transition game-state data))))
 
 ;; watchers
