@@ -33,10 +33,19 @@
 
               [:button.btn.btn-success {:type "submit"} "Create"]])})
 
+(defr GameItem
+  {:render (fn [C {:keys [game-map participants round-time reinforcements]} S]
+             [:div
+              [:img {:src game-map}]
+              [:p "Players"]
+              [:ul [tags :li (map :name participants)]]
+              [:p round-time]
+              [:p reinforcements]])})
+
 (defr GameList
   {:render (fn [C P S]
              (if (empty? P)
                [:div "NO GAMES"]
-               [:ul
+               [:div
                 (for [[id game] P]
-                  [:li (str "Game " id " " (pr-str (second game)))])]))})
+                  [GameItem game])]))})

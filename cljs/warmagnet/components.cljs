@@ -15,15 +15,6 @@
                                                    (p :user-rating)])])
                            players)]])})
 
-(defr GameItem
-  {:render (fn [C {:keys [game-map participants round-time reinforcements]} S]
-             [:div
-              [:img {:src game-map}]
-              [:p "Players"]
-              [:ul [tags :li (map :name participants)]]
-              [:p round-time]
-              [:p reinforcements]])})
-
 (defr Profile
   {:render (fn [C P S]
              [:div "Profile!"])})
