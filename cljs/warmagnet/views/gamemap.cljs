@@ -44,17 +44,17 @@
    (player-index game user-id)))
 
 (defr MapDistrict
-  [C {:keys [district dname amount click selected assoc-hovered]} S]
+  [C {:keys [district dname amount click selected assoc-hovered color]} S]
   (let [{:keys [borders coordinates]} (second district)
         [x y] coordinates]
     [:div
      {:class (cx :map-district true
                  :label true
-                 :label-success (nil? selected)
+                 :label-white (nil? selected)
                  :label-primary (= selected :checked)
                  :label-info (= selected :hover)
                  :label-danger (= selected :target))
-      :style (clj->js {:left x :top y})
+      :style (clj->js {:left x :top y :color color})
       :on-click (if click (fn [C] (click district)) #())
       :on-mouse-enter #(assoc-hovered district)
       :on-mouse-leave #(assoc-hovered nil)}
@@ -193,6 +193,9 @@
                              :selected (selection-for district)
                              :assoc-hovered assoc-hovered
                              :amount (-> game-districts dname :amount)
+                             :color (player-color
+                                     game
+                                     (-> game-districts dname :user-id))
                              :click district-action}]))
             districts)
        (if deploying
