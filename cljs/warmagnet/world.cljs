@@ -6,11 +6,12 @@
                   :games {}}))
 
 (defn world-transition [world {:keys [type data] :as msg}]
-  (condp = (if (string? type) (keyword type) type)
+  (case (if (string? type) (keyword type) type)
     :error (do (js/alert "Server error")
                world)
     :login (assoc world :user data)
     :logout (dissoc world :user)
+    :update-user (update-in world [:user] merge data)
     :route (assoc world :route data)
     :game-state (assoc-in world [:games (:id data)]
                           [(:log data)

@@ -8,7 +8,8 @@
             [warmagnet.components :as components]
             [warmagnet.views.games :as games]
             [warmagnet.views.gamemap :as gamemap]
-            [warmagnet.views.index :as index]))
+            [warmagnet.views.index :as index]
+            [warmagnet.views.prefs :as prefs]))
 
 (aset ws "onmessage"
       (fn [e]
@@ -28,7 +29,7 @@
 
                    (condp = (:route P)
                      "" [games/GameList games]
-                     "preferences" [components/Preferences user]
+                     "preferences" [prefs/Preferences user]
                      "profile" [components/Profile user]
                      "games" [games/GameList games]
                      "games/new" [games/NewGame]

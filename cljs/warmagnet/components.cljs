@@ -1,9 +1,7 @@
 (ns warmagnet.components
   (:require-macros [pump.def-macros :refer [defr]])
-  (:require
-   [pump.core :refer [react]]
-   [warmagnet.utils :refer [log]]
-   [warmagnet.handlers :as handlers]))
+  (:require [warmagnet.utils :refer [log]]
+            [warmagnet.handlers :as handlers]))
 
 (defr SigninButton
   {:render (fn [C {:keys [user]} S]
@@ -27,19 +25,6 @@
                  [:li [:a {:href "#preferences"} "Preferences"]]
                  [:form.navbar-form.navbar-right
                   [SigninButton {:user user}]]]]]])})
-
-(defr Preferences
-  {:render (fn [C user S]
-             [:div.col-md-4.col-md-offset-4
-              [:h1 "Preferences"]
-              [:form.well {:role "form" :on-submit #(handlers/save-prefs % C)}
-               (for [input ["login" "name"]]
-                 [:div.form-group
-                  [:label {:html-for input} (.toUpperCase input)]
-                  [:input.form-control {:ref input :value ((keyword input) user)}]])
-
-               [:button.btn.btn-primary {:type "submit"} "Save"]
-               ]])})
 
 (defn tags [tagname values]
   (map (fn [v] [tagname v]) values))

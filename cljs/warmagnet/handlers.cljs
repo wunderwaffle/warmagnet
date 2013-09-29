@@ -28,9 +28,10 @@
     (log keys)
     (callback values)))
 
-(defn save-prefs [e, C]
+(defn save-prefs [e prefs]
   (.preventDefault e)
-  (serialize-form (js->clj (.-refs C)) log))
+  (send-message-srv {:type :update-user :data prefs})
+  (send-message {:type :update-user :data prefs}))
 
 
 (defn login [token]
