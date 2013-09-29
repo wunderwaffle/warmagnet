@@ -34,25 +34,20 @@
               :height height})))
 
 (defr MapDistrict
-  [C {:keys [district hovered assoc-hovered click]} S]
+  [C {:keys [district click selected assoc-hovered]} S]
   (let [[dname {:keys [borders coordinates]}] district
-        [x y] coordinates
-        str-name (name dname)
-
-        [hname hmap] hovered
-        this-hovered (= dname hname)
-        attacker-hovered (some #{str-name} (:borders hmap))
-        irregular (or this-hovered attacker-hovered)]
+        [x y] coordinates]
     [:div
      {:class (cx :map-district true
                  :label true
-                 :label-success (not irregular)
-                 :label-info this-hovered
-                 :label-danger attacker-hovered)
+                 :label-success (nil? selected)
+                 :label-primary (= selected :checked)
+                 :label-info (= selected :hover)
+                 :label-danger (= selected :target))
       :style (clj->js {:left x :top y})
       :on-click (if click (fn [C] (click district)) #())
-      :on-mouse-enter (fn [C] (assoc-hovered district))
-      :on-mouse-leave (fn [C] (assoc-hovered nil))}
+      :on-mouse-enter #(assoc-hovered district)
+      :on-mouse-leave #(assoc-hovered nil)}
      2]))
 
 (defr Deploy
@@ -119,6 +114,8 @@
   (let [str-name (name dname)]
       (some #{str-name} borders)))
 
+(def reinforce? attack?)
+
 (defr GameMap
   :component-will-mount (fn [C P] (if-not (:name P) (xhr-load-map)))
   :get-initial-state (fn [] {:state :reinforce})
@@ -130,12 +127,14 @@
         assoc-hovered #(assoc-in-state C :hovered %)
 
         dst-deploy #(assoc-in-state C :deploying (if (not= deploying %) % nil))
-        dst-attack #(if (= % attacker) (clear-popovers)
-                        (if (nil? attacker) (assoc-in-state C :attacker %)
-                            (if (attack? attacker %) (assoc-in-state C :defender %))))
-        dst-reinforce #(if (= % attacker) (clear-popovers)
-                           (if (nil? attacker) (assoc-in-state C :attacker %)
-                               (if (attack? attacker %) (assoc-in-state C :defender %))))
+        dst-attack #(cond
+                     (= % attacker) (clear-popovers)
+                     (nil? attacker) (assoc-in-state C :attacker %)
+                     (attack? attacker %) (assoc-in-state C :defender %))
+        dst-reinforce #(cond
+                        (= % attacker) (clear-popovers)
+                        (nil? attacker) (assoc-in-state C :attacker %)
+                        (reinforce? attacker %) (assoc-in-state C :defender %))
 
         deploy #(assoc-state C {:deploying nil :state :attack})
         attack #(assoc-state C {:attacker nil :defender nil :state :reinforce})
@@ -144,7 +143,17 @@
         district-action (case state
                           :deploy dst-deploy
                           :attack dst-attack
-                          :reinforce dst-reinforce)]
+                          :reinforce dst-reinforce)
+
+        selection-for #(condp = %
+                         hovered :hover
+                         deploying :checked
+                         attacker :checked
+                         defender :target
+                         (cond
+                          (and (= state :reinforce)
+                               attacker (reinforce? attacker %)) :target
+                          (and attacker (attack? attacker %)) :target))]
     (if-not name
       [:div "No map"]
       [:div.game-map
@@ -152,9 +161,9 @@
        [:img {:src (str "/static/" map-src)
               :on-click clear-popovers}]
        (map (fn [district] [MapDistrict {:district district
+                                         :selected (selection-for district)
                                          :assoc-hovered assoc-hovered
-                                         :click district-action
-                                         :hovered hovered}])
+                                         :click district-action}])
             districts)
        (if deploying
          [Deploy {:available-troops 40 :district deploying :deploy deploy}])
