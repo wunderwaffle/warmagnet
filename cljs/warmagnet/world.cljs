@@ -3,9 +3,9 @@
 
 (defn get-user []
   (let [user (.getItem (.-localStorage js/window) "user")
-        json (.parse js/JSON (clj->js user))]
+        json (.parse js/JSON user)]
     (.log js/console "USER" json)
-    json))
+    (js->clj json :keywordize-keys true)))
 
 (defn set-user [user]
   (.setItem (.-localStorage js/window) "user"

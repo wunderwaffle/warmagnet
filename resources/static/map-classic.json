@@ -74,11 +74,11 @@
     }, {
         "name": "Horn",
         "coordinates": [872, 706],
-        "borders": ["Middle East", "Egypt", "Madagascar", "South Africa", "Congo"]
+        "borders": ["Middle East", "Egypt", "Madagascar", "South Africa", "Maghrib", "Congo"]
     }, {
         "name": "Maghrib",
         "coordinates": [692, 641],
-        "borders": ["Western Europe", "Southern Europe", "Egypt", "Congo", "Brazil"]
+        "borders": ["Western Europe", "Southern Europe", "Egypt", "Congo", "Horn", "Brazil"]
     }, {
         "name": "Madagascar",
         "coordinates": [921, 900],

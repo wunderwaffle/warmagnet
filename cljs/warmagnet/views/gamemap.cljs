@@ -23,13 +23,13 @@
   (str "scale(" (/ (- (.-clientWidth document/documentElement) 30) x) ")"))
 
 (defn cx [class-map]
-  (string/join " " (map #(name (first %)) (filter #(second %) class-map))))
+  (string/join " " (map #(name (first %)) (filter second class-map))))
 
 (defr MapDistrict
   [C {:keys [name coordinates borders hovered assoc-hovered]} S]
-  (let [this-hovered (= (:name hovered) name)
+  (let [this-hovered (#{name} (:name hovered))
         attacker-hovered (some #{name} (:borders hovered))
-        regular (not-any? true? [this-hovered attacker-hovered])]
+        regular (every? nil? [this-hovered attacker-hovered])]
     [:div
      {:class (cx {:map-district true
                   :label true
