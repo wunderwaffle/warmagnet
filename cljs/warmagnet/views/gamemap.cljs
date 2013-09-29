@@ -203,7 +203,7 @@
                               :color (player-color game (gd :user-id))
                               :click (district-action (gd :user-id))}]))
             districts)
-       (if deploying
+       (if (and (= phase :deploy) deploying)
          [Deploy {:available-troops (:supply (user-state game user))
                   :district deploying :deploy! deploy!}])
        (if (and (= phase :attack) attacker defender)
