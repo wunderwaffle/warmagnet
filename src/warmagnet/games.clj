@@ -135,9 +135,9 @@
       (reduce distributor game-state joined)))
 
 (defn initialize-game [game-state]
-	(-> game-state
-        (initial-distribute-districts)
-		(add-log-item {:type "turn" :user-id (:id (first (:players game-state)))})))
+  (-> game-state
+      (initial-distribute-districts)
+      (add-log-item {:type "turn" :user-id (:id (first (:players game-state)))})))
 
 (defn new-turn-supply [game-state user-id]
   (let [districts (->> (get-in game-state [:map :districts])
