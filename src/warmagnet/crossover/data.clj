@@ -109,4 +109,5 @@
     	:attack-end (assoc-in game [:player-state user-id :phase] PHASE-REINFORCE)
     	:reinforce (handle-reinforce game msg)
     	:reinforce-end (assoc-in game [:player-state user-id :phase] nil)
+    	:finish (update-in game [:options] assoc :finished true :winner user-id)
     	game)))

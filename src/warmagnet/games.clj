@@ -176,6 +176,19 @@
 		(if (< target-amount 0)
 			(add-log-item game-state {:type "conquer" :user-id user-id :district attack-to :amount (- target-amount)}))))
 
+(defn finish-game [{:keys [id turn-by] :as game-state}]
+	(db/finish-game id turn-by)
+	(add-log-item game-state {:type "finish" :winner turn-by}))
+
+(defn maybe-finish [game-state]
+	(let [user-id (:turn-by game-state)
+		  districts (:districts game-state)
+		  num-conquered (count (filter #(= user-id (:user-id %)) (vals districts)))
+		  district-count (count districts)]
+		  (println num-conquered district-count)
+		  (if (= num-conquered district-count)
+		  	(finish-game game-state))))
+
 (defn next-player [game-state user-id]
 	(let [players (:players game-state)]
 		(or (second (drop-while #(not= user-id (:id %)) players)) (first players))))
@@ -191,5 +204,6 @@
 	    :turn (new-turn-supply game-state user-id)
 		:deploy (maybe-start-attack game-state data)
 		:attack (maybe-conquer game-state data)
+		:conquer (maybe-finish game-state)
 		:reinforce-end (next-turn game-state)
 		game-state))
