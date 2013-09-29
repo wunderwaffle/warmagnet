@@ -34,11 +34,11 @@
   [C {:keys [name coordinates borders hovered assoc-hovered]} S]
   (let [this-hovered (#{name} (:name hovered))
         attacker-hovered (some #{name} (:borders hovered))
-        regular (every? nil? [this-hovered attacker-hovered])]
+        irregular (or this-hovered attacker-hovered)]
     [:div
      {:class (cx :map-district true
                  :label true
-                 :label-success regular
+                 :label-success (not irregular)
                  :label-info this-hovered
                  :label-danger attacker-hovered)
       :style (clj->js {:left (first coordinates)
@@ -48,7 +48,8 @@
      2]))
 
 (defr GameMap
-  :component-will-mount (fn [C] (if-not (:name (. C -props)) (xhr-load-map)))
+  :component-will-mount (fn [C] (if-not (:name (. C -props))
+                                  (xhr-load-map)))
   [C
    {:keys [name map-src regions districts dimensions container-width]}
    {:keys [hovered]}]

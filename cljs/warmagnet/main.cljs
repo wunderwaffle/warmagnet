@@ -33,7 +33,9 @@
        #"browse" [games/AllGameList {:games allgames}]
        #"games/new" [games/NewGame]
        #"games/(\d+)" :>> (fn [[[_ id]]]
-                            [Game {:game (games (js/parseInt id))}])
+                            [Game {:game (games (js/parseInt id))
+                                   :map (assoc map
+                                          :container-width container-width)}])
        #"games" [games/GameList {:games games}]
        #"map" [gamemap/GameMap (assoc map :container-width container-width)]
        [:div (str "UNKNOWN ROUTE: " route)]))])
