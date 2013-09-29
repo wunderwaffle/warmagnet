@@ -20,7 +20,7 @@
    (if-not (:name P)
      [:div.container
        [:h1 "Welcome"]
-       [:p.lead "Thanks for signing up! Please set your user name to start playing"]]
+       [:p.lead "Thanks for signing up! Please set your user name to start playing."]]
 
      [:h1 "Preferences"])
 

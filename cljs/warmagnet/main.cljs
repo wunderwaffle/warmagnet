@@ -23,10 +23,12 @@
   [:div.container {:style {:margin-top "70px"}}
    ;(log route)
 
-   (if-not user
-     [index/Index]
+   (cond
+    (not user) [index/Index]
+    (not (:name user)) [prefs/Preferences user]
 
-     (condp (comp seq re-seq) route
+    :else
+    (condp (comp seq re-seq) route
        #"^$" [games/GameList {:games games}]
        #"preferences" [prefs/Preferences user]
        #"profile" [components/Profile user]

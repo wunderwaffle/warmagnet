@@ -68,7 +68,6 @@
 
    [:div.col-md-4
     [:p [:b "Players"]]
-    (log player-list)
     [:ul
      (for [[id name] player-list]
        [:li name])]]
