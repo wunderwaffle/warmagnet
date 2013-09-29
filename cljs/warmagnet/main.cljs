@@ -36,6 +36,7 @@
        #"games/new" [games/NewGame]
        #"games/(\d+)" :>> (fn [[[_ id]]]
                             [Game {:game (games (js/parseInt id))
+                                   :user user
                                    :game-map game-map                                   
                                    :container-width container-width}])
        #"games" [games/GameList {:games games}]
