@@ -1,6 +1,6 @@
 (ns warmagnet.main
   (:require-macros [pump.def-macros :refer [defr]])
-  (:require [pump.core]
+  (:require [pump.core :refer [assoc-state]]
             [warmagnet.api :refer [ws]]
             [warmagnet.handlers :as handlers]
             [warmagnet.utils :refer [log send-message setup-auth]]
@@ -18,24 +18,32 @@
                                :keywordize-keys true))))
 
 (defr Root
-  {:render (fn [C props S]
-             (let [{:keys [user games route] :as P} (aget props "props")]
-               [:div
-                [Navbar P]
-                [:div.container {:style {:margin-top "70px"}}
-                 (log route)
+  :component-did-mount (fn [C P S node]
+                         (send-message {:type :container-width
+                                        :data (.-clientWidth node)}))
 
-                 (if-not user
-                   [index/Index]
+  [C {:keys [user games route map container-width]} S]
+  [:div.container {:style {:margin-top "70px"}}
+   (log route)
 
-                   (condp = (:route P)
-                     "" [games/GameList games]
-                     "preferences" [prefs/Preferences user]
-                     "profile" [components/Profile user]
-                     "games" [games/GameList games]
-                     "games/new" [games/NewGame]
-                     "map" [gamemap/GameMap (:map P)]
-                     [:div (str "UNKNOWN ROUTE: " route)]))]]))})
+   (if-not true #_user
+     [index/Index]
+
+     (case route
+       "" [games/GameList games]
+       "preferences" [prefs/Preferences user]
+       "profile" [components/Profile user]
+       "games" [games/GameList games]
+       "games/new" [games/NewGame]
+       "map" [gamemap/GameMap (assoc map :container-width container-width)]
+       [:div (str "UNKNOWN ROUTE: " route)]))])
+
+(defr Wrapper
+  [C props S]
+  (let [P (aget props "props")]
+    [:div
+     [Navbar P]
+     [Root P]]))
 
 (defn current-route
   []
@@ -51,7 +59,7 @@
   (send-message {:type :route :data (current-route)})
 
   (let [root-el (.-body js/document)
-        root (React/renderComponent (Root (js-obj "props" @world)) root-el)]
+        root (React/renderComponent (Wrapper (js-obj "props" @world)) root-el)]
     (.addEventListener js/window "hashchange"
                        (fn [e]
                          (send-message {:type :route :data (current-route)})))

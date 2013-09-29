@@ -19,8 +19,14 @@
               message {:type :map-received :data data}]
           (send-message message))))
 
-(defn get-map-scale [[x y]]
-  (str "scale(" (/ (- (.-clientWidth document/documentElement) 30) x) ")"))
+(defn get-map-style [[x y] container-width]
+  (let [padding 30
+        scale (/ (- container-width padding) x)
+        width (* x scale)
+        height (* y scale)]
+    (clj->js {:transform (str "scale(" scale ")")
+              :width width
+              :height height})))
 
 (defr MapDistrict
   [C {:keys [name coordinates borders hovered assoc-hovered]} S]
@@ -42,13 +48,13 @@
 (defr GameMap
   :component-will-mount (fn [C] (if-not (:name (. C -props)) (xhr-load-map)))
   [C
-   {:keys [name map-src regions districts dimensions]}
+   {:keys [name map-src regions districts dimensions container-width]}
    {:keys [hovered]}]
   (let [assoc-hovered #(assoc-state C :hovered %)]
     (if-not name
       [:div "No map"]
       [:div.game-map
-       {:style (clj->js {:transform (get-map-scale dimensions)})}
+       {:style (get-map-style dimensions container-width)}
        [:img {:src (str "/static/" map-src)}]
        (map (fn [district] [MapDistrict (assoc district
                                           :assoc-hovered assoc-hovered

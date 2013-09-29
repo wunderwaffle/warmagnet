@@ -31,4 +31,5 @@
                           [(:log data)
                            (:options data)])
     :game (update-in world [(:id data)] game-transition data)
+    :container-width (assoc world :container-width data)
     :map-received (assoc world :map data)))
