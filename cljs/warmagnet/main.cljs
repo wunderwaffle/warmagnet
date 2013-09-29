@@ -6,6 +6,7 @@
             [warmagnet.world :refer [world]]
             [warmagnet.components :as components]
             [warmagnet.views.navbar :refer [Navbar]]
+            [warmagnet.views.onegame :refer [Game]]
             [warmagnet.views.games :as games]
             [warmagnet.views.gamemap :as gamemap]
             [warmagnet.views.index :as index]
@@ -20,19 +21,21 @@
 
   [C {:keys [user allgames games route map container-width]} S]
   [:div.container {:style {:margin-top "70px"}}
-   (log route)
+   ;(log route)
 
    (if-not user
      [index/Index]
 
-     (case route
-       "" [games/GameList games]
-       "preferences" [prefs/Preferences user]
-       "profile" [components/Profile user]
-       "browse" [games/AllGameList {:games allgames}]
-       "games" [games/GameList {:games games}]
-       "games/new" [games/NewGame]
-       "map" [gamemap/GameMap (assoc map :container-width container-width)]
+     (condp (comp seq re-seq) route
+       #"^$" [games/GameList games]
+       #"preferences" [prefs/Preferences user]
+       #"profile" [components/Profile user]
+       #"browse" [games/AllGameList {:games allgames}]
+       #"games/new" [games/NewGame]
+       #"games/(\d+)" :>> (fn [[[_ id]]]
+                            [Game {:game (games (js/parseInt id))}])
+       #"games" [games/GameList {:games games}]
+       #"map" [gamemap/GameMap (assoc map :container-width container-width)]
        [:div (str "UNKNOWN ROUTE: " route)]))])
 
 (defr Wrapper

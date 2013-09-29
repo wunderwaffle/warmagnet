@@ -53,7 +53,6 @@
 
 (defr GameItem
   [C {:keys [gamelog game]} S]
-  (log (pr-str game))
   [:div.well
 ;;   [:img {:src game-map}]
 ;;   [:p "Players"]
@@ -84,4 +83,3 @@
         [:p (str "Players: " players " of " size)]
         (if (< players size)
           [:button.btn.btn-default {:on-click #(handlers/join-game id)} "Join"])])]))
-
