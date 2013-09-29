@@ -103,6 +103,7 @@
 (defn msg-update-user [state {:keys [data]}]
   (let [profile (select-keys data [:name])]
     (db/update-user (get-user-id state) profile)
+    (swap! state update-in [:user] merge profile)
     (send-message state :type :update-user :data profile)))
 
 (defn msg-start-game [state {:keys [data] :as msg}]
