@@ -10,6 +10,7 @@
     :error (do (js/alert "Server error")
                world)
     :login (assoc world :user data)
+    :logout (dissoc world :user)
     :route (assoc world :route data)
     :game-state (assoc-in world [:games (:id data)]
                           [(:log data)

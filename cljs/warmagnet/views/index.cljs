@@ -19,8 +19,8 @@
   [:div.jumbotron
    [:div.container
     [:div.pull-right
-     [:iframe {:width 560 :height 315
-               :src "//www.youtube.com/embed/BHOSjT8gQXY?rel=0&start=236"
+     [:iframe {:width 480 :height 24
+               :src "//www.youtube.com/embed/BHOSjT8gQXY?rel=0&autohide=0&start=236"
                :frameborder 0
                :allowfullscreen true}]]
     [:h1 "War Magnet"]

@@ -35,8 +35,9 @@
 
 
 (defn login [token]
-  (send-message-srv {:type "login" :token token}))
+  (send-message-srv {:type :login :token token}))
 
 (defn logout []
+  (send-message {:type :logout})
   (.log js/console "logout"))
 

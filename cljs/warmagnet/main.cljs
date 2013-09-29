@@ -27,10 +27,10 @@
                    [index/Index]
 
                    (condp = (:route P)
-                     "" [games/List games]
+                     "" [games/GameList games]
                      "preferences" [components/Preferences user]
                      "profile" [components/Profile user]
-                     "games" [games/GamList games]
+                     "games" [games/GameList games]
                      "games/new" [games/NewGame]
                      "map" [gamemap/GameMap (:map P)]
                      [:div (str "UNKNOWN ROUTE: " route)]))]]))})
