@@ -1,6 +1,6 @@
 (ns warmagnet.crossover.data)
 
-(defn check-transition [game msg]
+(defn check-transition [game-state msg]
 	true)
 
 (defn game-transition [game {:keys [type user-id] :as msg}]
