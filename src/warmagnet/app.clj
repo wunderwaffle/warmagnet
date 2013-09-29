@@ -49,7 +49,7 @@
 
 (defn serialize-game-state [game-state]
   ; TODO: Fix me
-  (select-keys game-state [:id :options :log :players :districts]))
+  (select-keys game-state [:id :options :log :players :districts :turn-by]))
 
 ;; games
 (defn watch-game [state game-state]

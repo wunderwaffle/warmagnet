@@ -20,6 +20,7 @@
      :map map
      :districts {}
      :player-state {}
+     :turn-by nil
 	 :watchers #{}}))
 
 (defn replay-game-log [game-state game-log]
@@ -164,9 +165,30 @@
                        :reason (str (count districts) " districts")})
         (#(reduce region-supply % regions)))))
 
-(defn execute-log-item [game-state {:keys [user-id type] :as data}]
-  (case (keyword type)
-    :join (maybe-start-game game-state)
-    :start (initialize-game game-state)
-    :turn (new-turn-supply game-state user-id)
-    game-state))
+(defn maybe-start-attack [game-state {:keys [user-id]}]
+	(let [amount (get-in game-state [:player-state :supply])]
+		(if (zero? amount)
+			(add-log-item game-state {:type "phase" :user-id user-id :phase crossover/PHASE-ATTACK}))))
+
+(defn maybe-conquer [game-state {:keys [attack-to user-id]}]
+	(let [target-amount (get-in game-state [:districts attack-to :amount])]
+		(if (< target-amount 0)
+			(add-log-item game-state {:type "conquer" :user-id user-id :district attack-to :amount (- target-amount)}))))
+
+(defn next-player [game-state user-id]
+	(let [players (:players game-state)]
+		(or (second (drop-while #(not= user-id (:id %)) players)) (first players))))
+
+(defn next-turn [game-state]
+	(let [next-player (next-player game-state (:turn-by game-state))]
+		(add-log-item game-state {:type "turn" :user-id (:id next-player)})))
+
+(defn execute-log-item [game-state {:keys [user-id] :as data}]
+	(case (keyword (:type data))
+		:join (maybe-start-game game-state)
+		:start (initialize-game game-state)
+	    :turn (new-turn-supply game-state user-id)
+		:deploy (maybe-start-attack game-state data)
+		:attack (maybe-conquer game-state data)
+		:reinforce-end (next-turn game-state)
+		game-state))
