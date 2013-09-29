@@ -14,7 +14,7 @@
   <script>
     document.addEventListener('DOMContentLoaded', function() {
         try {
-        window.ws = new WebSocket(window.WS_URL);
+        window.ws = new WebSocket("ws://" + window.location.host + '/ws');
         window.ws.onopen = function() {
             warmagnet.main.main();
         };
