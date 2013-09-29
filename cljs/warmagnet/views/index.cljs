@@ -20,11 +20,10 @@
    [:div.container
     [:div.pull-right
      [:div [:img {:src "/static/logo/logo-400.png" :width 400}]]
-     ;; [:iframe {:width 400 :height 24
-     ;;           :src "//www.youtube.com/embed/BHOSjT8gQXY?rel=0&autohide=0&start=236"
-     ;;           :frameBorder 0
-     ;;           :allowFullScreen true}]
-     ]
+     #_ [:iframe {:width 400 :height 24
+               :src "//www.youtube.com/embed/BHOSjT8gQXY?rel=0&autohide=0&start=236"
+               :frameBorder 0
+               :allowFullScreen true}]]
     [:h1 "War Magnet"]
     intro
     [:p "Join exciting world of rivalry and world domination today!"]
