@@ -19,12 +19,14 @@
      [:a.navbar-brand {:href "#"}
       [:img {:src "/static/logo/logo-white-ak-50-nobg.png"}]
       "WarMagnet"]]
-    [:div.navbar-collapse.collapse
-     [:ul.nav.navbar-nav
-      [:li [:a {:href "#games"} "Games"]]
-      [:li [:a {:href "#games/new"} "New Game"]]
-      [:li [:a {:href "#leaderboard"} "Leaderboard"]]
-      [:li [:a {:href "#preferences"} "Preferences"]]
+     [:div.navbar-collapse.collapse
+      (if user
+        [:ul.nav.navbar-nav
+
+         [:li [:a {:href "#games"} "Games"]]
+         [:li [:a {:href "#games/new"} "New Game"]]
+         [:li [:a {:href "#leaderboard"} "Leaderboard"]]
+         [:li [:a {:href "#preferences"} "Preferences"]]])
       [:form.navbar-form.navbar-right
-       [SigninButton {:user user}]]]]]])
+       [SigninButton {:user user}]]]]])
 
