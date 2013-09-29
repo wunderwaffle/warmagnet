@@ -115,6 +115,9 @@
   (let [game-state (games/get-game (:game-id msg))]
     (watch-game state game-state)))
 
+(defn msg-game-list [state msg]
+  (send-message state :type "game-list" :games (db/get-game-list)))
+
 (defn msg-game [state msg]
   (if-let [game-id (:game-id msg)]
     (if (user-in-game state game-id)
@@ -138,6 +141,7 @@
     "start-game" (msg-start-game state msg)
     "join-game" (msg-join-game state msg)
     "watch-game" (msg-watch-game state msg)
+    "game-list" (msg-game-list state msg)
     "game" (msg-game state msg)
     (msg-unknown state)))
 

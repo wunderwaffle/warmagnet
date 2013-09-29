@@ -67,6 +67,10 @@
               (sql/where (= :id id)))
   first))
 
+(defn get-game-list []
+  (sql/select games
+              (sql/fields :id :name)))
+
 (defn get-game-log [id]
   (sql/select gamelogs
               (sql/where (= :game_id id))
