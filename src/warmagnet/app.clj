@@ -104,9 +104,10 @@
       (send-message state :type "login" :status "invalid-token"))
     (send-message state :type "login" :status "invalid-request")))
 
-(defn msg-update-user [state msg]
-  (let [profile (select-keys msg [:name])]
-    (db/update-user (get-user-id state) profile)))
+(defn msg-update-user [state {:keys [data]}]
+  (let [profile (select-keys data [:name])]
+    (db/update-user (get-user-id state) profile)
+    (send-message state :type :update-user :data profile)))
 
 (defn msg-start-game [state {:keys [data] :as msg}]
   (let [game-state (games/create-game data)]

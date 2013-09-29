@@ -25,6 +25,7 @@
                world)
     :login (do (set-user data) (assoc world :user data))
     :logout (do (remove-user) (dissoc world :user))
+    ;; FIXME: update-user should update user in local storage as well
     :update-user (update-in world [:user] merge data)
     :route (assoc world :route data)
     :game-state (assoc-in world [:games (:id data)]
