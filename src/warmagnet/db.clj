@@ -86,7 +86,12 @@
   (let [game (first (sql/select games
                     (sql/where (= :id id))))]
     (if-not (nil? game)
-      (update-in game [:data] json/decode))))
+      (update-in game [:data] json/decode true))))
+
+(defn update-game-data [game-id data]
+  (sql/update games
+              (sql/set-fields {:data (json/encode data)})
+              (sql/where (= :id game-id))))
 
 (defn get-game-players [game-id]
   (sql/select user_games
@@ -96,7 +101,7 @@
 
 ; TODO: Fix me
 (defn -update-game-item [item]
-  (assoc item :data (json/decode (:data item))
+  (assoc item :data (json/decode (:data item) true)
               :player-list (get-game-players (:id item))))
 
 (defn get-game-list []

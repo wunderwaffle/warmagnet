@@ -52,13 +52,6 @@
   (select-keys game-state [:id :options :log :players]))
 
 ;; games
-(defn make-log-message [game-id data]
-  {:type "game" :game-id game-id :data data})
-
-(defn add-game-log [state game-id log]
-  (games/add-log game-id log)
-  (game-broadcast game-id (make-log-message game-id log)))
-
 (defn watch-game [state game-state]
   (let [user-id (get-user-id state)
         game-id (:id game-state)]
@@ -73,8 +66,7 @@
   (let [user (:user @state)
         game-id (:id game-state)]
     (watch-game state game-state)
-    (games/add-player game-id (:id user))
-    (add-game-log state game-id (games/make-join-log-item user))))
+    (games/add-player game-id user)))
 
 (defn send-joined-games [state]
   (let [games (db/get-user-games (get-user-id state))]
@@ -112,9 +104,10 @@
 
 (defn msg-join-game [state msg]
   (let [game-id (:game-id msg)
-        game-state (games/get-game game-id)]
+        game-state (games/get-game game-id)
+        user-id (get-user-id state)]
     (if-not (nil? game-state)
-      (if-not (games/is-player-in-game game-id (get-user-id state))
+      (if (games/can-join-game game-id user-id)
         (join-game state game-state)
         (send-message state :type :join-error :status "already-joined"))
       (send-message state :type :join-error :status "invalid-game"))))
@@ -128,8 +121,10 @@
     (send-message state :type "game-list" :data data)))
 
 (defn msg-game [state {:keys [game-id data] :as msg}]
-  (if-let [data (games/process-game-log-item game-id data (get-user-id state))]
-    (add-game-log state game-id data)
+  (if-let [data (games/preprocess-game-log-item game-id data (get-user-id state))]
+    (do
+      (games/add-log-item game-id data)
+      (games/execute-log-item game-id data))
     (send-message state :type "error" :status "invalid-game-request")))
 
 (defn msg-ping [state msg]
