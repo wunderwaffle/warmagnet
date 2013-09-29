@@ -21,14 +21,15 @@
                    " troops because of " (:reason log))
       (str "Event: " (:type log) " by " name))))
 
-(defn user-stats [districts user-id]
-  (let [stats {:regions 0 :troops 0}]
-    (log (vals districts))
-    (for [district (vals districts)]
-      (if (= (:user-id district) user-id)
-        (do (assoc stats :regions (inc (:regions stats)))
-            (assoc stats :troops (+ (:troops stats) (:amount district))))))
-    stats))
+(defn regions [game user-id]
+  (count
+   (filter #(= (:user-id %) user-id) (vals (:districts game)))))
+
+(defn troops [game user-id]
+  (reduce +
+          (map #(:amount % )
+               (filter #(= (:user-id %) user-id)
+                       (vals (:districts game))))))
 
 (defr Game
   [C {:keys [game] :as P} S]
@@ -51,7 +52,7 @@
       [:table.table
        [:thead
         [:tr
-         [:th "Color"
+         [:th
           [:th "Name"] [:th "Regions"] [:th "Troops"] [:th "Bonus"]]]]
        [:tbody
         (for [player (:players game)
@@ -59,7 +60,10 @@
                     stats (get-stats game id)]]
           [:tr [:td
                 {:style {:background-color (player-color game id)}}]
-           [:td (:name player)] [:td 22] [:td 11] [:td (:supply stats)]])]]]
+           [:td (:name player)]
+           [:td (regions game id)]
+           [:td (troops game id)]
+           [:td (:supply stats)]])]]]
 
      [:p.lead "Game Log"]
      [:div.log.well
