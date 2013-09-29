@@ -1,9 +1,8 @@
 (ns warmagnet.games
-  (:require
+  (:require [clojure.set :refer [subset?]]
   			[warmagnet.db :as db]
   			[warmagnet.utils :as utils]
-  			[warmagnet.crossover.data :as crossover]
-            ))
+            [warmagnet.crossover.data :as crossover]))
 
 (def all-games (atom {}))
 
@@ -91,6 +90,13 @@
 (defn make-log-message [game-id data]
   {:type "game" :game-id game-id :data data})
 
+(defn has-region [districts region]
+  (subset? (into #{} districts) (into #{} (:districts region))))
+
+(defn owns-district
+  [[name district] user-id]
+  (= (:user-id district) user-id))
+
 ; TODO: Fix me - circular reference
 (defn log-broadcast [id data]
 	(let [game-broadcast (resolve 'warmagnet.app/game-broadcast)]
@@ -140,10 +146,23 @@
       (add-log-item {:type "turn" :user-id (:id (first (:players game-state)))})))
 
 (defn new-turn-supply [game-state user-id]
-  (let [districts (->> (get-in game-state [:map :districts])
-                       (filter #(= (% :user-id) user-id))
-                       (map first))]
-    game-state))
+  (let [districts (->> (get game-state :districts)
+                       (filter #(owns-district % user-id))
+                       (map first))
+        regions (get-in game-state [:map :regions])
+        region-supply (fn [game-state [name region]]
+                        (if (has-region districts region)
+                          (add-log-item game-state {:type "supply"
+                                                    :user-id user-id
+                                                    :amount (:bonus region)
+                                                    :reason name})
+                          game-state))]
+    (-> game-state
+        (add-log-item {:type "supply"
+                       :user-id user-id
+                       :amount (/ (count districts) 3)
+                       :reason (str (count districts) " districts")})
+        (#(reduce region-supply % regions)))))
 
 (defn execute-log-item [game-state {:keys [user-id type] :as data}]
   (case (keyword type)
