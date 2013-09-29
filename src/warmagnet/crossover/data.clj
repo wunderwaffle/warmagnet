@@ -14,4 +14,6 @@
     	:join (update-in game [:players] conj
                          {:id user-id :name (:user-name msg)})
     	:set-district (set-district game msg)
+        :supply (update-in game [:player-state user-id :supply]
+                           (fnil + 0) (:amount msg))
     	game)))
