@@ -90,7 +90,7 @@
 
 (defn get-game-players [game-id]
   (sql/select user_games
-              (sql/fields :user_id :users.name)
+              (sql/fields [:user_id :id] :users.name)
               (sql/join users (= :users.id :user_id))
               (sql/where (= :game_id game-id))))
 
