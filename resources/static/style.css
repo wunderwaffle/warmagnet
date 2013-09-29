@@ -8,3 +8,7 @@
     margin-top: -.8em;
     font-size: 1.8em;
 }
+
+.navbar-brand img {
+    margin: -15px 0;
+}

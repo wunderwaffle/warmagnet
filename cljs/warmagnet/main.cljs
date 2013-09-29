@@ -6,6 +6,7 @@
             [warmagnet.utils :refer [log send-message setup-auth]]
             [warmagnet.world :refer [world]]
             [warmagnet.components :as components]
+            [warmagnet.views.navbar :refer [Navbar]]
             [warmagnet.views.games :as games]
             [warmagnet.views.gamemap :as gamemap]
             [warmagnet.views.index :as index]))
@@ -19,7 +20,7 @@
   {:render (fn [C props S]
              (let [{:keys [user games route] :as P} (aget props "props")]
                [:div
-                [components/Navbar P]
+                [Navbar P]
                 [:div.container {:style {:margin-top "70px"}}
                  (log route)
 

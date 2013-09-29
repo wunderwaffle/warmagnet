@@ -5,29 +5,6 @@
    [warmagnet.utils :refer [log]]
    [warmagnet.handlers :as handlers]))
 
-(defr SigninButton
-  {:render (fn [C {:keys [user]} S]
-             (let [handler (if user handlers/persona-sign-out handlers/persona-sign-in)
-                   text (if user "Sign Out" "Sign In")]
-               [:button.btn.btn-success
-                {:type "button" :on-click handler}
-                text]))})
-
-(defr Navbar
-  {:render (fn [C {:keys [user]} S]
-             [:div.navbar.navbar-inverse.navbar-fixed-top
-              [:div.container
-               [:div.navbar-header
-                [:a.navbar-brand {:href "#"} "WarMagnet"]]
-               [:div.navbar-collapse.collapse
-                [:ul.nav.navbar-nav
-                 [:li [:a {:href "#games"} "Games"]]
-                 [:li [:a {:href "#games/new"} "New Game"]]
-                 [:li [:a {:href "#leaderboard"} "Leaderboard"]]
-                 [:li [:a {:href "#preferences"} "Preferences"]]
-                 [:form.navbar-form.navbar-right
-                  [SigninButton {:user user}]]]]]])})
-
 (defr Preferences
   {:render (fn [C user S]
              [:div.col-md-4.col-md-offset-4
