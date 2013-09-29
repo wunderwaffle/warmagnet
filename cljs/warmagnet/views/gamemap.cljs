@@ -26,37 +26,34 @@
   (string/join " " (map #(name (first %)) (filter #(second %) class-map))))
 
 (defr MapDistrict
-  {:render (fn [C {:keys [name coordinates borders hovered assoc-hovered]} S]
-             (let [this-hovered (= (:name hovered) name)
-                   attacker-hovered (some #{name} (:borders hovered))
-                   regular (not-any? true? [this-hovered attacker-hovered])]
-               [:div
-                {:class (cx {:map-district true
-                             :label true
-                             :label-success regular
-                             :label-info this-hovered
-                             :label-danger attacker-hovered})
-                 :style (clj->js {:left (first coordinates)
-                                  :top (second coordinates)})
-                 :on-mouse-enter (fn [C]
-                                   (assoc-hovered {:name name :borders borders}))
-                 :on-mouse-leave (fn [C]
-                                   (assoc-hovered nil))}
-                2]))})
+  [C {:keys [name coordinates borders hovered assoc-hovered]} S]
+  (let [this-hovered (= (:name hovered) name)
+        attacker-hovered (some #{name} (:borders hovered))
+        regular (not-any? true? [this-hovered attacker-hovered])]
+    [:div
+     {:class (cx {:map-district true
+                  :label true
+                  :label-success regular
+                  :label-info this-hovered
+                  :label-danger attacker-hovered})
+      :style (clj->js {:left (first coordinates)
+                       :top (second coordinates)})
+      :on-mouse-enter (fn [C] (assoc-hovered {:name name :borders borders}))
+      :on-mouse-leave (fn [C] (assoc-hovered nil))}
+     2]))
 
 (defr GameMap
-  {:component-will-mount (fn [C] (if-not (:name (. C -props)) (xhr-load-map)))
-   :render (fn [C
-                {:keys [name map-src regions districts dimensions]}
-                {:keys [hovered]}]
-             (let [assoc-hovered #(assoc-state C :hovered %)]
-               (if-not name
-                 [:div "No map"]
-                 [:div.game-map
-                  {:style (clj->js {:transform (get-map-scale dimensions)})}
-                  [:img {:src (str "/static/" map-src)}]
-                  (map (fn [district]
-                         [MapDistrict (assoc district
-                                        :assoc-hovered assoc-hovered
-                                        :hovered hovered)])
-                       districts)])))})
+  :component-will-mount (fn [C] (if-not (:name (. C -props)) (xhr-load-map)))
+  [C
+   {:keys [name map-src regions districts dimensions]}
+   {:keys [hovered]}]
+  (let [assoc-hovered #(assoc-state C :hovered %)]
+    (if-not name
+      [:div "No map"]
+      [:div.game-map
+       {:style (clj->js {:transform (get-map-scale dimensions)})}
+       [:img {:src (str "/static/" map-src)}]
+       (map (fn [district] [MapDistrict (assoc district
+                                          :assoc-hovered assoc-hovered
+                                          :hovered hovered)])
+            districts)])))
