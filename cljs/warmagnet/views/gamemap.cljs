@@ -126,8 +126,8 @@
 
 (def reinforce? attack?)
 
-(defn get-supply [player-state user]
-  (:supply (player-state (:id user))))
+(defn user-state [game user]
+  (get-in game [:player-state (keyword (:id user))]))
 
 (defn troops-on [[dname dmap] game-districts]
   (-> game-districts dname :amount))
@@ -142,7 +142,7 @@
   (let [{:keys [name map-src regions districts dimensions]} game-map
         {:keys [player-state players turn-by]} game
         game-districts (:districts game)
-        is-my-turn true #_(= turn-by (:id user))
+        is-my-turn (= turn-by (:id user))
    
         clear-popovers #(assoc-state C {:attacker nil :deploying nil :defender nil})
         assoc-hovered #(assoc-in-state C :hovered %)
@@ -176,6 +176,7 @@
                           (and (= state :reinforce)
                                attacker (reinforce? attacker %)) :target
                           (and attacker (attack? attacker %)) :target))]
+
     (if-not name
       [:div "No map"]
       [:div.game-map
@@ -192,7 +193,7 @@
                              :click district-action}]))
             districts)
        (if deploying
-         [Deploy {:available-troops (get-supply player-state user)
+         [Deploy {:available-troops (:supply (get-state game user))
                   :district deploying :deploy deploy}])
        (if (and (= state :attack) attacker defender)
          [Attack {:attacker attacker :attacking (troops-on attacker game-districts)
