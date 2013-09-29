@@ -183,7 +183,7 @@
                          (cond
                           (and (= phase :reinforce) (= %2 user-id)
                                attacker (reinforce? attacker %1)) :neighbor
-                          (and (= %2 user-id)
+                          (and (= phase :attack) (not= %2 user-id)
                                attacker (attack? attacker %1)) :target))]
 
     (if-not map-src
