@@ -11,9 +11,22 @@
   [C {:keys [map game]} S]
   [:div
    [GameMap map]
+
+   [:p.lead "Stats"]
+   [:div.stats.well
+    [:table.table
+     [:thead
+      [:tr
+       [:th
+        [:th "Name"] [:th "Regions"] [:th "Troops"] [:th "Bonus"]]]]
+     [:tbody
+      (for [player (vals (:players game))]
+        [:tr [:td ] [:td player] [:td 22] [:td 11] [:td 33]])]]]
+
+   [:p.lead "Game Log"]
    [:div.log.well
-    [:p.lead "Game Log"]
+
     [:ul
-   (for [gamelog (first game)]
+   (for [gamelog (:log game)]
      [:li.text-success (log->text gamelog)])]]
    [:p (pr-str game)]])
