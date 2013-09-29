@@ -11,6 +11,7 @@
             [taoensso.timbre                :refer [info]]
 
             [warmagnet.permacookie :refer [permacookie]]
+            [warmagnet.config :refer [config]]
             [warmagnet.utils       :refer [wrap-logging]]
             [warmagnet.app         :refer [ws-handler]]))
 
@@ -42,6 +43,8 @@
 
     (info (if (:dev opts) "Development mode" "Production mode"))
     (info "Starting to listen on " (:port opts))
+    (if (:persona opts) (swap! config assoc :persona-callback (:persona opts)))
+    (info "Persona callback" (:persona-callback @config))
     (hk/run-server app (select-keys opts [:port :ip]))))
 
 (defn run [& opts]
