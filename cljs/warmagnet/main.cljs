@@ -45,6 +45,7 @@
   []
   (aset js/window "ws" ws)
   (setup-auth (:user @world) handlers/login handlers/logout)
+;;  (if (:user @world) (handlers/do-login (handlers/get-token)))
   (send-message {:type :route :data (current-route)})
 
   (let [root-el (.-body js/document)

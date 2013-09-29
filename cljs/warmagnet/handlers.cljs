@@ -34,8 +34,21 @@
   (send-message-srv {:type :update-user :data prefs})
   (send-message {:type :update-user :data prefs}))
 
+(defn save-token [token]
+  (.setItem (.-localStorage js/window) "token"
+            (.stringify js/JSON (clj->js token))))
+
+(defn get-token []
+  (let [token (.getItem (.-localStorage js/window) "token")
+        json (.parse js/JSON token)]
+    (.log js/console "TOKEN" json)
+    (if json (js->clj json :keywordize-keys true) json)))
 
 (defn login [token]
+  (save-token token)
+  (do-login token))
+
+(defn do-login [token]
   (send-message-srv {:type :login :token token}))
 
 (defn logout []
