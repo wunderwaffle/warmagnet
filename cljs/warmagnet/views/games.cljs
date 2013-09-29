@@ -95,8 +95,11 @@
                          (send-message-srv {:type :game-list}))
   [C {:keys [games user]} S]
   (if (empty? games)
-    [:div [:p.lead "No Games. "
-           [:a {:href "#games/new"} "Go and create one!"]]]
+    [:div
+     [:i.icon-spinner.icon-spin.icon-4x]
+     [:p.lead "No Games. "
+      [:a {:href "#games/new"} "Go and create one!"]]]
+
 
     [:div.col-md-12
      [:div
