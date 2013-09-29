@@ -53,12 +53,19 @@
 		  phase (:phase player-state)]
 		  (and (= turn-by user-id) (= phase PHASE-ATTACK))))
 
+(defn check-reinforce-end [game {:keys [user-id]}]
+	(let [turn-by (:turn-by game)
+  		  player-state (get-in game [:player-state user-id])
+		  phase (:phase player-state)]
+		  (and (= turn-by user-id) (= phase PHASE-REINFORCE))))
+
 (defn check-transition [game msg]
 	(case (keyword (:type msg))
 		:deploy (check-deploy game msg)
 		:attack (check-attack game msg)
-		:reinforce (check-reinforce game msg)
 		:attack-end (check-attack-end game msg)
+		:reinforce (check-reinforce game msg)
+		:reinforce-end (check-reinforce-end game msg)
 		false))
 
 ;; set
