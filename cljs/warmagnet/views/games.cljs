@@ -52,21 +52,27 @@
    [:button.btn.btn-success.btn-lg {:type "submit"} "Create"]])
 
 (defr GameItem
-  [C {:keys [id gamelog game players children]} S]
+  [C {:keys [id gamelog game players player-list children]} S]
   #_ (log (pr-str game))
 
-  [:div.game-item.well
+  [:div.game-item.well.clearfix
    [:h2.pull-right id]
-   [:div.smallmap.col-md-4
-;;   [:img {:src game-map}]
+
+   [:div.smallmap.col-md-3
     [:img {:src "/static/map-classic.jpg" :width 180 :height 100 }]]
-;; [:p "Players"]
-;;  [:ul (tags :li (map :name players))]
-   [:div.stats.col-md-offset-6
+
+   [:div.stats.col-md-4
     [:p [:b "Number of players: "] (if players (+ players " of ")) (:size game)]
     [:p [:b "Round duration: "] (:duration game)]
     [:p [:b "Reinforcement: "] (:reinforcement game)]]
-   [:div.col-md-offset-6
+
+   [:div.col-md-4
+    [:p [:b "Players"]]
+    [:ul
+     (for [player player-list]
+       [:li (:name player)])]]
+
+   [:div.col-md-offset-10
     children]])
 
 (defr GameList
@@ -74,7 +80,7 @@
   (if (empty? games)
     [:div [:p.lead "No Games. "
            [:a {:href "#games/new"} "Go and create one!"]]]
-    [:div.col-md-offset-2.col-md-6
+    [:div.col-md-12
      [:div (for [[id [log game]] games]
             [GameItem {:key id :id id :gamelog log :game game
                        :children [:button.btn.btn-default
@@ -87,12 +93,13 @@
   (if (empty? games)
     [:div "SPIN SPIN SPIN"]
 
-    [:div.col-md-offset-2.col-md-6
-     (for [{:keys [id data players]} games]
+    [:div.col-md-12
+     (for [{:keys [id data players player-list]} games]
        [GameItem {:key id
                   :id id
                   :game data
                   :players players
+                  :player-list player-list
                   :children (if (< players (:size data))
                               [:button.btn.btn-default
                                {:on-click #(handlers/join-game id)} "Join"])}])]))
