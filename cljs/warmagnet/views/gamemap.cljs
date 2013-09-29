@@ -95,7 +95,7 @@
   (let [assoc-hovered #(assoc-in-state C :hovered %)]
     (if-not name
       [:div "No map"]
-      [:div.game-map.row
+      [:div.game-map
        {:style (get-map-style dimensions container-width)}
        [:img {:src (str "/static/" map-src)}]
        (map (fn [district] [MapDistrict {:district district

@@ -4,11 +4,16 @@
 
 (defn log->text [log]
   (case (:type log)
-    "join" "User " (:user-name log) " joined the game"
-    "Event: " (:type log) " by " (:user-name log)))
+    "join" (str "User " (:user-name log) " joined the game")
+    (str "Event: " (:type log) " by " (:user-name log))))
 
 (defr Game
   [C {:keys [map game]} S]
   [:div
    [GameMap map]
+   [:div.log.well
+    [:p.lead "Game Log"]
+    [:ul
+   (for [gamelog (first game)]
+     [:li.text-success (log->text gamelog)])]]
    [:p (pr-str game)]])
