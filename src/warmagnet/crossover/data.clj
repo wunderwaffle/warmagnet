@@ -3,9 +3,13 @@
 (defn check-transition [game-state msg]
 	true)
 
+(defn set-district [game {:keys [user-id district amount] :as msg}]
+	(update-in game [:districts district] assoc :user-id user-id :amount amount))
+
 (defn game-transition [game {:keys [type user-id] :as msg}]
-  (let [game-state (update-in game [:log] conj msg)]
+  (let [game (update-in game [:log] conj msg)]
   	(case (keyword type)
-    	:join (update-in game-state [:players] conj
+    	:join (update-in game [:players] conj
                          {:id user-id :name (:user-name msg)})
-    	game-state)))
+    	:set-district (set-district game msg)
+    	game)))

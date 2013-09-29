@@ -19,6 +19,7 @@
 	 :log []
 	 :players []
      :map map
+     :districts {}
 	 :watchers #{}}))
 
 (defn replay-game-log [game-state game-log]
@@ -117,12 +118,20 @@
 		(add-log-item new-state {:type "start"})))
 
 (defn maybe-start-game [game-state]
-	(println "x maybe start" game-state)
 	(if (= (get-in game-state [:options :size]) (count (:players game-state)))
 		(start-game game-state)
 		game-state))
 
+(defn initial-distribute-districts [game-state]
+	(let [districts (keys (get-in game-state [:map :districts]))
+		  users (map :id (:players game-state))
+		  joined (zipmap districts (cycle users))
+		  distributor (fn [game-state [district user-id]]
+		  	(add-log-item game-state {:type "set-district" :user-id user-id :district district :amount 3}))]
+		  	(reduce distributor game-state joined)))
+
 (defn execute-log-item [game-state data]
 	(case (keyword (:type data))
 		:join (maybe-start-game game-state)
+		:start (initial-distribute-districts game-state)
 		game-state))

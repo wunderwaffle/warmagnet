@@ -49,13 +49,12 @@
 
 (defn serialize-game-state [game-state]
   ; TODO: Fix me
-  (select-keys game-state [:id :options :log :players]))
+  (select-keys game-state [:id :options :log :players :districts]))
 
 ;; games
 (defn watch-game [state game-state]
   (let [user-id (get-user-id state)
         game-id (:id game-state)]
-    (println "x" game-id game-state)
     (swap! state update-in [:games] conj game-id)
     (games/add-watcher game-id user-id)
     (send-message state :type "game-state" :data (serialize-game-state game-state))))
@@ -72,7 +71,6 @@
 (defn send-joined-games [state]
   (let [games (db/get-user-games (get-user-id state))]
     (doseq [game games]
-      (println "!" (games/get-game (:game_id game)))
       (watch-game state (games/get-game (:game_id game))))))
 
 ;; Message Handlers
@@ -107,7 +105,6 @@
 (defn msg-join-game [state {:keys [game-id] :as msg}]
   (let [game-state (games/get-game game-id)
         user-id (get-user-id state)]
-    (println "!@#!@#!@#" game-id game-state)
     (if game-state
       (if (games/can-join-game game-id user-id)
         (join-game state game-state)
