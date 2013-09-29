@@ -32,35 +32,38 @@
 
 (defr Game
   [C {:keys [game] :as P} S]
-  [:div
-  (let [current-player-id (:turn-by game)]
-    [:p.lead "Turn by: "
-     (:name (get-player game current-player-id))
-     " | Phase: " (:phase (get-stats game current-player-id))])
+  (if-not game
+    [:div "Loading"]
 
-   [GameMap P]
+    [:div
+     (let [current-player-id (:turn-by game)]
+       [:p.lead "Turn by: "
+        (:name (get-player game current-player-id))
+        " | Phase: " (:phase (get-stats game current-player-id))])
 
-   [:p.lead "Stats"]
-   [:div [:b "Round duration: "] (:duration (:options game))]
-   [:div [:b "Reinforcement: "] (:reinforcement (:options game))]
+     [GameMap P]
 
-   [:div.stats.well.clearfix
-    [:table.table
-     [:thead
-      [:tr
-       [:th
-        [:th "Name"] [:th "Regions"] [:th "Troops"] [:th "Bonus"]]]]
-     [:tbody
-      (for [player (:players game)
-            :let [stats (get-stats game (:id player))]]
-        [:tr [:td ] [:td (:name player)] [:td 22] [:td 11] [:td (:supply stats)]])]]]
+     [:p.lead "Stats"]
+     [:div [:b "Round duration: "] (:duration (:options game))]
+     [:div [:b "Reinforcement: "] (:reinforcement (:options game))]
 
-   [:p.lead "Game Log"]
-   [:div.log.well
+     [:div.stats.well.clearfix
+      [:table.table
+       [:thead
+        [:tr
+         [:th
+          [:th "Name"] [:th "Regions"] [:th "Troops"] [:th "Bonus"]]]]
+       [:tbody
+        (for [player (:players game)
+              :let [stats (get-stats game (:id player))]]
+          [:tr [:td ] [:td (:name player)] [:td 22] [:td 11] [:td (:supply stats)]])]]]
 
-    [:ul
-     (for [gamelog (:log game)
-           :let [text (log->text game gamelog)]]
-       (if text
-         [:li.text-success [:small text]]))]]
-   #_ [:p (pr-str game)]])
+     [:p.lead "Game Log"]
+     [:div.log.well
+
+      [:ul
+       (for [gamelog (:log game)
+             :let [text (log->text game gamelog)]]
+         (if text
+           [:li.text-success [:small text]]))]]
+     #_ [:p (pr-str game)]]))

@@ -127,7 +127,9 @@
 (def reinforce? attack?)
 
 (defn user-state [game user]
-  (get-in game [:player-state (keyword (:id user))]))
+  (let [id-key (keyword (str (:id user)))
+        path [:player-state id-key]]
+    (get-in game path)))
 
 (defn troops-on [[dname dmap] game-districts]
   (-> game-districts dname :amount))
