@@ -50,7 +50,7 @@
                  :label-info this-hovered
                  :label-danger attacker-hovered)
       :style (clj->js {:left x :top y})
-      :on-click (fn [C] (click district))
+      :on-click (if click (fn [C] (click district)) #())
       :on-mouse-enter (fn [C] (assoc-hovered district))
       :on-mouse-leave (fn [C] (assoc-hovered nil))}
      2]))
@@ -97,6 +97,10 @@
       [:button.btn.btn-warning {:on-click attack} "Attack"]
       [:button.btn.btn-danger "Blitz"]]]]))
 
+(defn attack? [[aname {:keys [borders]}] [dname dmap]]
+  (let [str-name (name dname)]
+      (some #{str-name} borders)))
+
 (defr GameMap
   :component-will-mount (fn [C] (if-not (:name (. C -props))
                                   (xhr-load-map)))
@@ -106,18 +110,20 @@
    {:keys [hovered deploying attacker defender state]}]
   (let [clear-popovers #(assoc-state C {:attacker nil :deploying nil :defender nil})
         assoc-hovered #(assoc-in-state C :hovered %)
-        click-deploying #(assoc-in-state C :deploying (if (not= deploying %) % nil))
+
+        dst-deploy #(assoc-in-state C :deploying (if (not= deploying %) % nil))
+        dst-attack #(if (= % attacker) (clear-popovers)
+                        (if (nil? attacker) (assoc-in-state C :attacker %)
+                            (if (attack? attacker %) (assoc-in-state C :defender %))))
+        dst-reinfor #(assoc-in-state C :reinforcing (if (not= reinforcing %) % nil))
+
         deploy #(assoc-state C {:deploying nil :state :attack})
         attack #(assoc-state C {:attacker nil :defender nil :state :deploy})
-        assoc-attacker #(assoc-in-state C :attacker %)
-        assoc-defender #(assoc-in-state C :defender %)
 
-        district-action #(case state
-                           :deploy click-deploying
-                           :attack (if (= % attacker) clear-popovers
-                                       (if (nil? attacker)
-                                         assoc-attacker
-                                         assoc-defender)))]
+        district-action (case state
+                          :deploy dst-deploy
+                          :attack dst-attack
+                          :reinfor dst-reinfor)]
     (if-not name
       [:div "No map"]
       [:div.game-map
@@ -126,10 +132,12 @@
               :on-click clear-popovers}]
        (map (fn [district] [MapDistrict {:district district
                                          :assoc-hovered assoc-hovered
-                                         :click (district-action district)
+                                         :click district-action
                                          :hovered hovered}])
             districts)
-       (if deploying [Deploy {:available-troops 40 :district deploying :deploy deploy}])
-       (if attacker [Attack {:attacker attacker :attacking 142
-                             :defender defender :defending 30
-                             :attack attack}])])))
+       (if deploying
+         [Deploy {:available-troops 40 :district deploying :deploy deploy}])
+       (if (and attacker defender)
+         [Attack {:attacker attacker :attacking 142
+                  :defender defender :defending 30
+                  :attack attack}])])))
