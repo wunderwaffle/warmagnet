@@ -31,12 +31,15 @@
   (->
    (sql/select users
                (sql/where (= :email email)))
-   first))
+   first
+   (dissoc :token)))
 
 (defn get-user-by-token [token]
-  (-> (sql/select users
-                  (sql/where (= :token token)))
-      first))
+  (->
+   (sql/select users
+               (sql/where (= :token token)))
+   first
+   (dissoc :token)))
 
 (defn update-user [id profile]
   (if-not (empty? profile)
