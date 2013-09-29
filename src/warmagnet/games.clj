@@ -1,18 +1,23 @@
 (ns warmagnet.games
   (:require
   			[warmagnet.db :as db]
+  			[warmagnet.utils :as utils]
   			[warmagnet.crossover.data :as crossover]
             ))
 
 (def all-games (atom {}))
 
+(def map-file "resources/static/map-classic.json")
+
 ;; internal api
 (defn create-game-state [game]
+  (let [map (utils/load-json map-file)]
 	{:id (:id game)
 	 :options (:data game)
 	 :log []
 	 :players {}
-	 :watchers #{}})
+         :map map
+	 :watchers #{}}))
 
 (defn replay-game-log [game-state game-log]
 	(reduce #(crossover/game-transition %1 %2) game-state game-log))

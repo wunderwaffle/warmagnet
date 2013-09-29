@@ -1,4 +1,4 @@
-.game-map {
+.game-map, .popover {
     -webkit-transform-origin: 0 0;
     transform-origin: 0 0;
 }
@@ -10,6 +10,11 @@
     font-size: 1.8em;
     -webkit-transition: background-color 0.1s 0 linear;
     transition: background-color 0.1s 0 linear;
+}
+
+.game-map .popover {
+    transform: scale(1.8);
+    -webkit-transform: scale(1.8);
 }
 
 .navbar-brand img {
