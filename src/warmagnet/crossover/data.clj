@@ -22,8 +22,29 @@
 		  source-supply (:amount source)
 		  source-district (get-in game [:map :districts (keyword attack-from)])
 		  source-connects-target (boolean (some #{attack-to} (:borders source-district)))
+		  source-user (:user-id source)
 		  amount-valid (> source-supply amount)]
-		  (and (= turn-by user-id) (= phase PHASE-ATTACK) amount-valid source-connects-target)
+		  (and (= turn-by user-id) (= phase PHASE-ATTACK) (= source-user user-id) amount-valid source-connects-target)
+		))
+
+(defn check-reinforce [game {:keys [user-id reinforce-from reinforce-to amount]}]
+	(let [turn-by (:turn-by game)
+		  player-state (get-in game [:player-state user-id])
+		  phase (:phase player-state)
+		  source (get-in game [:districts reinforce-from])
+		  target (get-in game [:districts reinforce-to])
+		  source-supply (:amount source)
+		  source-district (get-in game [:map :districts (keyword reinforce-from)])
+		  source-connects-target (boolean (some #{reinforce-to} (:borders source-district)))
+		  source-user (:user-id source)
+		  target-user (:user-id target)
+		  amount-valid (> source-supply amount)]
+		  (and (= turn-by user-id)
+		  	   (= phase PHASE-REINFORCE)
+		  	   (= source-user user-id)
+		  	   (= target-user user-id)
+		  	   amount-valid
+		  	   source-connects-target)
 		))
 
 (defn check-attack-end [game {:keys [user-id]}]
@@ -36,6 +57,7 @@
 	(case (keyword (:type msg))
 		:deploy (check-deploy game msg)
 		:attack (check-attack game msg)
+		:reinforce (check-reinforce game msg)
 		:attack-end (check-attack-end game msg)
 		false))
 
@@ -53,6 +75,11 @@
 		(update-in [:districts attack-from :amount] (fnil - 0) amount)
 		(update-in [:districts attack-to :amount] (fnil - 0) amount)))
 
+(defn handle-reinforce [game {:keys [user-id reinforce-from reinforce-to amount]}]
+	(-> game
+		(update-in [:districts reinforce-from :amount] (fnil - 0) amount)
+		(update-in [:districts reinforce-to :amount] (fnil + 0) amount)))
+
 (defn game-transition [game {:keys [type user-id] :as msg}]
   (let [game (update-in game [:log] conj msg)]
   	(case (keyword type)
@@ -69,5 +96,6 @@
     	:deploy (handle-deploy game msg)
     	:attack (handle-attack game msg)
     	:attack-end (assoc-in game [:player-state user-id :phase] PHASE-REINFORCE)
+    	:reinforce (handle-reinforce game msg)
     	:reinforce-end (assoc-in game [:player-state user-id :phase] nil)
     	game)))
