@@ -75,7 +75,7 @@
 
 ;; games
 (defn new-game [data]
-  (let [game (sql/insert games (sql/values {:data (json/encode data) :size (:size data) :players 0}))]
+  (let [game (sql/insert games (sql/values {:data (json/encode data) :size (:size data) :players 0 :finished false}))]
     (assoc game :data data)))
 
 (defn add-game-log [game-id data]
@@ -111,8 +111,8 @@
 
 (defn get-game-list []
   (let [games (sql/select games
-                          (sql/fields :id :name :players :data)
-                          (sql/where (not= :finished true)))]
+                          (sql/fields :id :name :players :data :finished :winner)
+                          (sql/where {:finished false}))]
     (mapv -update-game-item games)))
 
 (defn get-game-log [id]
@@ -140,4 +140,5 @@
 
 (defn get-user-games [user-id]
   (sql/select user_games
-              (sql/where (= :user_id user-id))))
+              (sql/join games (= :games.id :game_id))
+              (sql/where {:user_id user-id :games.finished false})))
