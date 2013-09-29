@@ -1,6 +1,6 @@
 (ns warmagnet.handlers
   (:require
-   [warmagnet.utils :refer [log send-message-srv]]))
+   [warmagnet.utils :refer [log send-message send-message-srv]]))
 
 (defn new-game [e state]
   (.preventDefault e)
