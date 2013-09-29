@@ -96,8 +96,8 @@
       [:thead [:tr [:th (name aname)] [:th (name dname)]]]
       [:tbody [:tr [:td attacking] [:td defending]]]]
      [:div.btn-group
-      [:button.btn.btn-warning {:on-click attack!} "Attack"]
-      [:button.btn.btn-danger "Blitz"]]]]))
+      [:button.btn.btn-warning {:on-click #(attack! 3 aname dname)} "Attack"]
+      [:button.btn.btn-danger  {:on-click #(attack! (dec attacking) aname dname)} "Blitz"]]]]))
 
 (defr Reinforce
   :component-will-mount (fn [C P S] (assoc-in-state C :transfer 0))
@@ -163,7 +163,7 @@
                         (reinforce? attacker %) (assoc-in-state C :defender %))
 
         deploy! #(send-log game-id {:type :deploy :district (first %1) :amount %2})
-        attack! #(assoc-state C {:attacker nil :defender nil :state :reinforce})
+        attack! #(send-log game-id {:type :attack :amount %1 :attack-from %2 :attack-to %3})
         reinforce! #(assoc-state C {:attacker nil :defender nil :state :deploy})
 
         district-action (if is-my-turn
