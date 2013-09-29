@@ -121,9 +121,11 @@
   :get-initial-state (fn [] {:state :reinforce})
 
   [C
-   {:keys [name map-src regions districts dimensions container-width]}
+   {:keys [game-map game container-width]}
    {:keys [hovered deploying attacker defender state]}]
-  (let [clear-popovers #(assoc-state C {:attacker nil :deploying nil :defender nil})
+  (let [{:keys [name map-src regions districts dimensions]} game-map
+   
+        clear-popovers #(assoc-state C {:attacker nil :deploying nil :defender nil})
         assoc-hovered #(assoc-in-state C :hovered %)
 
         dst-deploy #(assoc-in-state C :deploying (if (not= deploying %) % nil))

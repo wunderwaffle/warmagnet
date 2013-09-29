@@ -31,9 +31,9 @@
     stats))
 
 (defr Game
-  [C {:keys [map game]} S]
+  [C {:keys [game] :as P} S]
   [:div
-   [GameMap map]
+   [GameMap P]
 
    [:p.lead "Stats"]
    [:div [:b "Round duration: "] (:duration (:options game))]

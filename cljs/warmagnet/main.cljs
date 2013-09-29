@@ -19,7 +19,7 @@
                          (send-message {:type :container-width
                                         :data (.-clientWidth node)}))
 
-  [C {:keys [user allgames games route map container-width]} S]
+  [C {:keys [user allgames games route game-map container-width]} S]
   [:div.container {:style {:margin-top "70px"}}
    ;(log route)
 
@@ -36,10 +36,10 @@
        #"games/new" [games/NewGame]
        #"games/(\d+)" :>> (fn [[[_ id]]]
                             [Game {:game (games (js/parseInt id))
-                                   :map (assoc map
-                                          :container-width container-width)}])
+                                   :game-map game-map                                   
+                                   :container-width container-width}])
        #"games" [games/GameList {:games games}]
-       #"map" [gamemap/GameMap (assoc map :container-width container-width)]
+       #"map" [gamemap/GameMap {:game-map game-map :container-width container-width}]
        [:div (str "UNKNOWN ROUTE: " route)]))])
 
 (defr Wrapper

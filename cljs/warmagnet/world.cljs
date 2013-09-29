@@ -38,5 +38,5 @@
                   world)
     :game (update-in world [:games (:game-id msg)] game-transition data)
     :container-width (assoc world :container-width data)
-    :map-received (assoc world :map data)
+    :map-received (assoc world :game-map data)
     :game-list (assoc world :allgames data)))
