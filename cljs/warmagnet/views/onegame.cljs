@@ -7,8 +7,8 @@
 (defn get-player [game user-id]
   (first (filter #(= (:id %) user-id) (:players game))))
 
-(defn get-stats [game player]
-  ((keyword (str (:id player))) (:player-state game)))
+(defn get-stats [game user-id]
+  ((keyword (str user-id)) (:player-state game)))
 
 (defn log->text [game {:keys [type user-id] :as log}]
   (let [{:keys [name]} (get-player game user-id)]
@@ -33,6 +33,12 @@
 (defr Game
   [C {:keys [game] :as P} S]
   [:div
+  (let [current-player-id (:turn-by game)]
+    (log current-player-id)
+    [:p.lead "Turn by: "
+     (:name (get-player game current-player-id))
+     " | Phase: " (:phase (get-stats game current-player-id))])
+
    [GameMap P]
 
    [:p.lead "Stats"]
@@ -47,9 +53,8 @@
         [:th "Name"] [:th "Regions"] [:th "Troops"] [:th "Bonus"]]]]
      [:tbody
       (for [player (:players game)
-            :let [stats (get-stats game player)]]
-        (if (:player-state game)
-        [:tr [:td ] [:td (:name player)] [:td 22] [:td 11] [:td (:supply stats)]]))]]]
+            :let [stats (get-stats game (:id player))]]
+        [:tr [:td ] [:td (:name player)] [:td 22] [:td 11] [:td (:supply stats)]])]]]
 
    [:p.lead "Game Log"]
    [:div.log.well
