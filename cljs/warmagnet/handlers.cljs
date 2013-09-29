@@ -39,7 +39,6 @@
 
 (defn get-token []
   (let [token (.getItem (.-localStorage js/window) "token")]
-    (log "TOKEN" token)
     (if token (js->clj token) nil)))
 
 (defn login [token]
