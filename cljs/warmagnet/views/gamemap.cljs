@@ -1,8 +1,7 @@
 (ns warmagnet.views.gamemap
   (:require-macros [pump.def-macros :refer [defr]])
-  (:require [clojure.string :as string]
-            [pump.core :refer [assoc-state]]
-            [warmagnet.utils :refer [send-message]]))
+  (:require [pump.core :refer [assoc-state]]
+            [warmagnet.utils :refer [cx send-message]]))
 
 (defn xhr [url callback]
   (let [xhr (js/XMLHttpRequest.)]
@@ -21,9 +20,6 @@
 
 (defn get-map-scale [[x y]]
   (str "scale(" (/ (- (.-clientWidth document/documentElement) 30) x) ")"))
-
-(defn cx [class-map]
-  (string/join " " (map #(name (first %)) (filter second class-map))))
 
 (defr MapDistrict
   [C {:keys [name coordinates borders hovered assoc-hovered]} S]

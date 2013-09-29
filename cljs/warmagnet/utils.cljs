@@ -1,7 +1,7 @@
 (ns warmagnet.utils
-  (:require
-   [warmagnet.api :refer [ws]]
-   [warmagnet.world :refer [world world-transition]]))
+  (:require [clojure.string :as string]
+            [warmagnet.api :refer [ws]]
+            [warmagnet.world :refer [world world-transition]]))
 
 (defn log [& args]
   (.apply (.-log js/console) js/console
@@ -20,3 +20,6 @@
            {:loggedInUser nil
             :onlogin login
             :onlogout logout})))
+
+(defn cx [class-map]
+  (string/join " " (map #(name (first %)) (filter second class-map))))

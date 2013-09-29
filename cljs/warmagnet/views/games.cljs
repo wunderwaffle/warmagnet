@@ -1,37 +1,53 @@
 (ns warmagnet.views.games
   (:require-macros [pump.def-macros :refer [defr]])
-  (:require [pump.core :refer [assoc-state e-value]]
+  (:require [clojure.string :refer [capitalize]]
+            [pump.core :refer [assoc-state e-value]]
 
-            [warmagnet.utils :refer [send-message]]
+            [warmagnet.utils :refer [send-message cx]]
             [warmagnet.handlers :as handlers]))
 
+(defn button [name value current on-click]
+  (let [primary (= value current)]
+    [:button {:class (cx {:btn true
+                          :btn-default (not primary)
+                          :btn-primary primary})
+              :on-click #(do (.preventDefault %) (on-click value))}
+     name])
+  )
+
 (defr NewGame
-  {:get-initial-state #(identity {:duration "short"
-                                  :reinforcement "adjacent"})
-   :render (fn [C P
-                {:keys [duration reinforcement] :as S}]
-             [:form
-              {:role "form" :on-submit #(handlers/new-game % S)}
+  :get-initial-state #(identity {:size 2
+                                 :duration :short
+                                 :reinforcement :adjacent})
+  [C P
+   {:keys [size duration reinforcement] :as S}]
 
-              [:div.form-group
-               [:label.control-label {:htmlFor "round_time"} "Round time"]
+  [:form
+   {:role "form" :on-submit #(handlers/new-game % S)}
 
-               [:select#round_time.form-control.col-lg-10
-                {:onChange #(assoc-state C :duration (e-value %))
-                 :value duration}
-                [:option {:value "short"} "5 minutes"]
-                [:option {:value "long"} "24 hours"]]]
+   [:div.form-group
+    [:label.control-label "Participants"]
+    [:div.btn-group
+     (for [n (range 2 8)]
+       (button (str n " players") n size
+               #(assoc-state C :size %)))]]
 
-              [:div.form-group
-               [:label.control-label {:htmlFor "reinforcement"} "Reinforcements"]
-               [:select#reinforcement.form-control
-                {:onChange #(assoc-state C :reinforcement (e-value %))
-                 :value reinforcement}
-                [:option {:value "adjacent"} "Adjacent"]
-                [:option {:value "chained"} "Chained"]
-                [:option {:value "unlimited"} "Unlimited"]]]
+   [:div.form-group
+    [:label.control-label "Round time"]
+    [:div.btn-group
+     (for [[name val] [["5 minutes" :short]
+                       ["24 hours" :long]]]
+       (button name val duration
+               #(assoc-state C :duration %)))]]
 
-              [:button.btn.btn-success {:type "submit"} "Create"]])})
+   [:div.form-group
+    [:label.control-label "Reinforcements"]
+    [:div.btn-group
+     (for [val [:adjacent :chained :unlimited]]
+       (button (capitalize (name val)) val reinforcement
+               #(assoc-state C :reinforcement %)))]]
+
+   [:button.btn.btn-success {:type "submit"} "Create"]])
 
 (defr GameItem
   {:render (fn [C {:keys [game-map participants round-time reinforcements]} S]
