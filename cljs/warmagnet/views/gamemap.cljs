@@ -84,18 +84,39 @@
   [C {:keys [attacker attacking defender defending attack]} S]
   (let [[aname {:keys [coordinates]}] attacker
         [dname dmap] defender
-        [x y] (xy-for-popover coordinates)
-        ]
+        [x y] (xy-for-popover coordinates)]
    [:div.popover {:style (clj->js {:display "block" :left x :top y})}
     [:div.popover-content
      [:table {:style (clj->js {:width "100%" :text-align "center"})}
-      [:thead [:tr
-               [:th (name aname)]
-               [:th (if dname (name dname) "")]]]
-      [:tbody [:tr [:td attacking] [:td (if dname defending "")]]]]
+      [:thead [:tr [:th (name aname)] [:th (name dname)]]]
+      [:tbody [:tr [:td attacking] [:td defending]]]]
      [:div.btn-group
       [:button.btn.btn-warning {:on-click attack} "Attack"]
       [:button.btn.btn-danger "Blitz"]]]]))
+
+(defr Reinforce
+  :component-will-mount
+  (fn [C P S] (assoc-in-state C :transfer 0))
+
+  [C
+   {:keys [dst-from troops-from dst-to troops-to reinforce]}
+   {:keys [transfer]}]
+  (let [[fname {:keys [coordinates]}] dst-from
+        [tname tmap] dst-to
+        [x y] (xy-for-popover coordinates)
+        ]
+    [:div.popover {:style (clj->js {:display "block" :left x :top y})}
+    [:div.popover-content
+     [:table {:style (clj->js {:width "100%" :text-align "center"})}
+      [:thead [:tr [:th (name fname)] [:th (name tname)]]]
+      #_[:tbody [:tr [:td attacking] [:td defending]]]]
+     [:div.input-group
+       [:span.input-group-addon (+ troops-from transfer)]
+       [:input.form-control
+        {:on-change #(assoc-in-state C :transfer (js/parseInt (e-value %)))
+         :type "range" :value transfer :min (- 1 troops-from) :max (- troops-to 1)}]
+       [:span.input-group-addon (- troops-to transfer)]]
+     [:button.btn.btn-block {:on-click reinforce} "Reinforce"]]]))
 
 (defn attack? [[aname {:keys [borders]}] [dname dmap]]
   (let [str-name (name dname)]
@@ -115,15 +136,18 @@
         dst-attack #(if (= % attacker) (clear-popovers)
                         (if (nil? attacker) (assoc-in-state C :attacker %)
                             (if (attack? attacker %) (assoc-in-state C :defender %))))
-        dst-reinfor #(assoc-in-state C :reinforcing (if (not= reinforcing %) % nil))
+        dst-reinforce #(if (= % attacker) (clear-popovers)
+                           (if (nil? attacker) (assoc-in-state C :attacker %)
+                               (if (attack? attacker %) (assoc-in-state C :defender %))))
 
         deploy #(assoc-state C {:deploying nil :state :attack})
-        attack #(assoc-state C {:attacker nil :defender nil :state :deploy})
+        attack #(assoc-state C {:attacker nil :defender nil :state :reinforce})
+        reinforce #(assoc-state C {:attacker nil :defender nil :state :deploy})
 
         district-action (case state
                           :deploy dst-deploy
                           :attack dst-attack
-                          :reinfor dst-reinfor)]
+                          :reinforce dst-reinforce)]
     (if-not name
       [:div "No map"]
       [:div.game-map
@@ -137,7 +161,11 @@
             districts)
        (if deploying
          [Deploy {:available-troops 40 :district deploying :deploy deploy}])
-       (if (and attacker defender)
+       (if (and (= state :attack) attacker defender)
          [Attack {:attacker attacker :attacking 142
                   :defender defender :defending 30
-                  :attack attack}])])))
+                  :attack attack}])
+       (if (and (= state :reinforce) attacker defender)
+         [Reinforce {:dst-from attacker :troops-from 142
+                     :dst-to defender :troops-to 30
+                     :reinforce reinforce}])])))
