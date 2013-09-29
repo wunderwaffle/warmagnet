@@ -26,7 +26,7 @@
   [:div.container {:style {:margin-top "70px"}}
    (log route)
 
-   (if-not true #_user
+   (if-not user
      [index/Index]
 
      (case route

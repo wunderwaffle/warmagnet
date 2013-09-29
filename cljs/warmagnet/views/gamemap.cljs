@@ -22,9 +22,11 @@
 (defn get-map-style [[x y] container-width]
   (let [padding 30
         scale (/ (- container-width padding) x)
+        str-scale (str "scale(" scale ")")
         width (* x scale)
         height (* y scale)]
-    (clj->js {:transform (str "scale(" scale ")")
+    (clj->js {:-webkit-transform str-scale
+              :transform str-scale
               :width width
               :height height})))
 

@@ -1,4 +1,5 @@
 .game-map {
+    -webkit-transform-origin: 0 0;
     transform-origin: 0 0;
 }
 
