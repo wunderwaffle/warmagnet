@@ -8,9 +8,10 @@
     margin-left: -.9em;
     margin-top: -.8em;
     font-size: 1.8em;
+    border: 2px solid white;
+    cursor: pointer;
     -webkit-transition: background-color 0.1s 0 linear;
     transition: background-color 0.1s 0 linear;
-    border: 2px solid white;
 }
 
 .game-map .popover {
