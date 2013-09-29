@@ -3,7 +3,7 @@
   (:require [pump.core]
             [warmagnet.api :refer [ws]]
             [warmagnet.handlers :as handlers]
-            [warmagnet.utils :refer [send-message setup-auth]]
+            [warmagnet.utils :refer [log send-message setup-auth]]
             [warmagnet.world :refer [world]]
             [warmagnet.components :as components]
             [warmagnet.views.games :as games]
@@ -21,7 +21,7 @@
                [:div
                 [components/Navbar P]
                 [:div.container {:style {:margin-top "70px"}}
-                 (.log js/console (:route P))
+                 (log route)
 
                  (if-not user
                    [index/Index]

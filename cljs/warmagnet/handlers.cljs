@@ -1,6 +1,6 @@
 (ns warmagnet.handlers
   (:require
-   [warmagnet.utils :refer [send-message-srv]]))
+   [warmagnet.utils :refer [log send-message-srv]]))
 
 (defn new-game [e state]
   (.preventDefault e)
@@ -25,13 +25,12 @@
   (let [keys (keys inputs)
         values (map get-input-value (vals inputs))]
 
-    (.log js/console (clj->js keys))
-    (callback values)
-    ))
+    (log keys)
+    (callback values)))
 
 (defn save-prefs [e, C]
   (.preventDefault e)
-  (serialize-form (js->clj (.-refs C)) #(.log js/console (clj->js %))))
+  (serialize-form (js->clj (.-refs C)) log))
 
 
 (defn login [token]
@@ -39,5 +38,5 @@
 
 (defn logout []
   (send-message {:type :logout})
-  (.log js/console "logout"))
+  (log "logout"))
 

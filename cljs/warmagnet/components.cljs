@@ -2,19 +2,19 @@
   (:require-macros [pump.def-macros :refer [defr]])
   (:require
    [pump.core :refer [react]]
+   [warmagnet.utils :refer [log]]
    [warmagnet.handlers :as handlers]))
 
 (defr SigninButton
-  {:render (fn [C P S]
-             (let [user (:user P)
-                   handler (if user handlers/persona-sign-out handlers/persona-sign-in)
+  {:render (fn [C {:keys [user]} S]
+             (let [handler (if user handlers/persona-sign-out handlers/persona-sign-in)
                    text (if user "Sign Out" "Sign In")]
                [:button.btn.btn-success
                 {:type "button" :on-click handler}
                 text]))})
 
 (defr Navbar
-  {:render (fn [C P S]
+  {:render (fn [C {:keys [user]} S]
              [:div.navbar.navbar-inverse.navbar-fixed-top
               [:div.container
                [:div.navbar-header
@@ -26,17 +26,16 @@
                  [:li [:a {:href "#leaderboard"} "Leaderboard"]]
                  [:li [:a {:href "#preferences"} "Preferences"]]
                  [:form.navbar-form.navbar-right
-                  [SigninButton {:user (:user P)}]]]]]])})
+                  [SigninButton {:user user}]]]]]])})
 
 (defr Preferences
   {:render (fn [C user S]
              [:div.col-md-4.col-md-offset-4
               [:h1 "Preferences"]
               [:form.well {:role "form" :on-submit #(handlers/save-prefs % C)}
-
                (for [input ["login" "name"]]
                  [:div.form-group
-                  [:label {:for input} (.toUpperCase input)]
+                  [:label {:html-for input} (.toUpperCase input)]
                   [:input.form-control {:ref input :value ((keyword input) user)}]])
 
                [:button.btn.btn-primary {:type "submit"} "Save"]
