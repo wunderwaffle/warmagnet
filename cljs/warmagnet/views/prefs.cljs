@@ -22,8 +22,9 @@
      [:p email]]
     
     [:div.form-group
-     [:label {:html-for input} "NAME"]
-     [:input.form-control {:value name
+     [:label {:html-for "name"} "NAME"]
+     [:input.form-control {:name "name"
+                           :value name
                            :on-change #(assoc-state C :name (e-value %))}]]
     
     [:button.btn.btn-primary {:type "submit"} "Save"]]])
