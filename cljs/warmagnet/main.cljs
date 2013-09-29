@@ -1,7 +1,6 @@
 (ns warmagnet.main
   (:require-macros [pump.def-macros :refer [defr]])
   (:require [pump.core :refer [assoc-state]]
-            [warmagnet.api :refer [ws]]
             [warmagnet.handlers :as handlers]
             [warmagnet.utils :refer [log send-message setup-auth]]
             [warmagnet.world :refer [world]]
@@ -12,10 +11,7 @@
             [warmagnet.views.index :as index]
             [warmagnet.views.prefs :as prefs]))
 
-(aset ws "onmessage"
-      (fn [e]
-        (send-message (js->clj (.parse js/JSON (.-data e))
-                               :keywordize-keys true))))
+(aset js/window "WS_URL" "ws://localhost:3000/ws")
 
 (defr Root
   :component-did-mount (fn [C P S node]
@@ -33,8 +29,8 @@
        "" [games/GameList games]
        "preferences" [prefs/Preferences user]
        "profile" [components/Profile user]
-       "browse" [games/GameList allgames]
-       "games" [games/GameList games]
+       "browse" [games/AllGameList {:games allgames}]
+       "games" [games/GameList {:games games}]
        "games/new" [games/NewGame]
        "map" [gamemap/GameMap (assoc map :container-width container-width)]
        [:div (str "UNKNOWN ROUTE: " route)]))])
@@ -52,10 +48,16 @@
 
 (defn ^:export main
   []
-  (aset js/window "ws" ws)
+
+  (aset js/ws "onmessage"
+        (fn [e]
+          (log (str "<- " (.-data e)))
+          (send-message (js->clj (.parse js/JSON (.-data e))
+                                 :keywordize-keys true))))
+
   (setup-auth (:user @world) handlers/login handlers/logout)
-  (if (:user @world) (aset ws "onopen"
-                           #(handlers/do-login (handlers/get-token))))
+  (if (:user @world)
+    (handlers/do-login (handlers/get-token)))
 
   (send-message {:type :route :data (current-route)})
 

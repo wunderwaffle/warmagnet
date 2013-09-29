@@ -1,6 +1,5 @@
 (ns warmagnet.utils
   (:require [clojure.string :as string]
-            [warmagnet.api :refer [ws]]
             [warmagnet.world :refer [world world-transition]]))
 
 (defn log [& args]
@@ -11,7 +10,9 @@
   (swap! world world-transition message))
 
 (defn send-message-srv [msg]
-  (.send ws (.stringify js/JSON (clj->js msg))))
+  (let [out (.stringify js/JSON (clj->js msg))]
+    (log (str "-> " out))
+    (.send js/ws out)))
 
 (defn setup-auth
   [logged-in-user login logout]

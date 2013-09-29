@@ -5,7 +5,7 @@
             [pump.core :refer [assoc-in-state e-value]]
 
             [warmagnet.components :refer [tags]]
-            [warmagnet.utils :refer [log send-message]]
+            [warmagnet.utils :refer [log send-message send-message-srv]]
             [warmagnet.handlers :as handlers]))
 
 (defn button [name value current on-click]
@@ -69,3 +69,12 @@
             "Go and create one!"]]]
     [:div (for [[id game] P]
             [GameItem game])]))
+
+(defr AllGameList
+  :component-will-mount (fn [C P S]
+                          (if (empty? P)
+                            (send-message-srv {:type :game-list})))
+  [C {:keys [games]} S]
+  (if (empty? games)
+    [:div "SPIN SPIN SPIN"]
+    [:div (pr-str games)]))

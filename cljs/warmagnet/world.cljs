@@ -4,7 +4,6 @@
 (defn get-user []
   (let [user (.getItem (.-localStorage js/window) "user")
         json (.parse js/JSON user)]
-    (.log js/console "USER" json)
     (if json (js->clj json :keywordize-keys true) nil)))
 
 (defn set-user [user]
@@ -24,6 +23,8 @@
     :error (do (js/alert "Server error")
                world)
     :login (do (set-user data) (assoc world :user data))
+    :login-error (do (remove-user)
+                     (dissoc world :user))
     :logout (do (remove-user) (dissoc world :user))
     ;; FIXME: update-user should update user in local storage as well
     :update-user (update-in world [:user] merge data)
@@ -33,4 +34,5 @@
                            (:options data)])
     :game (update-in world [(:id data)] game-transition data)
     :container-width (assoc world :container-width data)
-    :map-received (assoc world :map data)))
+    :map-received (assoc world :map data)
+    :game-list (assoc world :allgames data)))

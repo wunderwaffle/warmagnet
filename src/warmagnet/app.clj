@@ -101,8 +101,8 @@
           (add-user state)
           (send-message state :type "login" :status "success" :data user)
           (send-joined-games state))
-      (send-message state :type "login" :status "invalid-token"))
-    (send-message state :type "login" :status "invalid-request")))
+      (send-message state :type "login-error" :status "invalid-token"))
+    (send-message state :type "login-error" :status "invalid-request")))
 
 (defn msg-update-user [state {:keys [data]}]
   (let [profile (select-keys data [:name])]
