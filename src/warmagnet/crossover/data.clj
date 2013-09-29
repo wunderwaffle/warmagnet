@@ -68,6 +68,6 @@
     	:phase (assoc-in game [:player-state user-id :phase] (:phase msg))
     	:deploy (handle-deploy game msg)
     	:attack (handle-attack game msg)
-    	:attack-end (assoc-in [:player-state user-id :phase] PHASE-REINFORCE)
-    	:reinforce-end (assoc-in [:player-state user-id :phase] nil)
+    	:attack-end (assoc-in game [:player-state user-id :phase] PHASE-REINFORCE)
+    	:reinforce-end (assoc-in game [:player-state user-id :phase] nil)
     	game)))
