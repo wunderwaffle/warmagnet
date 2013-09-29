@@ -32,7 +32,6 @@
 
 (defr Game
   [C {:keys [game] :as P} S]
-  (log game)
   [:div
    [GameMap P]
 
