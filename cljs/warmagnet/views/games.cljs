@@ -93,7 +93,7 @@
 (defr AllGameList
   :component-did-mount (fn [C P S]
                          (send-message-srv {:type :game-list}))
-  [C {:keys [games]} S]
+  [C {:keys [games user]} S]
   (if (empty? games)
     [:div "SPIN SPIN SPIN"]
 
@@ -104,7 +104,8 @@
                   :game data
                   :players players
                   :player-list (map (juxt :id :name) player-list)
-                  :children (if (< players (:size data))
+                  :children (if (and (< players (:size data))
+                                     (not (some #{(:id user)} (map :id player-list))))
                               [:button.btn.btn-default
                                {:on-click #(handlers/join-game id)} "Join"])}])]))
 

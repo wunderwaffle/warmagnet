@@ -32,7 +32,7 @@
        #"^$" [games/GameList {:games games}]
        #"preferences" [prefs/Preferences user]
        #"profile" [components/Profile user]
-       #"browse" [games/AllGameList {:games allgames}]
+       #"browse" [games/AllGameList {:games allgames :user user}]
        #"games/new" [games/NewGame]
        #"games/(\d+)" :>> (fn [[[_ id]]]
                             [Game {:game (games (js/parseInt id))
