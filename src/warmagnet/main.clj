@@ -36,6 +36,7 @@
         (cli args
              ["-p" "--port" "Listen on this port" :default 3000 :parse-fn #(Integer. %)]
              ["-i" "--ip" "IP to listen" :default "127.0.0.1"]
+             ["-e" "--persona" "Persona callback" :default "http://localhost:3000"]
              ["-d" "--dev" "Development mode (auto-reload)" :flag true])
         app (if (:dev opts) (reload/wrap-reload app) app)]
 
