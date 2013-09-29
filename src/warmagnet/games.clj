@@ -73,10 +73,10 @@
 ;; log verificaton
 (defn preprocess-game-log-item [id data user-id]
   (if-let [game-state (get-game id)]
-    (let [new-data (assoc data :user-id user-id)]
+    (let [data (assoc data :user-id user-id)]
       (if (and (player-in-state game-state user-id)
                (crossover/check-transition game-state data))
-        new-data))))
+        data))))
 
 ;; helpers
 (defn is-game-started [game-state]
@@ -167,9 +167,10 @@
         (#(reduce region-supply % regions)))))
 
 (defn maybe-start-attack [game-state {:keys [user-id]}]
-	(let [amount (get-in game-state [:player-state :supply])]
-		(if (zero? amount)
-			(add-log-item game-state {:type "phase" :user-id user-id :phase crossover/PHASE-ATTACK}))))
+	(let [amount (get-in game-state [:player-state user-id :supply])]
+      (if ((fnil zero? 0) amount)
+        (add-log-item game-state
+                      {:type "phase" :user-id user-id :phase crossover/PHASE-ATTACK}))))
 
 (defn maybe-conquer [game-state {:keys [attack-to user-id]}]
 	(let [target-amount (get-in game-state [:districts attack-to :amount])]
