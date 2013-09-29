@@ -2,12 +2,20 @@
   (:require-macros [pump.def-macros :refer [defr]])
   (:require [warmagnet.views.gamemap :refer [GameMap]]))
 
-(defn log->text [log]
-  (case (keyword (:type log))
-    :join (str "User " (:user-name log) " joined the game")
-    :start "Game started"
-    :set-district nil
-    (str "Event: " (:type log) " by " (:user-name log))))
+(defn get-player [game user-id]
+  (reduce (fn [_ {:keys [id name]}]
+            (if (= id user-id)
+              (reduced name)))
+          nil (:players game)))
+
+(defn log->text [game {:keys [type user-id] :as log}]
+  (let [user-name (get-player game user-id)]
+    (case (keyword type)
+      :join (str "User " (:user-name log) " joined the game")
+      :start "Game started"
+      :set-district nil
+      :turn (str "Turn of " user-name)
+      (str "Event: " (:type log) " by " user-name))))
 
 (defr Game
   [C {:keys [map game]} S]
@@ -33,7 +41,7 @@
 
     [:ul
      (for [gamelog (:log game)
-           :let [text (log->text gamelog)]]
+           :let [text (log->text game gamelog)]]
        (if text
          [:li.text-success text]))]]
-   [:p (pr-str game)]])
+   #_ [:p (pr-str game)]])
