@@ -58,7 +58,7 @@
 
   (aset js/ws "onmessage"
         (fn [e]
-          (log (str "<- " (.-data e)))
+          #_ (log (str "<- " (.-data e)))
           (send-message (js->clj (.parse js/JSON (.-data e))
                                  :keywordize-keys true))))
   (aset js/window "pr" pr-str)

@@ -17,6 +17,8 @@
       :start "Game started"
       :set-district nil
       :turn (str "Turn of " user-name)
+      :supply (str user-name " received " (:amount log)
+                   " troops because of " (:reason log))
       (str "Event: " (:type log) " by " user-name))))
 
 (defn user-stats [districts user-id]
