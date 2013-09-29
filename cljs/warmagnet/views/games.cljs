@@ -54,7 +54,7 @@
 (defr GameItem
   [C {:keys [id gamelog game players children]} S]
   (log (pr-str game))
-  [:div.well {:on-click #(redir (str "games/" id))}
+  [:div.game-item.well {:on-click #(redir (str "games/" id))}
    [:h2.pull-right id]
    [:div.smallmap.col-md-4
 ;;   [:img {:src game-map}]
