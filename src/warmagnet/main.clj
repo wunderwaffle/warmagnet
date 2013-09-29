@@ -44,4 +44,4 @@
     (hk/run-server app (select-keys opts [:port :ip]))))
 
 (defn run [& opts]
-  (apply -main "-d"))
+  (apply -main (or (seq opts) ["-d"])))
