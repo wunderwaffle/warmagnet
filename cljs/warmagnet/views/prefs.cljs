@@ -26,14 +26,13 @@
                       (md5 (.toLowerCase (or email ""))))}]]
 
     [:div.form-group
-     [:label "EMAIL"]
+     [:label "Email"]
      [:p email]]
-    
+
     [:div.form-group
-     [:label {:html-for "name"} "NAME"]
+     [:label {:html-for "name"} "Name"]
      [:input.form-control {:name "name"
                            :value name
                            :on-change #(assoc-in-state C :name (e-value %))}]]
-    
     [:button.btn.btn-primary {:type "submit"} "Save"]]])
 

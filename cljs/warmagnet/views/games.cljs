@@ -5,7 +5,7 @@
             [pump.core :refer [assoc-in-state e-value]]
 
             [warmagnet.components :refer [tags]]
-            [warmagnet.utils :refer [send-message]]
+            [warmagnet.utils :refer [log send-message]]
             [warmagnet.handlers :as handlers]))
 
 (defn button [name value current on-click]
@@ -52,19 +52,20 @@
    [:button.btn.btn-success.btn-lg {:type "submit"} "Create"]])
 
 (defr GameItem
-  [C {:keys [game-map players round-time reinforcements]} S]
-
+  [C {:keys [game-map players duration reinforcement]} S]
+  (log [game-map players duration reinforcement])
   [:div
    [:img {:src game-map}]
    [:p "Players"]
    [:ul (tags :li (map :name players))]
-   [:p round-time]
-   [:p reinforcements]])
+   [:p duration]
+   [:p reinforcement]])
 
 (defr GameList
   [C P S]
   (if (empty? P)
-    [:div "NO GAMES"]
-    [:div (pr-str P)
-     #_ (for [[id game] P]
-       [GameItem game])]))
+    [:div [:p.lead "No Games. "
+           [:a {:href "#games/new"}
+            "Go and create one!"]]]
+    [:div (for [[id game] P]
+            [GameItem game])]))
