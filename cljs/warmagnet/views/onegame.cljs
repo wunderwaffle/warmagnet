@@ -32,6 +32,8 @@
    [:div.log.well
 
     [:ul
-   (for [gamelog (:log game)]
-     [:li.text-success (log->text gamelog)])]]
+     (for [gamelog (:log game)
+           :let [text (log->text gamelog)]]
+       (if text
+         [:li.text-success text]))]]
    [:p (pr-str game)]])

@@ -128,15 +128,26 @@
 		  users (map :id (:players game-state))
 		  joined (zipmap districts (cycle users))
 		  distributor (fn [game-state [district user-id]]
-		  	(add-log-item game-state {:type "set-district" :user-id user-id :district district :amount 3}))]
-		  	(reduce distributor game-state joined)))
+                        (add-log-item game-state {:type "set-district"
+                                                  :user-id user-id
+                                                  :district district
+                                                  :amount 3}))]
+      (reduce distributor game-state joined)))
 
 (defn initialize-game [game-state]
-	(-> (initial-distribute-districts game-state)
+	(-> game-state
+        (initial-distribute-districts)
 		(add-log-item {:type "turn" :user-id (:id (first (:players game-state)))})))
 
-(defn execute-log-item [game-state data]
-	(case (keyword (:type data))
-		:join (maybe-start-game game-state)
-		:start (initialize-game game-state)
-		game-state))
+(defn new-turn-supply [game-state user-id]
+  (let [districts (->> (get-in game-state [:map :districts])
+                       (filter #(= (% :user-id) user-id))
+                       (map first))]
+    game-state))
+
+(defn execute-log-item [game-state {:keys [user-id type] :as data}]
+  (case (keyword type)
+    :join (maybe-start-game game-state)
+    :start (initialize-game game-state)
+    :turn (new-turn-supply game-state user-id)
+    game-state))

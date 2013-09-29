@@ -8,4 +8,5 @@ pom.xml.asc
 /.lein-*
 /.nrepl-port
 /resources/static/warmagnet.js
+/resources/static/warmagnet.min.js
 /crossover-cljs
