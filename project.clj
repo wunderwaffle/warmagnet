@@ -32,4 +32,10 @@
              :compiler {:output-to "resources/static/warmagnet.js"
                         :externs ["resources/externs/react.js"]
                         :optimizations :whitespace}
+             :jar true}
+            {:id "min"
+             :source-paths ["cljs"]
+             :compiler {:output-to "resources/static/warmagnet.min.js"
+                        :externs ["resources/externs/react.js"]
+                        :optimizations :advanced}
              :jar true}]})
