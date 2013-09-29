@@ -3408,7 +3408,7 @@ function validateExplicitKey(component) {
     message += ' It was passed a child from ' + childOwnerName + '.';
   }
 
-  console.warn(message);
+  // FIXME: console.warn(message);
 }
 
 /**
