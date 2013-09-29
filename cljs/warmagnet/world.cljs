@@ -22,6 +22,10 @@
                   :route "/"
                   :games {}}))
 
+(defn fix-game-state [game]
+  (assoc game :districts
+         (into {} (for [[k v] (:districts game)] [(name k) v]))))
+
 (defn world-transition [world {:keys [type data] :as msg}]
   (case (if (string? type) (keyword type) type)
     :error (do (js/alert "Server error")
@@ -34,7 +38,7 @@
     :update-user (do (update-user data) (update-in world [:user] merge data))
     :route (assoc world :route data)
     :game-state (if-not (empty? data)
-                  (assoc-in world [:games (:id data)] data)
+                  (assoc-in world [:games (:id data)] (fix-game-state data))
                   world)
     :game (update-in world [:games (:game-id msg)] game-transition data)
     :container-width (assoc world :container-width data)

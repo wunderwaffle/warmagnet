@@ -2,7 +2,7 @@
   (:require-macros [pump.def-macros :refer [defr]]
                    [warmagnet.macros :refer [cx]])
   (:require [pump.core :refer [assoc-state assoc-in-state e-value]]
-            [warmagnet.utils :refer [send-message send-log]]))
+            [warmagnet.utils :refer [send-message send-log log]]))
 
 (def COLORS ["#f00" "#006400" "#00f" "#cc0" "#f0f" "#0cc"])
 
@@ -45,6 +45,7 @@
 
 (defr MapDistrict
   [C {:keys [district dname amount click selected assoc-hovered color]} S]
+  
   (let [{:keys [borders coordinates]} (second district)
         [x y] coordinates]
     [:div
@@ -96,7 +97,7 @@
       [:thead [:tr [:th (name aname)] [:th (name dname)]]]
       [:tbody [:tr [:td attacking] [:td defending]]]]
      [:div.btn-group
-      [:button.btn.btn-warning {:on-click #(attack! 3 aname dname)} "Attack"]
+      [:button.btn.btn-warning {:on-click #(attack! 1 aname dname)} "Attack"]
       [:button.btn.btn-danger  {:on-click #(attack! (dec attacking) aname dname)} "Blitz"]]]]))
 
 (defr Reinforce
@@ -136,7 +137,7 @@
 
 (defr GameMap
   :component-will-mount (fn [C P] (if-not (:name P) (xhr-load-map)))
-  :get-initial-state (fn [] {:state :reinforce})
+  :get-initial-state (fn [] {})
 
   [C
    {:keys [game-map game user container-width]}
@@ -190,15 +191,15 @@
               :on-click clear-popovers}]
        (map (fn [district]
               (let [[dname map-district] district]
-               [MapDistrict {:district district
-                             :dname dname
-                             :selected (selection-for district)
-                             :assoc-hovered assoc-hovered
-                             :amount (-> game-districts dname :amount)
-                             :color (player-color
-                                     game
-                                     (-> game-districts dname :user-id))
-                             :click district-action}]))
+                [MapDistrict {:district district
+                              :dname dname
+                              :selected (selection-for district)
+                              :assoc-hovered assoc-hovered
+                              :amount (-> game-districts (name dname) :amount)
+                              :color (player-color
+                                      game
+                                      (-> game-districts (name dname) :user-id))
+                              :click district-action}]))
             districts)
        (if deploying
          [Deploy {:available-troops (:supply (user-state game user))
