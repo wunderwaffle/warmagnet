@@ -122,7 +122,7 @@
     (watch-game state game-state)))
 
 (defn msg-game-list [state msg]
-  (send-message state :type "game-list" :games (db/get-game-list)))
+  (send-message state :type "game-list" :data (db/get-game-list)))
 
 (defn msg-game [state msg]
   (if-let [game-id (:game-id msg)]
