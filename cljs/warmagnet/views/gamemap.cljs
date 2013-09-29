@@ -144,17 +144,19 @@
   (let [{:keys [name map-src regions districts dimensions]} game-map
         {:keys [player-state players turn-by]} game
         game-districts (:districts game)
-        is-my-turn (= turn-by (:id user))
+        user-id (:id user)
+        is-my-turn (= turn-by user-id)
         phase (keyword (:phase (user-state game user)))
    
         clear-popovers #(assoc-state C {:attacker nil :deploying nil :defender nil})
         assoc-hovered #(assoc-in-state C :hovered %)
 
         dst-deploy #(assoc-in-state C :deploying (if (not= deploying %) % nil))
-        dst-attack #(cond
-                     (= % attacker) (clear-popovers)
-                     (nil? attacker) (assoc-in-state C :attacker %)
-                     (attack? attacker %) (assoc-in-state C :defender %))
+        dst-attacker #(if (= % attacker)
+                        (clear-popovers)
+                        (assoc-in-state C :attacker %))
+        dst-defender #(if (attack? attacker %)
+                        (assoc-in-state C :defender %))
         dst-reinforce #(cond
                         (= % attacker) (clear-popovers)
                         (nil? attacker) (assoc-in-state C :attacker %)
@@ -164,11 +166,11 @@
         attack! #(assoc-state C {:attacker nil :defender nil :state :reinforce})
         reinforce! #(assoc-state C {:attacker nil :defender nil :state :deploy})
 
-        district-action (if is-my-turn
+        district-action #(if is-my-turn 
                           (case phase
-                            :deploy dst-deploy
-                            :attack dst-attack
-                            :reinforce dst-reinforce))
+                            :deploy (if (= % user-id) dst-deploy)
+                            :attack (if (= % user-id) dst-attacker dst-defender)
+                            :reinforce (if (= % user-id) dst-reinforce)))
 
         selection-for #(condp = %
                          hovered :hover
@@ -187,16 +189,15 @@
        [:img {:src (str "/static/" map-src)
               :on-click clear-popovers}]
        (map (fn [district]
-              (let [[dname map-district] district]
+              (let [[dname map-district] district
+                    gd (dname game-districts)]
                [MapDistrict {:district district
                              :dname dname
                              :selected (selection-for district)
                              :assoc-hovered assoc-hovered
-                             :amount (-> game-districts dname :amount)
-                             :color (player-color
-                                     game
-                                     (-> game-districts dname :user-id))
-                             :click district-action}]))
+                             :amount (gd :amount)
+                             :color (player-color game (gd :user-id))
+                             :click (district-action (gd :user-id))}]))
             districts)
        (if deploying
          [Deploy {:available-troops (:supply (user-state game user))
