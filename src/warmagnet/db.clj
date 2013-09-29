@@ -93,6 +93,11 @@
               (sql/set-fields {:data (json/encode data)})
               (sql/where (= :id game-id))))
 
+(defn finish-game [game-id user-id]
+  (sql/update games
+              (sql/set-fields {:finished true :winner user-id})
+              (sql/where (= :id game-id))))
+
 (defn get-game-players [game-id]
   (sql/select user_games
               (sql/fields [:user_id :id] :users.name)
@@ -106,7 +111,8 @@
 
 (defn get-game-list []
   (let [games (sql/select games
-                          (sql/fields :id :name :players :data))]
+                          (sql/fields :id :name :players :data)
+                          (sql/where (not= :finished true)))]
     (mapv -update-game-item games)))
 
 (defn get-game-log [id]
