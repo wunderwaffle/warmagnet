@@ -52,6 +52,7 @@
      {:class (cx :map-district true
                  :label true
                  :label-white (nil? selected)
+                 :label-success (= selected :neighbor)
                  :label-primary (= selected :checked)
                  :label-info (= selected :hover)
                  :label-danger (= selected :target))
@@ -133,7 +134,7 @@
     (get-in game path)))
 
 (defn troops-on [[dname dmap] game-districts]
-  (-> game-districts dname :amount))
+  ((game-districts (name dname)) :amount))
 
 (defr GameMap
   :component-will-mount (fn [C P] (if-not (:name P) (xhr-load-map)))
@@ -174,15 +175,16 @@
                             :attack (if (= % user-id) dst-attacker dst-defender)
                             :reinforce (if (= % user-id) dst-reinforce)))
 
-        selection-for #(condp = %
+        selection-for #(condp = %1
                          hovered :hover
                          deploying :checked
                          attacker :checked
                          defender :target
                          (cond
-                          (and (= phase :reinforce)
-                               attacker (reinforce? attacker %)) :target
-                          (and attacker (attack? attacker %)) :target))]
+                          (and (= phase :reinforce) (= %2 user-id)
+                               attacker (reinforce? attacker %1)) :neighbor
+                          (and (= %2 user-id)
+                               attacker (attack? attacker %1)) :target))]
 
     (if-not name
       [:div "No map"]
@@ -192,10 +194,10 @@
               :on-click clear-popovers}]
        (map (fn [district]
               (let [[dname map-district] district
-                    gd (dname game-districts)]
+                    gd (game-districts (name dname))]
                 [MapDistrict {:district district
                               :dname dname
-                              :selected (selection-for district)
+                              :selected (selection-for district (gd :user-id))
                               :assoc-hovered assoc-hovered
                               :amount (gd :amount)
                               :color (player-color game (gd :user-id))
