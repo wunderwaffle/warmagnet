@@ -8,7 +8,7 @@
 
 (sql/defentity users
   (sql/entity-fields
-   :name :email))
+   :name :email :token))
 
 (sql/defentity games
   (sql/entity-fields
@@ -22,15 +22,21 @@
   (sql/entity-fields
    :game_id :user_id))
 
+
 ;; users
-(defn new-user [email]
-  (sql/insert users (sql/values {:email email})))
+(defn new-user [email token]
+  (sql/insert users (sql/values {:email email :token token})))
 
 (defn get-user [email]
   (->
    (sql/select users
                (sql/where (= :email email)))
    first))
+
+(defn get-user-by-token [token]
+  (-> (sql/select users
+                  (sql/where (= :token token)))
+      first))
 
 (defn update-user [id profile]
   (if-not (empty? profile)
@@ -47,11 +53,14 @@
    :count
    pos?))
 
-(defn get-or-create-user [email]
+(defn get-or-create-user [email token]
   (let [user (get-user email)]
     (if (nil? user)
-      (new-user email)
-      user)))
+      (new-user email token)
+      (do
+        (if (not= (:token user) token)
+          (update-user (:id user) {:token token}))
+        user))))
 
 ;; games
 (defn new-game [data]

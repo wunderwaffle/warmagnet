@@ -85,17 +85,21 @@
   (contains? (:games @state) game-id))
 
 ;; Message Handlers
+(defn goc-user-by-token [token]
+  (if-let [user (db/get-user-by-token token)]
+    user
+    (let [user-data (persona/login token)]
+      (if (= "okay" (:status user-data))
+        (db/get-or-create-user (:email user-data) token)))))
+
 (defn msg-user [state msg]
   ; TODO: Token decoding to get user id
   (if-let [token (:token msg)]
-    (let [user-data (persona/login token)]
-      (if (= "okay" (:status user-data))
-        (let [user (db/get-or-create-user (:email user-data))]
-          (swap! state assoc :user user)
-          (add-user state)
+    (if-let [user (goc-user-by-token token)]
+      (do (add-user state)
           (send-message state :type "login" :status "success" :data user)
           (send-joined-games state))
-        (send-message state :type "login" :status "invalid-token")))
+      (send-message state :type "login" :status "invalid-token"))
     (send-message state :type "login" :status "invalid-request")))
 
 (defn msg-update-user [state msg]
