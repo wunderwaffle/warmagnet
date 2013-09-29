@@ -11,6 +11,7 @@
   (.request navigator/id))
 
 (defn persona-sign-out []
+  (send-message {:type :logout})
   (.logout navigator/id))
 
 (defn get-input-value [input]
@@ -38,6 +39,5 @@
   (send-message-srv {:type :login :token token}))
 
 (defn logout []
-  (send-message {:type :logout})
   (log "logout"))
 

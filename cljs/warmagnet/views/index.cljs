@@ -3,7 +3,7 @@
   (:require [warmagnet.handlers :as handlers]))
 
 (def intro
-  [:blockquote 
+  [:blockquote
    [:p
     "War pigs deliver all their madness"
     [:br]
@@ -19,7 +19,8 @@
   [:div.jumbotron
    [:div.container
     [:div.pull-right
-     [:iframe {:width 480 :height 24
+     [:div [:img {:src "/static/logo/logo-400.png" :width 400}]]
+     [:iframe {:width 400 :height 24
                :src "//www.youtube.com/embed/BHOSjT8gQXY?rel=0&autohide=0&start=236"
                :frameborder 0
                :allowfullscreen true}]]
