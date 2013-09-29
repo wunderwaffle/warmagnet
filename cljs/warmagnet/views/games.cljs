@@ -53,6 +53,7 @@
 
 (defr GameItem
   [C {:keys [gamelog game]} S]
+  (log (pr-str game))
   [:div.well
    [:div.smallmap.col-md-4
 ;;   [:img {:src game-map}]
