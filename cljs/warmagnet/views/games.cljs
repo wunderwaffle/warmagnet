@@ -58,6 +58,8 @@
 ;;   [:img {:src game-map}]
 ;;   [:p "Players"]
 ;;   [:ul (tags :li (map :name players))]
+   [:div.smallmap.col-md-4
+    [:img {:src "/static/map-classic.jpg" :width 180 :height 100 }]]
    [:div.stats.col-md-offset-6
     [:p [:b "Number of players: "] (:size game)]
     [:p [:b "Round duration: "] (:duration game)]
