@@ -63,7 +63,7 @@
 (defr Deploy
   :component-will-mount
   (fn [C {:keys [available-troops]} S]
-    (assoc-in-state C :to-deploy (/ available-troops 2)))
+    (assoc-in-state C :to-deploy available-troops))
   
   [C {:keys [available-troops district deploy!]} {:keys [to-deploy]}]
   (let [[dname {:keys [coordinates]}] district
