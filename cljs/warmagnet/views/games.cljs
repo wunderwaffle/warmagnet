@@ -29,14 +29,14 @@
 
    [:div.form-group
     [:label.control-label "Participants"]
-    [:div.btn-group
+    [:div.btn-group.btn-panel
      (for [n (range 2 8)]
        (button (str n " players") n size
                #(assoc-state C :size %)))]]
 
    [:div.form-group
     [:label.control-label "Round time"]
-    [:div.btn-group
+    [:div.btn-group.btn-panel
      (for [[name val] [["5 minutes" :short]
                        ["24 hours" :long]]]
        (button name val duration
@@ -44,12 +44,12 @@
 
    [:div.form-group
     [:label.control-label "Reinforcements"]
-    [:div.btn-group
+    [:div.btn-group.btn-panel
      (for [val [:adjacent :chained :unlimited]]
        (button (capitalize (name val)) val reinforcement
                #(assoc-state C :reinforcement %)))]]
 
-   [:button.btn.btn-success {:type "submit"} "Create"]])
+   [:button.btn.btn-success.btn-lg {:type "submit"} "Create"]])
 
 (defr GameItem
   [C {:keys [game-map players round-time reinforcements]} S]
