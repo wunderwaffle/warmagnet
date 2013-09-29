@@ -1,5 +1,6 @@
 (ns warmagnet.views.navbar
-  (:require-macros [pump.def-macros :refer [defr]])
+  (:require-macros [pump.def-macros :refer [defr]]
+                   [warmagnet.macros :refer [cx]])
   (:require
    [warmagnet.handlers :as handlers]))
 
@@ -11,8 +12,12 @@
      {:type "button" :on-click handler}
      text]))
 
+(defn nav-item [name route current]
+  [:li {:class (cx :active (= route current))}
+   [:a {:href (str "#" route)} name]])
+
 (defr Navbar
-  [C {:keys [user]} S]
+  [C {:keys [user route]} S]
   [:div.navbar.navbar-inverse.navbar-fixed-top
    [:div.container
     [:div.navbar-header
@@ -20,14 +25,15 @@
       [:img {:src "/static/logo/logo-white-ak-50-nobg.png"}]
       "WarMagnet"]]
      [:div.navbar-collapse.collapse
+
       (if user
         [:ul.nav.navbar-nav
+         (nav-item "My Games" "games" route)
+         (nav-item "New Game" "games/new" route)
+         (nav-item "Browse" "browse" route)
+         (nav-item "Leaderboard" "leaderboard" route)
+         (nav-item "Preferences" "preferences" route)])
 
-         [:li [:a {:href "#browse"} "Browse Games"]]
-         [:li [:a {:href "#games"} "My Games"]]
-         [:li [:a {:href "#games/new"} "New Game"]]
-         [:li [:a {:href "#leaderboard"} "Leaderboard"]]
-         [:li [:a {:href "#preferences"} "Preferences"]]])
       [:form.navbar-form.navbar-right
        [SigninButton {:user user}]]]]])
 
