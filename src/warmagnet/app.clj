@@ -55,6 +55,7 @@
 (defn watch-game [state game-state]
   (let [user-id (get-user-id state)
         game-id (:id game-state)]
+    (println "x" game-id game-state)
     (swap! state update-in [:games] conj game-id)
     (games/add-watcher game-id user-id)
     (send-message state :type "game-state" :data (serialize-game-state game-state))))
@@ -71,6 +72,7 @@
 (defn send-joined-games [state]
   (let [games (db/get-user-games (get-user-id state))]
     (doseq [game games]
+      (println "!" (games/get-game (:game_id game)))
       (watch-game state (games/get-game (:game_id game))))))
 
 ;; Message Handlers
@@ -102,11 +104,11 @@
   (let [game-state (games/create-game data)]
     (join-game state game-state)))
 
-(defn msg-join-game [state msg]
-  (let [game-id (:game-id msg)
-        game-state (games/get-game game-id)
+(defn msg-join-game [state {:keys [game-id] :as msg}]
+  (let [game-state (games/get-game game-id)
         user-id (get-user-id state)]
-    (if-not (nil? game-state)
+    (println "!@#!@#!@#" game-id game-state)
+    (if game-state
       (if (games/can-join-game game-id user-id)
         (join-game state game-state)
         (send-message state :type :join-error :status "already-joined"))
@@ -122,9 +124,7 @@
 
 (defn msg-game [state {:keys [game-id data] :as msg}]
   (if-let [data (games/preprocess-game-log-item game-id data (get-user-id state))]
-    (do
-      (games/add-log-item game-id data)
-      (games/execute-log-item game-id data))
+    (games/apply-log-item game-id data)
     (send-message state :type "error" :status "invalid-game-request")))
 
 (defn msg-ping [state msg]

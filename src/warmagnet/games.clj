@@ -9,6 +9,8 @@
 
 (def map-file "resources/static/map-classic.json")
 
+(declare execute-log-item)
+
 ;; internal api
 (defn create-game-state [game]
   (let [map (utils/load-json map-file)]
@@ -16,7 +18,7 @@
 	 :options (:data game)
 	 :log []
 	 :players []
-         :map map
+     :map map
 	 :watchers #{}}))
 
 (defn replay-game-log [game-state game-log]
@@ -64,7 +66,7 @@
 	(db/is-user-in-game id user-id))
 
 (defn player-in-state [game-state user-id]
-	(contains? (:players game-state) user-id))
+	(some #{user-id} (map :id (:players game-state))))
 
 ;; log verificaton
 (defn preprocess-game-log-item [id data user-id]
@@ -92,33 +94,35 @@
 	(let [game-broadcast (resolve 'warmagnet.app/game-broadcast)]
 		(game-broadcast id (make-log-message id data))))
 
-(defn add-log-item [id data]
-	(when-let [game-state (get-game id)]
-		(db/add-game-log id data)
-		(log-broadcast id data)
-		(let [new-state (crossover/game-transition game-state data)]
-			(swap! all-games assoc id new-state))))
+(defn add-log-item [{:keys [id] :as game-state} data]
+	(db/add-game-log id data)
+	(log-broadcast id data)
+	(execute-log-item (crossover/game-transition game-state data) data))
+
+(defn apply-log-item [id data]
+	(let [game-state (get-game id)
+		  new-state (add-log-item game-state data)]
+		(swap! all-games assoc id new-state)))
 
 (defn add-player [id user]
     (db/add-user-to-game id (:id user))
-	(add-log-item id (make-join-log-item user)))
+	(apply-log-item id (make-join-log-item user)))
 
 ;; game logic
 (defn start-game [game-state]
 	(let [id (:id game-state)
-		  options (assoc (:options game-state) :started true)]
+		  options (assoc (:options game-state) :started true)
+		  new-state (assoc game-state :options options)]
 		(db/update-game-data id options)
-		(add-log-item id {:type "start"})
-		(assoc game-state :options options)))
+		(add-log-item new-state {:type "start"})))
 
 (defn maybe-start-game [game-state]
+	(println "x maybe start" game-state)
 	(if (= (get-in game-state [:options :size]) (count (:players game-state)))
 		(start-game game-state)
 		game-state))
 
-(defn execute-log-item [id data]
-	(when-let [game-state (get-game id)]
-		(let [new-state (case (keyword (:type data))
-			:join (maybe-start-game game-state)
-			game-state)]
-			(swap! all-games assoc id new-state))))
+(defn execute-log-item [game-state data]
+	(case (keyword (:type data))
+		:join (maybe-start-game game-state)
+		game-state))
