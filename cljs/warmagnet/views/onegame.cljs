@@ -55,5 +55,5 @@
      (for [gamelog (:log game)
            :let [text (log->text game gamelog)]]
        (if text
-         [:li.text-success text]))]]
+         [:li.text-success [:small text]]))]]
    #_ [:p (pr-str game)]])
