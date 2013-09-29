@@ -52,4 +52,4 @@
   (log "logout"))
 
 (defn join-game [id]
-  (send-message-srv {:type :join-game}))
+  (send-message-srv {:type :join-game :game-id id}))
