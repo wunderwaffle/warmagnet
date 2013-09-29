@@ -12,10 +12,14 @@
 <body>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
+        try {
         window.ws = new WebSocket(window.WS_URL);
         window.ws.onopen = function() {
             warmagnet.main.main();
         };
+        } catch(e) {
+           console.error(e);
+        }
     });
   </script>
 </body>

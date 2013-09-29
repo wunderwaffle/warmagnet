@@ -52,13 +52,18 @@
    [:button.btn.btn-success.btn-lg {:type "submit"} "Create"]])
 
 (defr GameItem
-  [C {:keys [gamelog game]} S]
+  [C {:keys [id gamelog game]} S]
   [:div.well
+   [:h2 id]
+   [:div.smallmap.col-md-4
 ;;   [:img {:src game-map}]
-;;   [:p "Players"]
-;;   [:ul (tags :li (map :name players))]
-   [:p [:b "Round duration: "] (:duration game)]
-   [:p [:b "Reinforcement: "] (:reinforcement game)]])
+    [:img {:src "/static/map-classic.jpg" :width 180 :height 100 }]]
+;; [:p "Players"]
+;;  [:ul (tags :li (map :name players))]
+   [:div.stats.col-md-offset-6
+    [:p [:b "Number of players: "] (:size game)]
+    [:p [:b "Round duration: "] (:duration game)]
+    [:p [:b "Reinforcement: "] (:reinforcement game)]]])
 
 (defr GameList
   [C {:keys [games]} S]
@@ -67,7 +72,7 @@
            [:a {:href "#games/new"}
             "Go and create one!"]]]
     [:div.col-md-offset-2.col-md-6 (for [[id [log game]] games]
-            [GameItem {:gamelog log :game  game}])]))
+            [GameItem {:id id :gamelog log :game game}])]))
 
 (defr AllGameList
   :component-will-mount (fn [C P S]

@@ -86,7 +86,6 @@
 
 ;; Message Handlers
 (defn goc-user-by-token [token]
-  (println (db/get-user-by-token token))
   (if-let [user (db/get-user-by-token token)]
     user
     (let [user-data (persona/login token)]
@@ -127,7 +126,8 @@
     (watch-game state game-state)))
 
 (defn msg-game-list [state msg]
-  (send-message state :type "game-list" :data (db/get-game-list)))
+  (let [data (db/get-game-list)]
+    (send-message state :type "game-list" :data data)))
 
 (defn msg-game [state msg]
   (if-let [game-id (:game-id msg)]

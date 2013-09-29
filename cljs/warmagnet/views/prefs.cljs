@@ -16,8 +16,14 @@
 
   [C P {:keys [email name] :as S}]
 
-  [:div.col-md-4.col-md-offset-4
-   [:h1 "Preferences"]
+  [:div.col-md-6.col-md-offset-2
+   (if-not (:name P)
+     [:div.container
+       [:h1 "Welcome"]
+       [:p.lead "Thanks for signing up! Please set your user name to start playing"]]
+
+     [:h1 "Preferences"])
+
    [:form.well
     {:role "form" :on-submit #(handlers/save-prefs % S)}
 

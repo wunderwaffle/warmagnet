@@ -27,7 +27,7 @@
      [index/Index]
 
      (condp (comp seq re-seq) route
-       #"^$" [games/GameList games]
+       #"^$" [games/GameList {:games games}]
        #"preferences" [prefs/Preferences user]
        #"profile" [components/Profile user]
        #"browse" [games/AllGameList {:games allgames}]
