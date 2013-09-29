@@ -49,7 +49,7 @@
 
 (defn serialize-game-state [game-state]
   ; TODO: Fix me
-  (select-keys game-state [:id :options :log]))
+  (select-keys game-state [:id :options :log :players]))
 
 ;; games
 (defn make-log-message [game-id data]
@@ -134,20 +134,20 @@
   (send-message state :type "error" :status "invalid-msg"))
 
 ;; handlers
-(defn handle-user-msg [state msg]
-  (case (:type msg)
-    "ping" (msg-ping state msg)
-    "update-user" (msg-update-user state msg)
-    "start-game" (msg-start-game state msg)
-    "join-game" (msg-join-game state msg)
-    "watch-game" (msg-watch-game state msg)
-    "game-list" (msg-game-list state msg)
-    "game" (msg-game state msg)
+(defn handle-user-msg [state {:keys [type] :as msg}]
+  (case (keyword type)
+    :ping (msg-ping state msg)
+    :update-user (msg-update-user state msg)
+    :start-game (msg-start-game state msg)
+    :join-game (msg-join-game state msg)
+    :watch-game (msg-watch-game state msg)
+    :game-list (msg-game-list state msg)
+    :game (msg-game state msg)
     (msg-unknown state)))
 
-(defn handle-anonymous-msg [state msg]
-  (case (:type msg)
-    "login" (msg-user state msg)
+(defn handle-anonymous-msg [state {:keys [type] :as msg}]
+  (case (keyword type)
+    :login (msg-user state msg)
     (msg-unknown state)))
 
 (defn handle-msg [state raw-msg]

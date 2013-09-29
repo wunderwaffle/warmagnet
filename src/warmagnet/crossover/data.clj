@@ -1,6 +1,7 @@
 (ns warmagnet.crossover.data)
 
-(defn game-transition [world {:keys [type] :as msg}]
-  (condp = type
-    ; this is not relevant, game transitions should be here
-    :user (assoc world :user nil)))
+(defn game-transition [game {:keys [type user-id] :as msg}]
+  (let [game-state (update-in game [:log] conj msg)]
+  	(case (keyword type)
+    	:join (update-in game-state [:players] assoc user-id (:user-name msg))
+    	game-state)))
