@@ -23,8 +23,13 @@
                   :games {}}))
 
 (defn fix-game-state [game]
-  (assoc game :districts
-         (into {} (for [[k v] (:districts game)] [(name k) v]))))
+  (-> game
+      (assoc :districts
+        (into {} (for [[k v] (:districts game)]
+                   [(name k) v])))
+      (assoc :player-state
+        (into {} (for [[k v] (:player-state game)]
+                   [(js/parseInt (name k) 10) v])))))
 
 (defn world-transition [world {:keys [type data] :as msg}]
   (case (if (string? type) (keyword type) type)

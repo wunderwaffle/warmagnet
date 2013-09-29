@@ -129,7 +129,7 @@
 (def reinforce? attack?)
 
 (defn user-state [game user]
-  (let [id-key (keyword (str (:id user)))
+  (let [id-key (:id user)
         path [:player-state id-key]]
     (get-in game path)))
 
@@ -143,7 +143,7 @@
   [C
    {:keys [game-map game user container-width]}
    {:keys [hovered deploying attacker defender]}]
-  (let [{:keys [name map-src regions districts dimensions]} game-map
+  (let [{:keys [map-src regions districts dimensions]} game-map
         {:keys [player-state players turn-by]} game
         game-districts (:districts game)
         game-id (:id game)
@@ -186,7 +186,7 @@
                           (and (= %2 user-id)
                                attacker (attack? attacker %1)) :target))]
 
-    (if-not name
+    (if-not map-src
       [:div "No map"]
       [:div.game-map
        {:style (get-map-style dimensions container-width)}

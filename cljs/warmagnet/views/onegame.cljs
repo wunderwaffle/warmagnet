@@ -8,7 +8,7 @@
   (first (filter #(= (:id %) user-id) (:players game))))
 
 (defn get-stats [game user-id]
-  ((keyword (str user-id)) (:player-state game)))
+  ((:player-state game) user-id))
 
 (defn log->text [game {:keys [type user-id] :as log}]
   (let [{:keys [name]} (get-player game user-id)]
