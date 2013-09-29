@@ -5,13 +5,14 @@
   (let [user (.getItem (.-localStorage js/window) "user")
         json (.parse js/JSON user)]
     (.log js/console "USER" json)
-    (if json (js->clj json :keywordize-keys true) json)))
+    (if json (js->clj json :keywordize-keys true) nil)))
 
 (defn set-user [user]
   (.setItem (.-localStorage js/window) "user"
             (.stringify js/JSON (clj->js user))))
 
 (defn remove-user []
+  (.removeItem (.-localStorage js/window) "token")
   (.removeItem (.-localStorage js/window) "user"))
 
 (def world (atom {:user (get-user)
