@@ -1,7 +1,7 @@
 (ns warmagnet.views.onegame
   (:require-macros [pump.def-macros :refer [defr]])
   (:require
-   [warmagnet.utils :refer [log]]
+   [warmagnet.utils :refer [send-log log]]
    [warmagnet.views.gamemap :refer [player-color GameMap]]))
 
 (defn get-player [game user-id]
@@ -37,10 +37,16 @@
     [:div "Loading"]
 
     [:div
-     (let [current-player-id (:turn-by game)]
+     (let [current-player-id (:turn-by game)
+           phase (:phase (get-stats game current-player-id))
+           game-id (:id game)]
        [:p.lead "Turn by: "
         (:name (get-player game current-player-id))
-        " | Phase: " (:phase (get-stats game current-player-id))])
+        " | Phase: " phase
+        (case phase
+          "attack" [:button.btn.btn-warning {:on-click #(send-log game-id {:type :attack-end})} "End attack"]
+          "reinforce" [:button.btn.btn-warning {:on-click #(send-log game-id {:type :reinforce-end})} "End reinforcements"]
+          nil)])
 
      [GameMap P]
 
