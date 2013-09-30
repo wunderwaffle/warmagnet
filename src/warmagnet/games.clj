@@ -134,7 +134,7 @@
 		game-state))
 
 (defn initial-distribute-districts [game-state]
-	(let [districts (keys (get-in game-state [:map :districts]))
+	(let [districts (map name (keys (get-in game-state [:map :districts])))
 		  users (map :id (:players game-state))
 		  joined (zipmap districts (cycle users))
 		  distributor (fn [game-state [district user-id]]
