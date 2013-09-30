@@ -8,13 +8,13 @@
 (def all-games (atom {}))
 
 ;(def map-file "resources/static/map-classic.json")
-(def map-data (ClassLoader/getSystemResource "resources/static/map-classic.json"))
+(def map-data (ClassLoader/getSystemResource "static/map-classic.json"))
 
 (declare execute-log-item)
 
 ;; internal api
 (defn create-game-state [game]
-  (let [map (json/decode map-data true)]
+  (let [map (utils/load-json map-data)]
 	{:id (:id game)
 	 :options (:data game)
 	 :log []
