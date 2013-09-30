@@ -164,7 +164,7 @@
     (-> game-state
         (add-log-item {:type "supply"
                        :user-id user-id
-                       :amount (/ (count districts) 3)
+                       :amount (quot (count districts) 3)
                        :reason (str (count districts) " districts")})
         (#(reduce region-supply % regions)))))
 
