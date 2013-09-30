@@ -12,6 +12,14 @@
         supply (:supply player-state 0)
         district-owner (get-in game [:districts district :user-id])
         delta (- supply amount)]
+    #_ (println {:user-id user-id
+              :uid (type user-id)
+              :t turn-by
+              :ps player-state
+              :phase phase
+              :sup supply
+              :do district-owner
+              :del delta})
     (and (= turn-by user-id)
          (= phase PHASE-DEPLOY)
          (= district-owner user-id)
