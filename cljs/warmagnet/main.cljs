@@ -44,11 +44,10 @@
        [:div (str "UNKNOWN ROUTE: " route)]))])
 
 (defr Wrapper
-  [C props S]
-  (let [P (aget props "props")]
-    [:div
-     [Navbar P]
-     [Root P]]))
+  [C P S]
+  [:div
+   [Navbar P]
+   [Root P]])
 
 (defn current-route
   []
@@ -78,5 +77,5 @@
                        (fn [e]
                          (send-message {:type :route :data (current-route)})))
     (add-watch world :world-watcher
-               (fn [key ref old new]
-                 (.setProps root (js-obj "props" new))))))
+               (fn [_ _ _ new]
+                 (.replaceProps root new)))))
