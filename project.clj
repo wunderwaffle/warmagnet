@@ -10,7 +10,6 @@
                  [org.clojure/tools.reader "0.7.8"]
                  [org.postgresql/postgresql "9.2-1002-jdbc4"]
                  [korma "0.3.0-RC5"]
-                 [com.cemerick/friend "0.1.5"]
                  [clj-time "0.6.0"]
                  [cheshire "5.2.0"]
                  [com.taoensso/timbre "2.6.1"]
