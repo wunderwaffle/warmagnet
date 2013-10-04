@@ -35,7 +35,11 @@
 		  source-connects-target (boolean (some #{attack-to} (:borders source-district)))
 		  source-user (:user-id source)
 		  amount-valid (> source-supply amount)]
-		  (and (= turn-by user-id) (= phase PHASE-ATTACK) (= source-user user-id) amount-valid source-connects-target)
+		  (and (= turn-by user-id)
+           (= phase PHASE-ATTACK)
+           (= source-user user-id)
+           amount-valid
+           source-connects-target)
 		))
 
 (defn check-reinforce [game {:keys [user-id reinforce-from reinforce-to amount]}]
@@ -68,7 +72,8 @@
 	(let [turn-by (:turn-by game)
   		  player-state (get-in game [:player-state user-id])
 		  phase (:phase player-state)]
-		  (and (= turn-by user-id) (= phase PHASE-REINFORCE))))
+		  (and (= turn-by user-id)
+           (= phase PHASE-REINFORCE))))
 
 (defn check-transition [game msg]
   (case (keyword (:type msg))

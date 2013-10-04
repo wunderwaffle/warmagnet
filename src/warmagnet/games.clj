@@ -144,6 +144,10 @@
                                                   :amount 3}))]
       (reduce distributor game-state joined)))
 
+(defn get-next-player [game-state user-id]
+	(let [players (:players game-state)]
+		(or (second (drop-while #(not= user-id (:id %)) players)) (first players))))
+
 (defn initialize-game [game-state]
   (-> game-state
       (initial-distribute-districts)
@@ -172,12 +176,14 @@
 	(let [amount (get-in game-state [:player-state user-id :supply])]
       (if ((fnil zero? 0) amount)
         (add-log-item game-state
-                      {:type "phase" :user-id user-id :phase crossover/PHASE-ATTACK}))))
+                      {:type "phase" :user-id user-id :phase crossover/PHASE-ATTACK})
+        game-state)))
 
 (defn maybe-conquer [game-state {:keys [attack-to user-id]}]
 	(let [target-amount (get-in game-state [:districts attack-to :amount])]
 		(if (< target-amount 0)
-			(add-log-item game-state {:type "conquer" :user-id user-id :district attack-to :amount (- target-amount)}))))
+			(add-log-item game-state {:type "conquer" :user-id user-id :district attack-to :amount (- target-amount)})
+			game-state)))
 
 (defn finish-game [{:keys [id turn-by] :as game-state}]
 	(db/finish-game id turn-by)
@@ -188,16 +194,12 @@
 		  districts (:districts game-state)
 		  num-conquered (count (filter #(= user-id (:user-id %)) (vals districts)))
 		  district-count (count districts)]
-		  (println num-conquered district-count)
 		  (if (= num-conquered district-count)
-		  	(finish-game game-state))))
-
-(defn next-player [game-state user-id]
-	(let [players (:players game-state)]
-		(or (second (drop-while #(not= user-id (:id %)) players)) (first players))))
+		  	(finish-game game-state)
+		  	game-state)))
 
 (defn next-turn [game-state]
-	(let [next-player (next-player game-state (:turn-by game-state))]
+	(let [next-player (get-next-player game-state (:turn-by game-state))]
 		(add-log-item game-state {:type "turn" :user-id (:id next-player)})))
 
 (defn execute-log-item [game-state {:keys [user-id] :as data}]

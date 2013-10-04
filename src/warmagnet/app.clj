@@ -44,6 +44,7 @@
   (send-raw state (apply hash-map more)))
 
 (defn game-broadcast [game-id msg]
+  (println "BCAST" game-id (games/get-watchers game-id))
   (doseq [id (games/get-watchers game-id)]
     (send-raw (find-user id) msg)))
 
