@@ -32,22 +32,28 @@
                        (vals (:districts game))))))
 
 (defr Game
-  [C {:keys [game] :as P} S]
+  [C {:keys [game user] :as P} S]
   (if-not game
     [:div "Loading"]
 
     [:div
-     (let [current-player-id (:turn-by game)
-           phase (:phase (get-stats game current-player-id))
+     (let [active-player-id (:turn-by game)
+           user-id (:id user)
+           phase (:phase (get-stats game active-player-id))
            game-id (:id game)]
        [:p.lead "Turn by: "
-        (:name (get-player game current-player-id))
-        " | Phase: " phase
-        (case phase
-          "attack" [:button.btn.btn-warning {:on-click #(send-log game-id {:type :attack-end})} "End attack"]
-          "reinforce" [:button.btn.btn-warning {:on-click #(send-log game-id {:type :reinforce-end})} "End reinforcements"]
-          nil)])
-
+        (:name (get-player game active-player-id))
+        " | Phase: " phase " "
+        (if (= user-id active-player-id)
+          (case phase
+            "attack" [:button.btn.btn-warning
+                      {:on-click #(send-log game-id {:type :attack-end})}
+                      "End attack"]
+            "reinforce" [:button.btn.btn-warning
+                         {:on-click #(send-log game-id {:type :reinforce-end})}
+                         "End reinforcements"]
+            nil))])
+     
      [GameMap P]
 
      [:p.lead "Stats"]
