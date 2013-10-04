@@ -194,11 +194,12 @@
                         (nil? attacker) (assoc-in-state C :attacker %)
                         (reinforce? attacker %) (assoc-in-state C :defender %))
 
-        district-action #(if is-my-turn 
+        district-action #(if is-my-turn
                            (case phase
                              :deploy (if (= % user-id) dst-deploy)
                              :attack (if (= % user-id) dst-attacker dst-defender)
-                             :reinforce (if (= % user-id) dst-reinforce)))
+                             :reinforce (if (= % user-id) dst-reinforce)
+                             nil)) ; inconsistent game state, need transactions
 
         selection-for #(condp = %1
                          hovered :hover
