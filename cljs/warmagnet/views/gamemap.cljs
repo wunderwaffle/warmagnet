@@ -198,8 +198,8 @@
                          (cond
                           (and (= phase :reinforce) (= %2 user-id)
                                attacker (reinforce? attacker %1)) :neighbor
-                               (and (= phase :attack) (not= %2 user-id)
-                                    attacker (attack? attacker %1)) :target))]
+                          (and (= phase :attack) (not= %2 user-id)
+                               attacker (attack? attacker %1)) :target))]
 
     (if-not map-src
       [:div "No map"]
@@ -207,17 +207,16 @@
        {:style (get-map-style dimensions container-width)}
        [:img {:src (str "/static/" map-src)
               :on-click clear-popovers!}]
-       (map (fn [district]
-              (let [[dname map-district] district
-                    gd (game-districts (name dname))]
-                [MapDistrict {:district district
-                              :dname dname
-                              :selected (selection-for district (gd :user-id))
-                              :hovered! hovered!
-                              :amount (gd :amount)
-                              :color (player-color game (gd :user-id))
-                              :click (district-action (gd :user-id))}]))
-            districts)
+       (for [district districts
+             :let [[dname map-district] district
+                    game-district (or (game-districts (name dname)) {})]]
+         [MapDistrict {:district district
+                       :dname dname
+                       :selected (selection-for district (game-district :user-id))
+                       :hovered! hovered!
+                       :amount (or (game-district :amount) (name dname))
+                       :color (player-color game (game-district :user-id))
+                       :click (district-action (game-district :user-id))}])
        (if (and (= phase :deploy) deploying)
          [Deploy {:available-troops (:supply (user-state game user))
                   :district deploying :game-id game-id}])
