@@ -92,7 +92,9 @@
      [:div.popover-content
       [:div.input-group
        [:span.input-group-btn
-        [:button.btn.btn-success {:on-click #(deploy! game-id dname to-deploy)} "Deploy"]]
+        [:button.btn.btn-success
+         {:on-click #(deploy! game-id dname to-deploy)}
+         "Deploy"]]
        [:input.form-control
         {:on-change #(if-let [v (js/parseInt (e-value %))]
                        (if (<= 1 v available-troops)
@@ -155,8 +157,16 @@
   ((game-districts (name dname)) :amount))
 
 (defr GameMap
-  :component-will-mount (fn [C P] (if-not (:map-src P) (xhr-load-map)))
   :get-initial-state (fn [] {})
+  :component-will-mount (fn [C P] (if-not (:map-src P) (xhr-load-map)))
+  :component-will-receive-props
+  (fn [C {:keys [game user]} S next-props]
+    (let [new-game (:game next-props)
+          old-phase (:phase (user-state game user))
+          new-phase (:phase (user-state new-game user))]
+      (if (not= old-phase new-phase)
+        (.clearPopovers C C))))
+  :clear-popovers #(assoc-state % {:attacker nil :deploying nil :defender nil})
 
   [C
    {:keys [game-map game user container-width]}
@@ -170,17 +180,17 @@
         is-my-turn (= turn-by user-id)
         phase (keyword (:phase (user-state game user)))
 
-        clear-popovers! #(assoc-state C {:attacker nil :deploying nil :defender nil})
+        ;clear-popovers! #(assoc-state C {:attacker nil :deploying nil :defender nil})
         hovered! #(assoc-in-state C :hovered %)
 
         dst-deploy #(assoc-in-state C :deploying (if (not= deploying %) % nil))
         dst-attacker #(if (= % attacker)
-                        (clear-popovers!)
+                        (.clearPopovers C C)
                         (assoc-in-state C :attacker %))
         dst-defender #(if (attack? attacker %)
                         (assoc-in-state C :defender %))
         dst-reinforce #(cond
-                        (= % attacker) (clear-popovers!)
+                        (= % attacker) (.clearPopovers C C)
                         (nil? attacker) (assoc-in-state C :attacker %)
                         (reinforce? attacker %) (assoc-in-state C :defender %))
 
@@ -206,7 +216,7 @@
       [:div.game-map
        {:style (get-map-style dimensions container-width)}
        [:img {:src (str "/static/" map-src)
-              :on-click clear-popovers!}]
+              :on-click (aget C "clearPopovers")}]
        (for [district districts
              :let [[dname map-district] district
                     game-district (or (game-districts (name dname)) {})]]
