@@ -14,7 +14,7 @@
                  [cheshire "5.2.0"]
                  [com.taoensso/timbre "2.6.1"]
                  [http-kit "2.1.10"]
-                 [pump "0.3.1"]
+                 [pump "0.3.2"]
                  [org.clojure/clojurescript "0.0-1909"]
                  [org.clojure/tools.cli "0.2.4"]]
   :plugins [[lein-ring "0.8.7"]
