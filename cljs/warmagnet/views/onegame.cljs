@@ -1,8 +1,9 @@
 (ns warmagnet.views.onegame
   (:require-macros [pump.macros :refer [defr]])
-  (:require
-   [warmagnet.utils :refer [send-log log]]
-   [warmagnet.views.gamemap :refer [player-color GameMap]]))
+  (:require [goog.string :as gs]
+            [goog.string.format]
+            [warmagnet.utils :refer [send-log log]]
+            [warmagnet.views.gamemap :refer [player-color GameMap]]))
 
 (defn get-player [game user-id]
   (first (filter #(= (:id %) user-id) (:players game))))
@@ -16,10 +17,17 @@
       :join (str "User " name " joined the game")
       :start "Game started"
       :set-district nil
-      :turn (str "Turn of " name)
-      :supply (str name " received " (:amount log)
-                   " troops because of " (:reason log))
-      (str "Event: " (:type log) " by " name))))
+      :turn (gs/format "Turn of %s" name)
+      :supply (gs/format "%s received %d troops because of %s"
+                         name (:amount log) (:reason log))
+      :deploy (gs/format "%s deployed %d troops on %s"
+                         name (:amount log) (:district log))
+      :phase nil
+      :attack (gs/format "%s attacked %s from %s with %d troops"
+                         name (:attack-to log) (:attack-from log) (:amount log))
+      :conquer (gs/format "%s conquered %s"
+                          name (:district log))
+      (str "Event: " type ", " (pr-str log)))))
 
 (defn regions [game user-id]
   (count
