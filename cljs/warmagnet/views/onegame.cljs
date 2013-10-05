@@ -1,5 +1,5 @@
 (ns warmagnet.views.onegame
-  (:require-macros [pump.def-macros :refer [defr]])
+  (:require-macros [pump.macros :refer [defr]])
   (:require
    [warmagnet.utils :refer [send-log log]]
    [warmagnet.views.gamemap :refer [player-color GameMap]]))

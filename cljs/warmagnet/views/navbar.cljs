@@ -1,5 +1,5 @@
 (ns warmagnet.views.navbar
-  (:require-macros [pump.def-macros :refer [defr]]
+  (:require-macros [pump.macros :refer [defr]]
                    [warmagnet.macros :refer [cx]])
   (:require
    [warmagnet.handlers :as handlers]))

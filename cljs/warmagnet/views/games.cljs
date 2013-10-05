@@ -1,8 +1,7 @@
 (ns warmagnet.views.games
-  (:require-macros [pump.def-macros :refer [defr]]
+  (:require-macros [pump.macros :refer [defr]]
                    [warmagnet.macros :refer [cx]])
   (:require [clojure.string :refer [capitalize]]
-            [pump.core :refer [assoc-in-state e-value]]
 
             [warmagnet.components :refer [tags]]
             [warmagnet.utils :refer [log redir send-message send-message-srv]]
@@ -32,7 +31,7 @@
     [:div.btn-group.btn-panel
      (for [n (range 2 8)]
        (button (str n " players") n size
-               #(assoc-in-state C :size %)))]]
+               #(swap! C assoc :size %)))]]
 
    [:div.form-group
     [:label.control-label "Round time"]
@@ -40,14 +39,14 @@
      (for [[name val] [["5 minutes" :short]
                        ["24 hours" :long]]]
        (button name val duration
-               #(assoc-in-state C :duration %)))]]
+               #(swap! C assoc :duration %)))]]
 
    [:div.form-group
     [:label.control-label "Reinforcements"]
     [:div.btn-group.btn-panel
      (for [val [:adjacent :chained :unlimited]]
        (button (capitalize (name val)) val reinforcement
-               #(assoc-in-state C :reinforcement %)))]]
+               #(swap! C assoc :reinforcement %)))]]
 
    [:button.btn.btn-success.btn-lg {:type "submit"} "Create"]])
 

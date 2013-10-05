@@ -1,6 +1,6 @@
 (ns warmagnet.views.prefs
-  (:require-macros [pump.def-macros :refer [defr]])
-  (:require [pump.core :refer [assoc-state assoc-in-state e-value]]
+  (:require-macros [pump.macros :refer [defr]])
+  (:require [pump :refer [e-value]]
             [warmagnet.md5 :refer [md5]]
             [warmagnet.utils :refer [log]]
             [warmagnet.handlers :as handlers]))
@@ -8,11 +8,11 @@
 (defr Preferences
   :component-will-mount
   (fn [C P S]
-    (assoc-state C P))
+    (swap! C merge P))
 
   :component-will-receive-props
   (fn [C P S next-props]
-    (assoc-state C P))
+    (swap! C merge P))
 
   [C P {:keys [email name] :as S}]
 
@@ -39,6 +39,6 @@
      [:label {:html-for "name"} "Name"]
      [:input.form-control {:name "name"
                            :value name
-                           :on-change #(assoc-in-state C :name (e-value %))}]]
+                           :on-change #(swap! C assoc :name (e-value %))}]]
     [:button.btn.btn-primary {:type "submit"} "Save"]]])
 

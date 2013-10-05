@@ -1,6 +1,6 @@
 (ns warmagnet.main
-  (:require-macros [pump.def-macros :refer [defr]])
-  (:require [pump.core :refer [assoc-state]]
+  (:require-macros [pump.macros :refer [defr]])
+  (:require [pump :refer [react]]
             [warmagnet.handlers :as handlers]
             [warmagnet.utils :refer [log send-message setup-auth]]
             [warmagnet.world :refer [world]]

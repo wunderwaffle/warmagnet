@@ -1,5 +1,5 @@
 (ns warmagnet.views.index
-  (:require-macros [pump.def-macros :refer [defr]])
+  (:require-macros [pump.macros :refer [defr]])
   (:require [warmagnet.handlers :as handlers]))
 
 (def intro

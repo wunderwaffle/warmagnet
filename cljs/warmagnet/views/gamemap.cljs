@@ -1,7 +1,7 @@
 (ns warmagnet.views.gamemap
-  (:require-macros [pump.def-macros :refer [defr]]
+  (:require-macros [pump.macros :refer [defr]]
                    [warmagnet.macros :refer [cx]])
-  (:require [pump.core :refer [assoc-state assoc-in-state e-value]]
+  (:require [pump :refer [e-value]]
             [warmagnet.utils :refer [send-message send-log log]]))
 
 (def COLORS ["#f00" "#006400" "#00f" "#cc0" "#f0f" "#0cc"])
@@ -83,7 +83,7 @@
 (defr Deploy
   :component-will-mount
   (fn [C {:keys [available-troops]} S]
-    (assoc-in-state C :to-deploy available-troops))
+    (swap! C assoc :to-deploy available-troops))
   
   [C {:keys [available-troops district game-id]} {:keys [to-deploy]}]
   (let [[dname {:keys [coordinates]}] district
@@ -98,12 +98,12 @@
        [:input.form-control
         {:on-change #(if-let [v (js/parseInt (e-value %))]
                        (if (<= 1 v available-troops)
-                         (assoc-in-state C :to-deploy (e-value %))))
+                         (swap! C assoc :to-deploy (e-value %))))
          :type "number" :value to-deploy :min 1 :max available-troops}]]
       [:div.input-group
        [:span.input-group-addon "1"]
        [:input.form-control
-        {:on-change #(assoc-in-state C :to-deploy (e-value %))
+        {:on-change #(swap! C assoc :to-deploy (e-value %))
          :type "range" :value to-deploy :min 1 :max available-troops}]
        [:span.input-group-addon available-troops]]]]))
 
@@ -122,7 +122,7 @@
       [:button.btn.btn-danger  {:on-click #(attack! game-id (dec attacking) aname dname)} "Blitz"]]]]))
 
 (defr Reinforce
-  :component-will-mount (fn [C P S] (assoc-in-state C :transfer 0))
+  :component-will-mount (fn [C P S] (swap! C assoc :transfer 0))
 
   [C
    {:keys [dst-from troops-from dst-to troops-to game-id]}
@@ -137,7 +137,7 @@
       [:div.input-group
        [:span.input-group-addon (+ troops-from transfer)]
        [:input.form-control
-        {:on-change #(assoc-in-state C :transfer (js/parseInt (e-value %)))
+        {:on-change #(swap! C assoc :transfer (js/parseInt (e-value %)))
          :type "range" :value transfer :min (- 1 troops-from) :max (- troops-to 1)}]
        [:span.input-group-addon (- troops-to transfer)]]
       [:button.btn.btn-block.btn-success {:on-click reinforce!} "Reinforce"]]]))
@@ -165,8 +165,8 @@
           old-phase (:phase (user-state game user))
           new-phase (:phase (user-state new-game user))]
       (if (not= old-phase new-phase)
-        (.clearPopovers C C))))
-  :clear-popovers #(assoc-state % {:attacker nil :deploying nil :defender nil})
+        (.clearPopovers C))))
+  :clear-popovers #(swap! % assoc :attacker nil :deploying nil :defender nil)
 
   [C
    {:keys [game-map game user container-width]}
@@ -180,19 +180,18 @@
         is-my-turn (= turn-by user-id)
         phase (keyword (:phase (user-state game user)))
 
-        ;clear-popovers! #(assoc-state C {:attacker nil :deploying nil :defender nil})
-        hovered! #(assoc-in-state C :hovered %)
+        hovered! #(swap! C assoc :hovered %)
 
-        dst-deploy #(assoc-in-state C :deploying (if (not= deploying %) % nil))
+        dst-deploy #(swap! C assoc :deploying (if (not= deploying %) % nil))
         dst-attacker #(if (= % attacker)
-                        (.clearPopovers C C)
-                        (assoc-in-state C :attacker %))
+                        (.clearPopovers C)
+                        (swap! C assoc :attacker %))
         dst-defender #(if (attack? attacker %)
-                        (assoc-in-state C :defender %))
+                        (swap! C assoc :defender %))
         dst-reinforce #(cond
-                        (= % attacker) (.clearPopovers C C)
-                        (nil? attacker) (assoc-in-state C :attacker %)
-                        (reinforce? attacker %) (assoc-in-state C :defender %))
+                        (= % attacker) (.clearPopovers C)
+                        (nil? attacker) (swap! C assoc :attacker %)
+                        (reinforce? attacker %) (swap! C assoc :defender %))
 
         district-action #(if is-my-turn
                            (case phase
