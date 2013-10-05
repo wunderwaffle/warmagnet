@@ -7,13 +7,16 @@
             [warmagnet.utils :refer [log redir send-message send-message-srv]]
             [warmagnet.handlers :as handlers]))
 
-(defn button [name value current on-click]
+(defn button-toggle [name value current on-click]
   (let [primary (= value current)]
     [:button {:class (cx :btn true
                          :btn-default (not primary)
                          :btn-primary primary)
               :on-click #(do (.preventDefault %) (on-click value))}
      name]))
+
+(defn button [text on-click]
+  [:button.btn.btn-default {:on-click on-click} text])
 
 (defr NewGame
   :get-initial-state #(identity {:size 2
@@ -30,7 +33,7 @@
     [:label.control-label "Participants"]
     [:div.btn-group.btn-panel
      (for [n (range 2 8)]
-       (button (str n " players") n size
+       (button-toggle (str n " players") n size
                #(swap! C assoc :size %)))]]
 
    [:div.form-group
@@ -38,14 +41,14 @@
     [:div.btn-group.btn-panel
      (for [[name val] [["5 minutes" :short]
                        ["24 hours" :long]]]
-       (button name val duration
+       (button-toggle name val duration
                #(swap! C assoc :duration %)))]]
 
    [:div.form-group
     [:label.control-label "Reinforcements"]
     [:div.btn-group.btn-panel
      (for [val [:adjacent :chained :unlimited]]
-       (button (capitalize (name val)) val reinforcement
+       (button-toggle (capitalize (name val)) val reinforcement
                #(swap! C assoc :reinforcement %)))]]
 
    [:button.btn.btn-success.btn-lg {:type "submit"} "Create"]])
@@ -86,8 +89,7 @@
                        :gamelog log
                        :game options
                        :player-list (map (juxt :id :name) players)
-                       :children [:button.btn.btn-default
-                                  {:on-click #(redir (str "games/" id))} "Open"]}])]]))
+                       :children [(button "Open" #(redir (str "games/" id)))]}])]]))
 
 (defn refresh-all-games []
   (send-message-srv {:type :game-list}))
@@ -116,9 +118,8 @@
                    :game data
                    :players players
                    :player-list (map (juxt :id :name) player-list)
-                   :children (if (and (< players (:size data))
-                                      (not (some #{(:id user)} (map :id player-list))))
-                               [:button.btn.btn-default
-                                {:on-click #(do (handlers/join-game id)
-                                                (js/setTimeout refresh-all-games 10))}
-                                "Join"])}])])])
+                   :children (seq [(button "Open" #(redir (str "games/" id)))
+                                   (if (and (< players (:size data))
+                                            (not (some #{(:id user)} (map :id player-list))))
+                                     (button "Join" #(do (handlers/join-game id)
+                                                         (js/setTimeout refresh-all-games 10))))])}])])])
