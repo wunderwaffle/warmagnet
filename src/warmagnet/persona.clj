@@ -1,13 +1,9 @@
 (ns warmagnet.persona
   (:require
-   [clojure.core.async :refer [go chan >! <!!]]
    [cheshire.core :as json]
    [warmagnet.config :refer [config]]
    [org.httpkit.client :as hk]))
 
-
-(defn async-form-post [url params result]
-	(hk/post url {:form-params params} #(go (>! result %))))
 
 (defn login [token]
 	(let [response @(hk/post "https://verifier.login.persona.org/verify"
