@@ -8,7 +8,7 @@
             [warmagnet.games :as games]
             ))
 
-; user management
+;;; user management
 (def all-users (atom {}))
 
 (defn find-user [id]
@@ -27,9 +27,9 @@
   (swap! all-users dissoc (get-user-id state)))
 
 (defn init-state [state]
-    {:conn state :user nil :games #{}})
+  {:conn state :user nil :games #{}})
 
-;; helpers
+;;; helpers
 (defn log-message [prefix state text]
   (if (have-user state)
     (debug (format "%s [%s] %s" prefix (get-in @state [:user :email]) text))
@@ -49,11 +49,11 @@
     (send-raw (find-user id) msg)))
 
 (defn serialize-game-state [game-state]
-  ; TODO: Fix me
+  ;; TODO: Fix me
   (select-keys game-state
                [:id :options :log :players :districts :player-state :turn-by]))
 
-;; games
+;;; games
 (defn watch-game [state game-state]
   (let [user-id (get-user-id state)
         game-id (:id game-state)]
@@ -75,7 +75,7 @@
     (doseq [game games]
       (watch-game state (games/get-game (:game_id game))))))
 
-;; Message Handlers
+;;; Message Handlers
 (defn goc-user-by-token [token]
   (if-let [user (db/get-user-by-token token)]
     user
@@ -84,7 +84,7 @@
         (db/get-or-create-user (:email user-data) token)))))
 
 (defn msg-user [state msg]
-  ; TODO: Token decoding to get user id
+  ;; TODO: Token decoding to get user id
   (if-let [token (:token msg)]
     (if-let [user (goc-user-by-token token)]
       (do (swap! state assoc :user user)
@@ -132,7 +132,7 @@
 (defn msg-unknown [state]
   (send-message state :type "error" :status "invalid-msg"))
 
-;; handlers
+;;; handlers
 (defn handle-user-msg [state {:keys [type] :as msg}]
   (case (keyword type)
     :ping (msg-ping state msg)
@@ -163,7 +163,7 @@
     (doseq [game-id game-ids]
       (unwatch-game state game-id))))
 
-; Websocket handler
+;;; Websocket handler
 (defn ws-handler [req]
   (hk/with-channel req chan
     (let [state (atom (init-state chan))]

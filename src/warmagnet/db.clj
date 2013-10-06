@@ -52,8 +52,8 @@
 (defn update-user [id profile]
   (if-not (empty? profile)
     (sql/update users
-            (sql/set-fields profile)
-            (sql/where (= :id id)))))
+                (sql/set-fields profile)
+                (sql/where (= :id id)))))
 
 (defn user-exists [email]
   (->
@@ -75,16 +75,22 @@
 
 ;; games
 (defn new-game [data]
-  (let [game (sql/insert games (sql/values {:data (json/encode data) :size (:size data) :players 0 :finished false}))]
+  (let [game (sql/insert games
+                         (sql/values {:data (json/encode data)
+                                      :size (:size data)
+                                      :players 0
+                                      :finished false}))]
     (assoc game :data data)))
 
 (defn add-game-log [game-id data]
   (sql/insert gamelogs
-              (sql/values {:game_id game-id :type (:type data) :data (json/encode data)})))
+              (sql/values {:game_id game-id
+                           :type (:type data)
+                           :data (json/encode data)})))
 
 (defn get-game [id]
   (let [game (first (sql/select games
-                    (sql/where (= :id id))))]
+                                (sql/where (= :id id))))]
     (if-not (nil? game)
       (update-in game [:data] json/decode true))))
 
@@ -104,10 +110,10 @@
               (sql/join users (= :users.id :user_id))
               (sql/where (= :game_id game-id))))
 
-; TODO: Fix me
+;; TODO: Fix me
 (defn -update-game-item [item]
   (assoc item :data (json/decode (:data item) true)
-              :player-list (get-game-players (:id item))))
+         :player-list (get-game-players (:id item))))
 
 (defn get-game-list []
   (let [games (sql/select games
@@ -131,12 +137,12 @@
 
 (defn is-user-in-game [game-id user-id]
   (->
-    (sql/select user_games
+   (sql/select user_games
                (sql/aggregate (count :*) :count)
                (sql/where {:game_id game-id :user_id user-id}))
-    first
-    :count
-    pos?))
+   first
+   :count
+   pos?))
 
 (defn get-user-games [user-id]
   (sql/select user_games
