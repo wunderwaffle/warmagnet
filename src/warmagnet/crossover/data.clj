@@ -52,7 +52,8 @@
         source-connects-target (boolean (some #{reinforce-to} (:borders source-district)))
         source-user (:user-id source)
         target-user (:user-id target)
-        amount-valid (> source-supply amount)]
+        amount-valid (and (pos? amount)
+                          (> source-supply amount))]
     (and (= turn-by user-id)
          (= phase PHASE-REINFORCE)
          (= source-user user-id)

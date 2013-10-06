@@ -122,7 +122,7 @@
       [:button.btn.btn-danger  {:on-click #(attack! game-id (dec attacking) aname dname)} "Blitz"]]]]))
 
 (defr Reinforce
-  :component-will-mount (fn [C P S] (swap! C assoc :transfer 0))
+  :get-initial-state (fn [] {:transfer 0})
 
   [C
    {:keys [dst-from troops-from dst-to troops-to game-id]}
@@ -135,12 +135,14 @@
       [:table {:style (clj->js {:width "100%" :text-align "center"})}
        [:thead [:tr [:th (name fname)] [:th (name tname)]]]]
       [:div.input-group
-       [:span.input-group-addon (+ troops-from transfer)]
+       [:span.input-group-addon (- troops-from transfer)]
        [:input.form-control
         {:on-change #(swap! C assoc :transfer (js/parseInt (e-value %)))
-         :type "range" :value transfer :min (- 1 troops-from) :max (- troops-to 1)}]
-       [:span.input-group-addon (- troops-to transfer)]]
-      [:button.btn.btn-block.btn-success {:on-click reinforce!} "Reinforce"]]]))
+         :type "range" :value transfer :min 0 :max (dec troops-from)}]
+       [:span.input-group-addon (+ troops-to transfer)]]
+      [:button.btn.btn-block.btn-success
+       {:on-click #(reinforce! game-id transfer fname tname)}
+       "Reinforce"]]]))
 
 (defn attack? [[aname {:keys [borders]}] [dname dmap]]
   (let [str-name (name dname)]
