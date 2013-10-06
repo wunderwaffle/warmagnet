@@ -30,10 +30,10 @@
         str-scale (str "scale(" scale ")")
         width (* x scale)
         height (* y scale)]
-    (clj->js {:-webkit-transform str-scale
-              :transform str-scale
-              :width width
-              :height height})))
+    {:-webkit-transform str-scale
+     :transform str-scale
+     :width width
+     :height height}))
 
 (defn player-index [game user-id]
   (first (keep-indexed (fn [i x] (if (= (:id x) user-id) i))
@@ -74,7 +74,7 @@
                  :label-primary (= selected :checked)
                  :label-info (= selected :hover)
                  :label-danger (= selected :target))
-      :style (clj->js {:left x :top y :color color})
+      :style {:left x :top y :color color}
       :on-click (if click (fn [C] (click district)) #())
       :on-mouse-enter #(hovered! district)
       :on-mouse-leave #(hovered! nil)}
@@ -88,7 +88,7 @@
   [C {:keys [available-troops district game-id]} {:keys [to-deploy]}]
   (let [[dname {:keys [coordinates]}] district
         [x y] (xy-for-popover coordinates)]
-    [:div.popover {:style (clj->js {:display "block" :left x :top y})}
+    [:div.popover {:style {:display "block" :left x :top y}}
      [:div.popover-content
       [:div.input-group
        [:span.input-group-btn
@@ -112,9 +112,9 @@
   (let [[aname {:keys [coordinates]}] attacker
         [dname dmap] defender
         [x y] (xy-for-popover coordinates)]
-   [:div.popover {:style (clj->js {:display "block" :left x :top y})}
+   [:div.popover {:style {:display "block" :left x :top y}}
     [:div.popover-content
-     [:table {:style (clj->js {:width "100%" :text-align "center"})}
+     [:table {:style {:width "100%" :text-align "center"}}
       [:thead [:tr [:th (name aname)] [:th (name dname)]]]
       [:tbody [:tr [:td attacking] [:td defending]]]]
      [:div.btn-group
@@ -130,9 +130,9 @@
   (let [[fname {:keys [coordinates]}] dst-from
         [tname tmap] dst-to
         [x y] (xy-for-popover coordinates)]
-    [:div.popover {:style (clj->js {:display "block" :left x :top y})}
+    [:div.popover {:style {:display "block" :left x :top y}}
      [:div.popover-content
-      [:table {:style (clj->js {:width "100%" :text-align "center"})}
+      [:table {:style {:width "100%" :text-align "center"}}
        [:thead [:tr [:th (name fname)] [:th (name tname)]]]]
       [:div.input-group
        [:span.input-group-addon (- troops-from transfer)]
