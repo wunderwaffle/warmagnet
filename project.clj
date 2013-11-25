@@ -14,7 +14,7 @@
                  [cheshire "5.2.0"]
                  [com.taoensso/timbre "2.6.2"]
                  [http-kit "2.1.11"]
-                 [pump "0.4.1"]
+                 [pump "0.4.2-SNAPSHOT"]
                  [org.clojure/tools.cli "0.2.4"]]
   :plugins [[lein-ring "0.8.7"]
             [lein-cljsbuild "0.3.3"]]
@@ -28,12 +28,15 @@
    :builds [{:id "main"
              :source-paths ["cljs"]
              :compiler {:output-to "resources/static/warmagnet.js"
-                        :externs ["resources/externs/react.js"]
+                        :foreign-libs [{:file "resources/static/react.js"
+                                        :provides ["React"]}]
                         :optimizations :whitespace}
              :jar true}
             {:id "min"
              :source-paths ["cljs"]
              :compiler {:output-to "resources/static/warmagnet.min.js"
-                        :externs ["resources/externs/react.js"]
+                        ;; :externs ["resources/externs/react.js"]
+                        :foreign-libs [{:file "resources/static/react.js"
+                                        :provides ["React"]}]
                         :optimizations :advanced}
              :jar true}]})

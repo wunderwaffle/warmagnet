@@ -16,9 +16,9 @@ prerequisites: 'warmagnet' postgres DB accessible for current user, pip install 
 
 ## Authors
 
-Alexander Solovyov
-Serge Koval
-Vsevolod Solovyov
-Roman Semenenko
+- Alexander Solovyov
+- Roman Semenenko
+- Serge Koval
+- Vsevolod Solovyov
 
 ... aka Wunderwaffle

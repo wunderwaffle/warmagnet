@@ -36,8 +36,7 @@
     :error (do (js/alert "Server error")
                world)
     :login (do (set-user data) (assoc world :user data))
-    :login-error (do (remove-user)
-                     (dissoc world :user))
+    :login-error (do (remove-user) (dissoc world :user))
     :join-error world
     :logout (do (remove-user) (dissoc world :user))
     :update-user (do (update-user data) (update-in world [:user] merge data))

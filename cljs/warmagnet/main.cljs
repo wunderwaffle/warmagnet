@@ -73,6 +73,7 @@
 
   (let [root-el (.-body js/document)
         root (React/renderComponent (Wrapper (js-obj "props" @world)) root-el)]
+    (aset js/window "root" root)
     (.addEventListener js/window "hashchange"
                        (fn [e]
                          (send-message {:type :route :data (current-route)})))
