@@ -35,8 +35,8 @@
             {:id "min"
              :source-paths ["cljs"]
              :compiler {:output-to "resources/static/warmagnet.min.js"
-                        ;; :externs ["resources/externs/react.js"]
-                        :foreign-libs [{:file "resources/static/react.js"
-                                        :provides ["React"]}]
+                        :externs ["resources/externs/react.js"]
+                        ;; :foreign-libs [{:file "resources/static/react.js"
+                        ;;                 :provides ["React"]}]
                         :optimizations :advanced}
              :jar true}]})
